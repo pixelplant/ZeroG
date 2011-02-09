@@ -7,7 +7,7 @@
 
 namespace 
 {
-	define('ZEROG_VERSION', '1.0.0');
+	define('ZEROG_VERSION', '1.0.1');
 
 	spl_autoload_extensions('.php');
 	spl_autoload_register();
