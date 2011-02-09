@@ -6,6 +6,11 @@
 	<?php echo Sys\Helpers\Html::input('password', $this->password);?>
 	<input type="submit" value="Register">
 </form>-->
-<p>Click this link: <?php echo Sys\Helpers\Html::link('cms/test/id/5/page/32/search/fast', 'CMS Controller test action!')?></p>
-<p>Asta ar trebui sa fie <?php echo Sys\Helpers\Html::ajaxlink('cms/ajax', 'un apel ajax', array("success" => "$('#test').fadeOut().html(data).fadeIn();")); ?></p>
+<p>
+	<?php echo \Sys\ZeroG::__('Click this link:', 'cms'); ?>
+	<?php echo Sys\Helpers\Html::link('cms/test/id/5/page/32/search/fast', 'CMS Controller test action!')?></p>
+<p>
+	<?php echo \Sys\ZeroG::__('This should be', 'cms'); ?>
+	<?php echo Sys\Helpers\Html::ajaxlink('cms/ajax', \Sys\ZeroG::__('an AJAX call', 'cms'), array("success" => "$('#test').fadeOut().html(data).fadeIn();")); ?>
+</p>
 <p>Asta ar trebui sa fie <?php echo Sys\Helpers\Html::ajaxlink('cms/ajax2', 'al doilea apel ajax', array("success" => "$('#mood').fadeOut().html(data).fadeIn();")); ?></p>

@@ -8,7 +8,7 @@ namespace Sys\Helpers
 {
 	class Html
 	{
-		protected static $javascript = '';
+		protected static $javascript = NULL;
 
 		public static function link($path, $text, $attributes = '')
 		{
@@ -93,9 +93,16 @@ HER;
 			return sprintf('<input type="text" name="%s" id="%s" value="%s" %s/>', $name, $name, $text, $attributes);
 		}
 
+		/**
+		 * Caches all javascript AJAX calls in a cache file, in var/cache
+		 * @return <string> the html script insertion code required for the HEAD tag
+		 */
 		public static function getAjaxCalls()
 		{
-			$file = "var/cache/ajax_".md5(self::$javascript).".js";
+			// if no javascript code is set on this page, then do not cache any data
+			if (self::$javascript === NULL)
+				return;
+			$file = "var/cache/ajax/ajax_".md5(self::$javascript).".js";
 			if (!file_exists($file))
 			{
 				$handle = fopen($file, "w");

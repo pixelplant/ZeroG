@@ -15,6 +15,9 @@ namespace
 	// initiate database connection, if a database is used
 	Sys\Pdo::getInstance();
 
+	// locale settings
+	Sys\ZeroG::getModuleInstance(Sys\ZeroG::LOCALE, \App\Config\System::LOCALE);
+
 	// initialize the framework, and process the controller
 	Sys\ZeroG::init();
 	Sys\ZeroG::bootstrap();

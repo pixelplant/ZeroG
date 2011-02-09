@@ -1,2 +1,7 @@
+Version 1.0.1 --- Second release
+Added basic localization support
+Translated labels are now stored in CSV files (app/locale/*.csv)
+Locale configuration is now read from xml files (sys/locale/*.xml)
+
 Version 1.0.0 --- Initial release
 ZeroG - a PHP 5.3 mvc framework

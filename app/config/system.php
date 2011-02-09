@@ -22,7 +22,7 @@ namespace App\Config
 		/**
 		 * You can define a separate url from where css, js and images are loaded from
 		 */
-		const MEDIA_URL = self::BASE_URL;
+		const MEDIA_URL = 'http://local/zerog/';
 
 		/**
 		 * enables nice urls or not. if set to TRUE, mod_rewrite must be also loaded in Apache.
@@ -53,5 +53,15 @@ namespace App\Config
 		 * Database password
 		 */
 		const DB_PASS = '';
+
+		/**
+		 * Localization settings
+		 */
+		//const LANGUAGE = 'FR';
+
+		/**
+		 * Locale settings
+		 */
+		const LOCALE = 'fr_FR';
 	}
 }

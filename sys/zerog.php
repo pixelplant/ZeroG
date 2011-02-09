@@ -8,6 +8,7 @@
 
 namespace Sys
 {
+
 	final class ZeroG
 	{
 
@@ -15,24 +16,61 @@ namespace Sys
 
 		protected static $params = array();
 
+		const LOCALE = 'Sys\L10n\Locale';
+
 		public static function init()
 		{
 			if (self::$instance === NULL)
 				self::$instance = new ZeroG();
-			if (isset($_GET))
+			/*if (isset($_GET))
 				foreach ($_GET as $key => $value)
 					self::$params[$key] = $value;
 			if (isset($_POST))
 				foreach ($_POST as $key => $value)
-					self::$params[$key] = $value;
+					self::$params[$key] = $value;*/
+			self::$params = array_merge($_GET, $_POST);
+			self::getUrlRewrites(\App\Config\System::URL_REWRITE);
+		}
+
+		/**
+		 * if url rewrite is enabled, this function translated every variable in the
+		 * url string to the proper GET params.
+		 * eg: cms/blog/id/3 => controller=cms, action=blog, id=3
+		 * @param <boolean> $isUrlRewriteEnbled
+		 */
+		public static function getUrlRewrites($isUrlRewriteEnbled = FALSE)
+		{
+			// if there's no url data, then there's nothing to process here...
+			if (!isset($_GET['path']) || strlen($_GET['path']) > 250)
+				return;
+			if ($isUrlRewriteEnbled === TRUE)
+			{
+				$uri = explode("/", $_GET['path']);
+				self::$params['controller'] = $uri[0];
+				self::$params['action'] = $uri[1];
+				$uri = array_slice($uri, 2);
+				$i = 0;
+				$key = '';
+				foreach ($uri as $value)
+				{
+					$i++;
+					if ($i % 2 == 0)
+					{
+						self::$params[$key] = $value;
+					}
+					else
+						$key = $value;
+				}				
+			}
 		}
 
 		/**
 		 * Returns a GET or POST request variable
+		 * 
 		 * @static
-		 * @param  $key name of the request variable (from the POST or GET array)
-		 * @param bool $clean wether we want a htmlspecialcharsed value or not
-		 * @return string the request variable specified by key, or NULL if it does not exist
+		 * @param <string> $key name of the request variable (from the POST or GET array)
+		 * @param <bool> $clean wether we want a htmlspecialcharsed value or not
+		 * @return <string> the request variable specified by key, or NULL if it does not exist
 		 */
 		public static function getRequest($key, $clean = FALSE)
 		{
@@ -49,11 +87,14 @@ namespace Sys
 
 		/**
 		 * Returns the $params array, meaning all GET and POST variables
-		 * @static
-		 * @return array
+		 * 
+		 * @param <integer> $index starting index of the array to return
+		 * @return <array> $_GET parameters, spliced or not
 		 */
-		public static function getParams()
+		public static function getParams($index = 0)
 		{
+			if ($index > 0)
+				return array_slice(self::$params, $index);
 			return self::$params;
 		}
 
@@ -69,23 +110,28 @@ namespace Sys
 		/**
 		 * Bootstraps the application, meaning it creates the current controller and then calls the specified action
 		 * @static
-		 * @return void
+		 * @return <void>
 		 */
 		public static function bootstrap()
 		{
 			$controller = self::getParam('controller', \App\Config\System::DEFAULT_CONTROLLER);
 			$action = self::getParam('action', \App\Config\System::DEFAULT_ACTION);
-			$className = ucfirst(\App\Config\System::APP_DIR)."\\Controllers\\".ucfirst($controller)."Controller";
+			$className = ucfirst(\App\Config\System::APP_DIR)."\\Controllers\\".ucfirst($controller);
 			$class = new $className;
-			$class->$action();
+			// we set as function parameters only the paramters starting from
+			// index 2. we already use the 'controller' and 'action' parameters
+			// so the other parameters are set as function calls
+			$class->$action(self::getParams(2));
+			//call_user_func_array(array($class, $action), self::getParams(2));
 		}
 
 		public static function callController($controller)
 		{
 			$parameters = explode('/', $controller);
-			$controller = $parameters[0];
-			$action = $parameters[1];
-			$className = ucfirst(\App\Config\System::EXT_DIR).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller)."Controller";
+			$extension = $parameters[0];
+			$controller = $parameters[1];
+			$action = $parameters[2];
+			$className = ucfirst(\App\Config\System::EXT_DIR).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller);
 			$class = new $className;
 			$class->$action();
 		}
@@ -93,8 +139,8 @@ namespace Sys
 		/**
 		 * Returns a Model class instance
 		 * @static
-		 * @param  string $model the models name, eg: 'profiles/user' loads the User class from the 'models/profiles' location
-		 * @return
+		 * @param  <string> $model the models name, eg: 'profiles/user' loads the User class from the 'models/profiles' location
+		 * @return <Model> A Model derived class
 		 */
 		public static function getModel($model)
 		{
@@ -125,8 +171,8 @@ namespace Sys
 		/**
 		 * Returns a View class instance
 		 * @static
-		 * @param  string $view The view's name and location, eg: 'register/new_user' loads 'new_user.php' from 'views/register'
-		 * @return View
+		 * @param <string> $view The view's name and location, eg: 'register/new_user' loads 'new_user.php' from folder 'views/register'
+		 * @return <View>
 		 */
 		public static function getView($view)
 		{
@@ -147,6 +193,32 @@ namespace Sys
 			return self::$instance;
 		}
 
+		function getModuleInstance($class, $classParams = '')
+		{
+			// hold an array  of every instances...
+			static $instances = array();
+			if (!array_key_exists($class, $instances)) {
+				$instances[$class] = new $class($classParams);
+			}
+
+			$instance = $instances[$class];
+
+			return $instance;
+		}
+
 		final private function __clone() {}
+
+		// --- shortcut helpers ---
+		// eg: L is a shortcut to the locale, for translations, currency, etc
+
+		public function L()
+		{
+			return self::getModuleInstance(self::LOCALE);
+		}
+
+		public function __($label, $module = 'global')
+		{
+			return self::L()->__($label, $module);
+		}
 	}
 }

@@ -1,0 +1,3 @@
+/var/cache/ajax/*
+/var/cache/locale/*
+!.gitignore

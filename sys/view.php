@@ -11,23 +11,24 @@ namespace Sys
 	class View
 	{
 		/**
-		 * @var array stores all the data passed to the view from the controller
+		 * @var <array> stores all the data passed to the view from the controller
 		 */
 		protected $__data;
 
 		/**
-		 * @var string the location + name of the template file
+		 * @var <string> the location + name of the template file
 		 */
 		protected $templateFile;
 
 		/**
-		 * @var string stores the code from the template file, after the file is loaded
+		 * @var <string> stores the code from the template file, after the file is loaded
 		 */
 		protected $code;
 
 		/**
 		 * The View base class constructor
-		 * @return void
+		 * 
+		 * @return <void>
 		 */
 		public function __construct($template = NULL)
 		{
@@ -37,9 +38,9 @@ namespace Sys
 		}
 
 		/**
-		 * @param  $index the name of the field that will be accesible in the view
-		 * @param  $value the value of the view field
-		 * @return mixed the current View class instance
+		 * @param <string> $index the name of the field that will be accesible in the view
+		 * @param <mixed> $value the value of the view field
+		 * @return <mixed> the current View class instance
 		 */
 		public function set($index, $value)
 		{
@@ -48,8 +49,8 @@ namespace Sys
 		}
 
 		/**
-		 * @param  $index the name of the field we want to retrieve
-		 * @return mixed returns the value of the $index field
+		 * @param <string> $index the name of the field we want to retrieve
+		 * @return <mixed> returns the value of the $index field
 		 */
 		public function get($index)
 		{
@@ -60,8 +61,9 @@ namespace Sys
 
 		/**
 		 * Magic method to return a view variable
-		 * @param  $index
-		 * @return mixed
+		 *
+		 * @param <string> $index
+		 * @return <mixed>
 		 */
 		public function __get($index)
 		{
@@ -69,8 +71,8 @@ namespace Sys
 		}
 
 		/**
-		 * @param  $template the location + name of the template file
-		 * @return View reference to the current instance
+		 * @param <string> $template the location + name of the template file
+		 * @return <Sys\View> reference to the current instance
 		 */
 		public function loadTemplate($template = NULL)
 		{
@@ -88,7 +90,9 @@ namespace Sys
 		}
 
 		/**
-		 * @return string the relative path to the app/views directory
+		 * Get the relative view path
+		 *
+		 * @return <string> the relative path to the app/views directory
 		 */
 		protected function getPath()
 		{
@@ -96,7 +100,7 @@ namespace Sys
 		}
 
 		/**
-		 * @return string the processed template code + the view data set in the $__data array
+		 * @return <string> the processed template code + the view data set in the $__data array
 		 */
 		public function render()
 		{
