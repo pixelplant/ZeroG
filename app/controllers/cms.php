@@ -2,7 +2,7 @@
 
 namespace App\Controllers
 {
-	class Cms extends \Sys\TemplateController
+	class Cms extends \Sys\Template\Controller
 	{
 		public function __construct()
 		{

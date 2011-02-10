@@ -2,7 +2,7 @@
 
 namespace Ext\Blog\Controllers
 {
-	class Blog extends \Sys\TemplateController
+	class Blog extends \Sys\Template\Controller
 	{
 		public function __construct()
 		{

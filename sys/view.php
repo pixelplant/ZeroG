@@ -81,7 +81,7 @@ namespace Sys
 				$this->templateFile = $this->getPath().$template.'.php';
 			}
 			else
-				throw new Exception('View file: Please specify the view template filename!');
+				throw new \Sys\Exception('View file: Please specify the view template filename!');
 			$filesize = filesize($this->templateFile);
 			$file = fopen($this->templateFile, 'r');
 			$this->code = fread($file, $filesize);

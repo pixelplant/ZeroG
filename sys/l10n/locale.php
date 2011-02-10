@@ -30,7 +30,7 @@ namespace Sys\L10n
 
 			// make sure the xml locale and the app locale settings are the same
 			if ($xml->locale->zone != $this->locale)
-				throw new \Exception("Current xml locale file does not match the application's locale settings...");
+				throw new \Sys\Exception("Current xml locale file does not match the application's locale settings...");
 
 			// set datetime zome
 			date_default_timezone_set($xml->locale->date_default_timezone_set);

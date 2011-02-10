@@ -1,8 +1,8 @@
 <?php
 
-namespace Sys
+namespace Sys\Database
 {
-	class DatabaseModel extends Model
+	class Model extends \Sys\Model
 	{
 		/**
 		 * @var string The table name this models links to (if it uses DB data)

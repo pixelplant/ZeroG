@@ -1,11 +1,11 @@
 <?php
 
-namespace Sys
+namespace Sys\Template
 {
 	/**
 	 * The template controller class includes support for a main website template...
 	 */
-	class TemplateController extends Controller
+	class Controller extends \Sys\Controller
 	{
 		/**
 		 * @var <Sys\View> the main website template
@@ -24,7 +24,7 @@ namespace Sys
 			parent::__construct();
 			if ($templateFile === NULL)
 				$templateFile = 'main';
-			$this->template = new View($templateFile);
+			$this->template = new \Sys\View($templateFile);
 		}
 
 		/**

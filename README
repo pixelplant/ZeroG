@@ -1,3 +1,8 @@
+Version 1.0.2 --- 10.02.2011@01:12
+Added a basic implementation of field validators and a base class for model resources
+Defined a base Model class and a base Database\Model class
+Each model resource is defined in an xml file with the same name as the model; eg: model user.php would have it's fields defined in user.xml
+
 Version 1.0.1 --- Second release
 Added basic localization support
 Translated labels are now stored in CSV files (app/locale/*.csv)

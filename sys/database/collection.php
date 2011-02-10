@@ -1,6 +1,6 @@
 <?php
 
-namespace Sys
+namespace Sys\Database
 {
 	class Collection
 	{
@@ -14,7 +14,7 @@ namespace Sys
 		 */
 		protected $items = array();
 
-		public function __construct(DatabaseModel $model)
+		public function __construct(\Sys\Database\Model $model)
 		{
 			$this->model = $model;
 		}

@@ -2,7 +2,7 @@
 
 namespace Ext\Blog\Models
 {
-	class Record extends \Sys\DatabaseModel
+	class Record extends \Sys\Database\Model
 	{
 	}
 }

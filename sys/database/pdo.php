@@ -1,6 +1,6 @@
 <?php
 
-namespace Sys
+namespace Sys\Database
 {
 	class Pdo
 	{

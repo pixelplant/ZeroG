@@ -4,7 +4,7 @@
  * The HTML Helper class 
  */
 
-namespace Sys\Helpers
+namespace Sys\Helper
 {
 	class Html
 	{

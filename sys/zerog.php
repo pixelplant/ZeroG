@@ -220,5 +220,6 @@ namespace Sys
 		{
 			return self::L()->__($label, $module);
 		}
+
 	}
 }
