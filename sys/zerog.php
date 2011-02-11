@@ -18,17 +18,19 @@ namespace Sys
 
 		const LOCALE = 'Sys\L10n\Locale';
 
+		const PROFILER = 'Sys\Profiler';
+
 		public static function init()
 		{
 			if (self::$instance === NULL)
 				self::$instance = new ZeroG();
-			/*if (isset($_GET))
-				foreach ($_GET as $key => $value)
-					self::$params[$key] = $value;
-			if (isset($_POST))
-				foreach ($_POST as $key => $value)
-					self::$params[$key] = $value;*/
+			else
+				return self::$instance;
+			// load locale settings and labels
+			self::getModuleInstance(self::LOCALE, \App\Config\System::LOCALE);
+			// get request parameters
 			self::$params = array_merge($_GET, $_POST);
+			// start url rewriting/routing
 			self::getUrlRewrites(\App\Config\System::URL_REWRITE);
 		}
 
@@ -193,19 +195,18 @@ namespace Sys
 			return self::$instance;
 		}
 
-		function getModuleInstance($class, $classParams = '')
+		public static function getModuleInstance($class, $classParams = '')
 		{
 			// hold an array  of every instances...
 			static $instances = array();
 			if (!array_key_exists($class, $instances)) {
 				$instances[$class] = new $class($classParams);
 			}
-
 			$instance = $instances[$class];
-
 			return $instance;
 		}
 
+		// prevent cloning
 		final private function __clone() {}
 
 		// --- shortcut helpers ---

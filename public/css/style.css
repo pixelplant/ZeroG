@@ -4,11 +4,11 @@ body {
 	background-color: #ffffff;
 	color: #111111;
 	font-size: 14px;
-	font-family: "Helvetica", "Arial", sans-serif;
+	font-family: "Helvetica Neue", helvetica, arial, verdana, sans-serif;
 }
 
 .modal {
-	margin: 50px auto 0 auto;
+	margin: 30px auto 0 auto;
 	width: 500px;
 }
 
@@ -30,14 +30,14 @@ body {
 	border-bottom-right-radius: 10px;
 }
 
-.window h1 {
+.window h2 {
 	margin: 5px 0;
-	font-size: 1.4em;
+	font-size: 140%;
 	font-weight: normal;
 }
 
-.window h2 {
-	font-size: 1.2em;
+.window_content h2 {
+	font-size: 120%;
 	font-weight: normal;
 	color: white;
 	background-color: #333333;

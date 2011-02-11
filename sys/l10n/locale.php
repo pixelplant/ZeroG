@@ -153,7 +153,7 @@ namespace Sys\L10n
 							if (strpos($file, '.csv') > 0)
 							{
 								$module = substr($file, 0, -4);
-								$labels = \Sys\Helpers\Csv::csvToArray($localeDir.$file);
+								$labels = \Sys\Helper\Csv::csvToArray($localeDir.$file);
 								foreach ($labels as $label)
 								{
 									$this->translations[$module][$label['from']] = $label['to'];

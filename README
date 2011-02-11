@@ -1,3 +1,7 @@
+Version 1.0.3 --- 11.02.2011@01:22
+Added a basic implementation of a profiler, for CPU and MEMORY usage
+Started to build a basic theme support for the introductory package and the future backend interface
+
 Version 1.0.2 --- 10.02.2011@01:12
 Added a basic implementation of field validators and a base class for model resources
 Defined a base Model class and a base Database\Model class
