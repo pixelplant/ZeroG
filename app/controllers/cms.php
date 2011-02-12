@@ -38,7 +38,8 @@ namespace App\Controllers
 
 		public function test()
 		{
-			$this->setTemplate('content', '<h2>Merge!!!</h2>');
+			$view = \Sys\ZeroG::getView('register/user_details');
+			$this->setTemplate('content', $view->render());
 		}
 
 		public function ajax()

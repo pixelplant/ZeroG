@@ -20,9 +20,16 @@ namespace App\Config
 		const BASE_URL = 'http://local/zerog/';
 
 		/**
-		 * You can define a separate url from where css, js and images are loaded from
+		 * You can define a separate url from where images, pdf filed and other
+		 * editor specific files would be retrieved from
 		 */
-		const MEDIA_URL = 'http://local/zerog/';
+		const MEDIA_URL = self::BASE_URL;
+
+		/**
+		 * This url links to the public folder, where your css, js and editor files
+		 * will be hosted
+		 */
+		const PUBLIC_URL = 'http://local/zerog/public/';
 
 		/**
 		 * enables nice urls or not. if set to TRUE, mod_rewrite must be also loaded in Apache.
@@ -62,6 +69,12 @@ namespace App\Config
 		/**
 		 * Locale settings
 		 */
-		const LOCALE = 'fr_FR';
+		const LOCALE = 'ro_RO';
+
+		/**
+		 * Developer mode disables all caching. When you are ready for production
+		 * set this field to FALSE!
+		 */
+		const DEVELOPER_MODE = TRUE;
 	}
 }

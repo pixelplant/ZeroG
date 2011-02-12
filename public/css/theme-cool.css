@@ -17,6 +17,10 @@ ul li, ol li {
 	margin: 4px 0;
 }
 
+strong {
+	font-weight: bold;
+}
+
 .window {
 	border-radius: 6px;
 	-moz-border-radius: 6px;

@@ -35,7 +35,7 @@ namespace Sys
 		}
 
 		/**
-		 * if url rewrite is enabled, this function translated every variable in the
+		 * if url rewriting is enabled, this function translates every variable in the
 		 * url string to the proper GET params.
 		 * eg: cms/blog/id/3 => controller=cms, action=blog, id=3
 		 * @param <boolean> $isUrlRewriteEnbled
@@ -62,7 +62,7 @@ namespace Sys
 					}
 					else
 						$key = $value;
-				}				
+				}
 			}
 		}
 

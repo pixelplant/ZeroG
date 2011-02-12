@@ -1,9 +1,85 @@
-Options +FollowSymlinks
-RewriteEngine on
-#RewriteCond %{REQUEST_URI} !^/(public)/
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-l
-#RewriteRule ([^/]+)/([^/]+) index.php?controller=$1&action=$2 [NC,L]
-RewriteRule ^(.+)$ index.php?path=$1 [NC,L]
-#RewriteRule .* index.php [L]
+<IfModule mod_php5.c>
+	# set a default memory limit
+	php_value memory_limit 16M
+
+	# and execution time  in seconds
+	php_value max_execution_time 10
+
+	# disable magic quotes
+	php_flag magic_quotes_gpc off
+	
+	# enable resulting html compression
+	php_flag zlib.output_compression on
+
+	# turn off compatibility with PHP4 when dealing with objects
+	php_flag zend.ze1_compatibility_mode Off
+</IfModule>
+
+<IfModule mod_deflate.c>
+	# The next config is taken from Magento's .htaccess file because it works well with every site I tested
+	# never reinvent the wheel...
+	# enable gzip compression for files
+
+	# Filter all content
+	SetOutputFilter DEFLATE
+	# Or specific types only
+	#AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
+
+	# Netscape 4.x has some problems...
+	#BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+	# Netscape 4.06-4.08 have some more problems
+	#BrowserMatch ^Mozilla/4\.0[678] no-gzip
+
+	# MSIE masquerades as Netscape, but it is fine
+	#BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+
+	# Don't compress images
+	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+	# Make sure proxies don't deliver the wrong content
+	#Header append Vary User-Agent env=!dont-vary
+
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	# enable url rewrites
+	Options +FollowSymLinks
+	RewriteEngine on
+
+	# set the rewrite base, if necesary
+	#RewriteBase /zerog/
+
+	# allow fetching of public files
+	RewriteCond %{REQUEST_URI} !^/(public)/
+
+	# no rewrite for existing files/links/directories
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond %{REQUEST_FILENAME} !-l
+
+	# rewrite everything to index.php
+	RewriteRule ^(.+)$ index.php?path=$1 [NC,L]
+</IfModule>
+
+<IfModule mod_expires.c>
+
+	# Add default Expires header
+	# http://developer.yahoo.com/performance/rules.html#expires
+	# For the moment apply it only to assets, and for 3 months
+	#<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+	#	ExpiresActive On
+	#	ExpiresDefault "access plus 3 months"
+	#</FilesMatch>
+
+</IfModule>
+
+	AddDefaultCharset UTF-8
+
+	# if you need to process access with a htpasswd file, uncomment the line below
+	#Order allow,deny
+	#Allow from all
+	#AuthType Basic
+	#AuthName "Access restricted"
+	#AuthUserFile /my/custom/path/to/.htpasswd
+	#Require valid-user

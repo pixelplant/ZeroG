@@ -869,7 +869,7 @@
 			</monthFormat>
 			<monthFormat type="short">
 				<month type="Jan">Jan</month>
-				<month type="Feb">Féb</month>
+				<month type="Feb">Fév</month>
 				<month type="Mar">Mar</month>
 				<month type="Apr">Apr</month>
 				<month type="May">Mai</month>

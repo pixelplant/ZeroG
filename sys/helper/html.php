@@ -109,7 +109,70 @@ HER;
 				fwrite($handle, self::$javascript);
 				fclose($handle);
 			}
-			return sprintf('<script type="text/javascript" src="%s"></script>'.chr(10), \App\Config\System::MEDIA_URL.$file);
+			return sprintf('<script type="text/javascript" src="%s"></script>'.chr(10), \App\Config\System::BASE_URL.$file);
+		}
+
+		public static function addCss()
+		{
+			$filename = md5(implode("", func_get_args()));
+			$file = "var/cache/css/css_".$filename.".css";
+			if (\App\Config\System::DEVELOPER_MODE === TRUE)
+			{
+				$string = '';
+				for ($i = 0; $i < func_num_args(); $i++)
+				{
+					$file = func_get_arg($i);
+					$string .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \App\Config\System::BASE_URL.$file);
+				}
+				return $string;
+			}
+			else
+			{
+				if (!file_exists($file))
+				{
+					$cssCode = '';
+					for ($i = 0; $i < func_num_args(); $i++)
+					{
+						$cssOriginal = file_get_contents(func_get_arg($i));
+						// remove ALL whitespaces from string. Not ok since we also remove spaces
+						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
+					
+						// remove all control characters from the string, except for spaces
+						// whitespace chars - http://en.wikipedia.org/wiki/Whitespace_character#Programming_Languages
+						// solution - http://stackoverflow.com/questions/1497885/remove-control-characters-from-php-string
+						//$cssMinified = preg_replace('/[[:cntrl:]]/', '', $cssOriginal);
+						$cssMinified = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $cssOriginal);
+						// what we can do though after this is to remove the spaces that come after a comma
+						// this would be valid and our css would work just fine...
+						// then remove all spaces before the ":" character
+						// for simple characters replacement, using non regex expressions seems to be faster
+						// http://stackoverflow.com/questions/4471470/how-to-use-preg-replace-to-replace-comma-and-period-in-a-string
+						$cssMinified = str_replace(array(', ', ': '), array(',',':') , $cssMinified);
+						// the last step would be to remove the comments from the css files
+						// if any are present
+						$cssMinified = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $cssMinified);
+
+						// now, what we also need to do is find all the url() background attributes in the
+						// css and replace their relative/absolute path with our cached absolute path
+						$cssMinified = str_replace('url(../', 'url('.\App\Config\System::BASE_URL.'public/', $cssMinified);
+						/*$urlMatches = preg_match_all('/url\([^)]+\)/', $cssMinified, $matches);
+						if ($urlMatches > 0)
+						{
+							$urlsFrom = array();
+							$urlsTo = array();
+							foreach ($matches[0] as $match)
+							{
+								$urlsFrom[] = $match;
+								$urlsTo = \App\Config\System::MEDIA_URL.
+							}
+						}*/
+
+						$cssCode .= $cssMinified;
+					}
+					file_put_contents($file, $cssCode);
+				}
+				return sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \App\Config\System::BASE_URL.$file);
+			}
 		}
 	}
 }

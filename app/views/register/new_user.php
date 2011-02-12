@@ -12,8 +12,11 @@
 		<?php echo Sys\Helper\Html::link('cms/test/id/5/page/32/search/fast', 'CMS Controller test action!')?>
 	</p>
 	<p>
-		<?php echo \Sys\ZeroG::__('This should be', 'cms'); ?>
-		<?php echo Sys\Helper\Html::ajaxlink('cms/ajax', \Sys\ZeroG::__('an AJAX call', 'cms'), array("success" => "$('#test').fadeOut().html(data).fadeIn();")); ?>
+		<strong><?php echo \Sys\ZeroG::__('Ajax call test', 'cms'); ?></strong>
+		<?php echo Sys\Helper\Html::ajaxlink('cms/ajax', \Sys\ZeroG::__('run first Ajax call', 'cms'), array("success" => "$('#test').fadeOut().html(data).fadeIn();")); ?>
 	</p>
-	<p>Asta ar trebui sa fie <?php echo Sys\Helper\Html::ajaxlink('cms/ajax2', 'al doilea apel ajax', array("success" => "$('#mood').fadeOut().html(data).fadeIn();")); ?></p>
+	<p>
+		<strong><?php echo \Sys\ZeroG::__('Ajax call test', 'cms'); ?></strong>
+		<?php echo Sys\Helper\Html::ajaxlink('cms/ajax2', \Sys\ZeroG::__('run second Ajax call', 'cms'), array("success" => "$('#test').fadeOut().html(data).fadeIn();")); ?>
+	</p>
 </div>
