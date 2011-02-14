@@ -9,7 +9,7 @@
 	php_flag magic_quotes_gpc off
 	
 	# enable resulting html compression
-	php_flag zlib.output_compression on
+	#php_flag zlib.output_compression on
 
 	# turn off compatibility with PHP4 when dealing with objects
 	php_flag zend.ze1_compatibility_mode Off
@@ -21,7 +21,7 @@
 	# enable gzip compression for files
 
 	# Filter all content
-	SetOutputFilter DEFLATE
+	#SetOutputFilter DEFLATE
 	# Or specific types only
 	#AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript
 
@@ -35,7 +35,7 @@
 	#BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
 
 	# Don't compress images
-	SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
+	#SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png)$ no-gzip dont-vary
 
 	# Make sure proxies don't deliver the wrong content
 	#Header append Vary User-Agent env=!dont-vary
@@ -48,7 +48,7 @@
 	RewriteEngine on
 
 	# set the rewrite base, if necesary
-	#RewriteBase /zerog/
+	#RewriteBase /
 
 	# allow fetching of public files
 	RewriteCond %{REQUEST_URI} !^/(public)/
@@ -59,6 +59,8 @@
 	RewriteCond %{REQUEST_FILENAME} !-l
 
 	# rewrite everything to index.php
+	# add a / (slash) before index.php if it does not work on Linux
+	# or uncomment the RewriteBase property
 	RewriteRule ^(.+)$ index.php?path=$1 [NC,L]
 </IfModule>
 

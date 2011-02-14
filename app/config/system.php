@@ -15,24 +15,35 @@ namespace App\Config
 		const EXT_DIR = 'ext';
 
 		/**
-		 * Defines the base url, used for link generation
+		 * Defines the base url, used for link generation + css and js linking
+		 * All content images (besides images used in the css) will be linked to
+		 * MEDIA_URL/MEDIA_URL2 below
 		 */
 		const BASE_URL = 'http://local/zerog/';
 
 		/**
-		 * You can define a separate url from where images, pdf filed and other
-		 * editor specific files would be retrieved from
+		 * You can define a separate url from where images, pdf files and other
+		 * editor specific files would be retrieved from, this way you can have
+		 * parallel downloads of content and assets. Please note that your browser
+		 * opens up about 2 parallel connections for every domain, so using 1 or
+		 * 2 different hostnames for your media should increase the download speed.
+		 * This way you can also make sure you're using cookie free domains for
+		 * your components.
+		 * http://developer.yahoo.com/performance/rules.html
 		 */
 		const MEDIA_URL = self::BASE_URL;
 
 		/**
-		 * This url links to the public folder, where your css, js and editor files
-		 * will be hosted
+		 * The second link to a hostname storing your content (images, pdf, etc)
+		 * By default both links point to the base url, but you can change them
+		 * to a real location
+		 *
 		 */
-		const PUBLIC_URL = 'http://local/zerog/public/';
+		const MEDIAL_URL2 = self::BASE_URL;
 
 		/**
-		 * enables nice urls or not. if set to TRUE, mod_rewrite must be also loaded in Apache.
+		 * enables nice urls or not. if set to TRUE, the mod_rewrite module
+		 * must be also loaded in Apache.
 		 */
 		const URL_REWRITE = TRUE;
 
@@ -62,12 +73,9 @@ namespace App\Config
 		const DB_PASS = '';
 
 		/**
-		 * Localization settings
-		 */
-		//const LANGUAGE = 'FR';
-
-		/**
 		 * Locale settings
+		 * To change the settings for the current locale open the coresponding
+		 * xx_XX.xml file in sys\locale. Make sure you save the file as UTF-8
 		 */
 		const LOCALE = 'ro_RO';
 

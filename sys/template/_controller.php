@@ -8,23 +8,23 @@ namespace Sys\Template
 	class Controller extends \Sys\Controller
 	{
 		/**
-		 * @var <Sys\Layout> the main website layout
+		 * @var <Sys\View> the main website template
 		 */
-		protected $layout;
+		protected $template;
 
 		/**
 		 * The difference between a base controller and a template controller
-		 * is the fact that a TemplateController includes a link to a main layout
+		 * is the fact that a TemplateController includes a link to a main view
 		 * allowing direct access to the main view.
 		 *
-		 * @param <string> $layoutFile Name of the main layout fle
+		 * @param <string> $templateFile Name of the main view
 		 */
-		public function __construct($layoutFile = NULL)
+		public function __construct($templateFile = NULL)
 		{
 			parent::__construct();
-			if ($layoutFile === NULL)
-				$layoutFile = 'page';
-			$this->layout = new \Sys\Layout($layoutFile);
+			if ($templateFile === NULL)
+				$templateFile = 'main';
+			$this->template = new \Sys\View($templateFile);
 		}
 
 		/**
@@ -35,16 +35,18 @@ namespace Sys\Template
 		public function __destruct()
 		{
 			if (!$this->isXHR())
-				echo $this->layout->render();
+				echo $this->template->render();
 		}
 
 		/**
-		 * Returns a reference to the layout instance
-		 * @return <Sys\Layout>
+		 * Sets a variable defined in our main template. $index becomes $value
+		 *
+		 * @param <string> $index The name of our view variable to be replaced
+		 * @param <mixed> $value The value of our index variable
 		 */
-		public function getLayout()
+		public function setTemplate($index, $value)
 		{
-			return $this->layout;
+			$this->template->set($index, $value);
 		}
 
 		/**

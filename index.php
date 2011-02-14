@@ -7,11 +7,19 @@
 
 namespace 
 {
-	define('ZEROG_VERSION', '1.0.3');
-
+	// disable error reporting
+	//error_reporting(0);
+	
 	spl_autoload_extensions('.php');
 	spl_autoload_register();
 
+	// define version number
+	const ZEROG_VERSION = '1.0.4';
+
+	// specify our current running app
+	//const ZEROG_APP = '\\App\\Config\\System';
+
+	// start global profiler timer
 	Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->startTimer('timer/global');
 
 	try
@@ -39,6 +47,7 @@ namespace
 		echo "Am dat de o exceptie ZeroG: ".$e->getMessage();
 	}
 
+	// end global profiler timer
 	Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->stopTimer('timer/global');
 	print_r(Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->getStatistics());
 }

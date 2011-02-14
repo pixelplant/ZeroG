@@ -5,7 +5,7 @@ namespace Sys\L10n
 	class Locale
 	{
 		/**
-		 * The current locale used in the project, specified in app\config\system
+		 * The current locale used in the project, specified in the App\Config\System::LOCALE constant
 		 * @var <string> locale, in format language_COUNTRY, eg: ro_RO for romania, fr_FR for france, fr_CH for switzerland, etc...
 		 */
 		protected $locale = '';

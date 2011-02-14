@@ -48,8 +48,10 @@ namespace Sys
 			if ($isUrlRewriteEnbled === TRUE)
 			{
 				$uri = explode("/", $_GET['path']);
-				self::$params['controller'] = $uri[0];
-				self::$params['action'] = $uri[1];
+				if (isset($uri[0]))
+					self::$params['controller'] = $uri[0];
+				if (isset($uri[1]))
+					self::$params['action'] = $uri[1];
 				$uri = array_slice($uri, 2);
 				$i = 0;
 				$key = '';
@@ -149,6 +151,8 @@ namespace Sys
 			$model = strtolower($model);
 			$is_extension = FALSE;
 			$directory = \App\Config\System::APP_DIR;
+			// extension models start with 'ext/' so we need to load
+			// them from the extension directory
 			if (substr($model, 0, 4) == 'ext/')
 			{
 				$model = substr($model, 4);
@@ -212,12 +216,22 @@ namespace Sys
 		// --- shortcut helpers ---
 		// eg: L is a shortcut to the locale, for translations, currency, etc
 
-		public function L()
+		/**
+		 * Returns a link to the current locale class
+		 * @return <\Sys\L10n\Locale> Reference to Locale class
+		 */
+		public static function L()
 		{
 			return self::getModuleInstance(self::LOCALE);
 		}
 
-		public function __($label, $module = 'global')
+		/**
+		 * Return a translated label, based on the current locale
+		 * @param <string> $label The label to translate, in english
+		 * @param <string> $module The module the label belongs to
+		 * @return <string> The translated label
+		 */
+		public static function __($label, $module = 'global')
 		{
 			return self::L()->__($label, $module);
 		}
