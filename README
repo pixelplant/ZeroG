@@ -1,3 +1,22 @@
+Version 1.0.5 --- 15.02.2011@01:55
+Improved the layout/blocks implementation. Blocks can now call children in their
+main blocks. Children are properly referenced by name now. You cannot call child blocks
+if they don't belong to the calling parent.
+Added the methods:
+ - setTemplate: to set a template for the current block
+ - unsetChild: to remove the child from the current block
+Sample usage:
+<reference name="right">
+	<action method="setTemplate"><template>page/right.php</template></action>
+	<action method="unsetChild"><name>menu</name></action>
+</reference>
+Would set the template "page/right.php" to the "right" block, and after that we
+would remove the child "menu" for the "right" block.
+
+Version 1.0.4 --- 14.02.2011@03:26
+Added a basic implementation for the layout structure, supporting blocks for the design
+similar to the Magento layout/blocks architecture. Works quite well, I can't believe it.
+
 Version 1.0.3 --- 11.02.2011@01:22
 Added a basic implementation of a profiler, for CPU and MEMORY usage
 Started to build a basic theme support for the introductory package and the future backend interface

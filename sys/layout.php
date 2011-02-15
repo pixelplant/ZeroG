@@ -50,10 +50,11 @@ namespace Sys
 
 			// first we read the "default" block in the xml which holds the settings
 			// for all the actions of this page
-			$this->processSection($xml->default);
+			if (isset($xml->default))
+				$this->processSection($xml->default);
 			// then we apply the custom action layout. for example, the page /cms/index
 			// would have it's layout defined in "cms_index"
-			$custom_page = \Sys\ZeroG::getParam('controller').'_'.\Sys\ZeroG::getParam('action');
+			$custom_page = \Sys\ZeroG::getContext();
 			// if the tag is defined in the xml, process it, otherwise just use the default settings
 			if (isset($xml->$custom_page))
 				$this->processSection($xml->$custom_page);
@@ -85,7 +86,8 @@ namespace Sys
 			if (count($xml->block) > 0)
 			{
 				$temp = $parent;
-				$name = ($parent == '') ? (string)$xml["name"] : $temp.'.'.(string)$xml["name"];
+				//$name = ($parent == '') ? (string)$xml["name"] : $temp.'.'.(string)$xml["name"];
+				$name = (string)$xml["name"];
 				$this->blocks[$name] = new \Sys\Layout\Block($name, $xml);
 				// if it has a parent, add this block as a child
 				//$lastParent = substr($name, 0, strrpos($name, "."));
@@ -102,7 +104,8 @@ namespace Sys
 			// then we add the leaf nodes
 			else
 			{
-				$name = ($parent == '') ? (string)$xml["name"] : $parent.'.'.(string)$xml["name"];
+				//$name = ($parent == '') ? (string)$xml["name"] : $parent.'.'.(string)$xml["name"];
+				$name = (string)$xml["name"];
 				$this->blocks[$name] = new \Sys\Layout\Block($name, $xml);
 				// if it has a parent, add this block as a child
 				//$lastParent = substr($name, 0, strrpos($name, "."));

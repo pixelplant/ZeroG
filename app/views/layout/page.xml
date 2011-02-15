@@ -11,22 +11,25 @@
 <layout version="1.0">
 	<default>
 		<block type="page/html" name="root" template="page/main.php">
-			<block type="page/html/head" name="head" as="head" template="page/html/head.php">
+			<block type="page/html/head" name="head" template="page/html/head.php">
 				<action method="addJs"><script>public/js/jquery-1.4.3.min.js</script></action>
 				<action method="addCss"><stylesheet>public/css/reset.css</stylesheet></action>
 				<action method="addCss"><stylesheet>public/css/style.css</stylesheet></action>
 				<action method="addCss"><stylesheet>public/css/theme-cool.css</stylesheet></action>
 			</block>
-			<block type="test" name="header" as="header"/>
-			<block type="test" name="left" as="left">
+			<block type="test" name="header" template="page/header.php">
+				<block type="test" name="mainmenu" template="page/header/mainmenu.php" />
+			</block>
+			<block type="test" name="left">
 				<block type="test" name="ads" />
-				<block type="test" name="menu" template="page/left/menu/mainmenu.php">
-					<block type="test" name="mainmenu"/>
-					<block type="test" name="submenu" />
+				<block type="test" name="menu" template="page/left/menu.php">
+					<block type="test" name="left.mainmenu" template="page/left/menu/mainmenu.php"/>
+					<block type="test" name="left.submenu" />
 				</block>
 			</block>
+			<block type="test" name="right" />
 			<block type="test" name="content" template="cms/content.php"/>
-			<block type="test" name="breadcrumbs" as="breadcrumbs"/>
+			<block type="test" name="footer" template="page/footer.php"/>
 		</block>
 	</default>
 
@@ -41,13 +44,14 @@
 			<action method="addCss"><stylesheet>public/css/print.css</stylesheet></action>
 			<block type="reference" name="reference" />
 		</reference>-->
-		<reference name="root.left.menu">
-			<block type="page/menu" name="level3_menu" />
-		</reference>
 		<reference name="root">
 			<action method="setTemplate"><template>page/1col.php</template></action>
-			<block type="test" name="breadcrumbs" template="page/html/head.php"/>
-			<block type="test" name="content" template="cms/currency.php" />
+		</reference>
+		<reference name="left">
+			<action method="unsetChild"><name>menu</name></action>
+		</reference>
+		<reference name="right">
+			<action method="setTemplate"><template>page/right.php</template></action>
 		</reference>
 	</cms_index>
 
@@ -55,6 +59,11 @@
 		<reference name="root">
 			<action method="setTemplate"><template>page/2col.php</template></action>
 		</reference>
-		<block type="test" name="root.left.menu" template="" />
+		<reference name="right">
+			<action method="setTemplate"><template>page/right2.php</template></action>
+		</reference>
+		<!--<reference name="root.left">
+			<action method="unsetChild"><name>root.left.menu</name></action>
+		</reference>-->
 	</cms_ajax>
 </layout>

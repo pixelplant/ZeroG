@@ -11,15 +11,42 @@ namespace Sys
 
 	final class ZeroG
 	{
-
+		/**
+		 * The current running ZeroG Instance
+		 * @var <type>
+		 */
 		protected static $instance = NULL;
 
+		/**
+		 * The GET and POST parameters combined
+		 * @var <type>
+		 */
 		protected static $params = array();
 
+		/**
+		 * The current context ZeroG is running in. Eg: cms/index runs in cms_index
+		 * context, so the cms_index tag will be processed from the layout xml file.
+		 * Basically this is just a shortcut to the specific tag in the layout that
+		 * should be processed
+		 * @var <string>
+		 */
+		protected static $context = '';
+
+		/**
+		 * A shortcut to the Localization class
+		 */
 		const LOCALE = 'Sys\L10n\Locale';
 
+		/**
+		 * A shortcut to the Profiler class
+		 */
 		const PROFILER = 'Sys\Profiler';
 
+		/**
+		 * Start up ZeroG, load the Localization class, store the REQUEST
+		 * parameters and configure URL rewrites
+		 * @return <void>
+		 */
 		public static function init()
 		{
 			if (self::$instance === NULL)
@@ -102,6 +129,13 @@ namespace Sys
 			return self::$params;
 		}
 
+		/**
+		 * Returns a REQUEST parameter specified by Key
+		 * @param <type> $key The parameter to return
+		 * @param <type> $defaultValue The default value to set if the REQUEST parameter has no value
+		 * @param <type> $clean Set to TRUE to XSS clean the returned value
+		 * @return <mixed> parameter[$key]
+		 */
 		public static function getParam($key, $defaultValue = '', $clean = FALSE)
 		{
 			$processedParam = self::getRequest($key, $clean);
@@ -120,6 +154,7 @@ namespace Sys
 		{
 			$controller = self::getParam('controller', \App\Config\System::DEFAULT_CONTROLLER);
 			$action = self::getParam('action', \App\Config\System::DEFAULT_ACTION);
+			self::$context = $controller.'_'.$action;
 			$className = ucfirst(\App\Config\System::APP_DIR)."\\Controllers\\".ucfirst($controller);
 			$class = new $className;
 			// we set as function parameters only the paramters starting from
@@ -129,6 +164,22 @@ namespace Sys
 			//call_user_func_array(array($class, $action), self::getParams(2));
 		}
 
+		/**
+		 * Return the cached context name
+		 * @return <string>
+		 */
+		public function getContext()
+		{
+			return self::$context;
+		}
+
+		/**
+		 * Execute a controller. The first name is the controller, separated by a
+		 * slash, and then followed by the action name to perform.
+		 * Eg: callController('blog/list') would return the data for the blog
+		 * controller, and the list action.
+		 * @param <string> $controller Controller/Action name
+		 */
 		public static function callController($controller)
 		{
 			$parameters = explode('/', $controller);
@@ -194,11 +245,22 @@ namespace Sys
 			return $class;
 		}
 
+		/**
+		 * Return the current ZeroG instance
+		 * @return <\Sys\ZeroG> ZeroG instance
+		 */
 		final public static function getInstance()
 		{
 			return self::$instance;
 		}
 
+		/**
+		 * Return a singleton of a certain class
+		 * @staticvar array $instances A list of the currently cached modules
+		 * @param <type> $class Which class to return
+		 * @param <type> $classParams The parameters sent to the class, in case of initialization
+		 * @return class 
+		 */
 		public static function getModuleInstance($class, $classParams = '')
 		{
 			// hold an array  of every instances...
@@ -210,7 +272,9 @@ namespace Sys
 			return $instance;
 		}
 
-		// prevent cloning
+		/**
+		 * Prevent cloning
+		 */
 		final private function __clone() {}
 
 		// --- shortcut helpers ---

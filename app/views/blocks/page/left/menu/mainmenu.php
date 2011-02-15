@@ -1,8 +1,7 @@
 <div class="message information">
 	<ul>
-		<li><a href="">First item</a></li>
-		<li><a href="">Second item</a></li>
-		<li><a href="">Third item</a></li>
-		<li><a href="">Fourth item</a></li>
+		<li><?php echo Sys\Helper\Html::link('cms', \Sys\ZeroG::__('run first Ajax call', 'cms'))?></li>
+		<li><?php echo Sys\Helper\Html::link('cms', \Sys\ZeroG::__('run second Ajax call', 'cms'))?></li>
+		<li><?php echo Sys\Helper\Html::link('cms', \Sys\ZeroG::__('Welcome %s. I hope you are doing fine', 'cms'))?></li>
 	</ul>
 </div>

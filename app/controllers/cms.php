@@ -27,15 +27,15 @@ namespace App\Controllers
 
 		public function test()
 		{
-			$this->getLayout()->getBlock('root.content')->setCode('very FUNNY!');
+			$this->getLayout()->getBlock('content')->setCode('very FUNNY!');
 		}
 
 		public function ajax()
 		{
-			if ($this->isXHR())
+			/*if ($this->isXHR())
 				echo 'yea BABY!';
 			else
-				$this->getLayout()->getBlock('root.content')->setCode('YUHUU baby!');
+				$this->getLayout()->getBlock('content')->setCode('YUHUU baby!');*/
 		}
 
 		public function ajax2()
@@ -45,7 +45,7 @@ namespace App\Controllers
 				echo 'FUCKING AMUSED';
 			}
 			else
-				$this->getLayout()->getBlock('root.content')->setCode('Are you not fucking amused!');
+				$this->getLayout()->getBlock('content')->setCode('Are you not amused!');
 		}
 	}
 }
