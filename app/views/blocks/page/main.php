@@ -7,7 +7,7 @@
 		<div class="main">
 			<div class="modal">
 				<div class="window">
-					<h2><?php echo \Sys\ZeroG::__('ZeroG version')?></h2>
+					<h2><?php echo \Sys\ZeroG::__('ZeroG version')?><span id="test"></span></h2>
 					<div class="window_content">
 						<?php echo $this->getChildHtml('header'); ?>
 						<?php echo $this->getChildHtml('left'); ?>

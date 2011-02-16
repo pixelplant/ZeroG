@@ -44,7 +44,7 @@ namespace
 	}
 	catch (Exception $e)
 	{
-		echo "Am dat de o exceptie ZeroG: ".$e->getMessage();
+		echo $e;
 	}
 
 	// end global profiler timer

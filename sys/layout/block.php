@@ -16,6 +16,12 @@ namespace Sys\Layout
 		protected $children = array();
 
 		/**
+		 * The parent name this block belongs to
+		 * @var <string>
+		 */
+		protected $parent;
+
+		/**
 		 * The block's name
 		 * @var <string>
 		 */
@@ -35,13 +41,14 @@ namespace Sys\Layout
 
 		/**
 		 * The PHP/HTML code loaded from the block's template
-		 * @var <type>
+		 * @var <string>
 		 */
 		protected $code;
 
 		public function __construct($name, \SimpleXMLElement $xml)
 		{
 			$this->children = array();
+			$this->parent = '';
 			$this->name = $name;
 			$this->templateResource = NULL;
 			$this->code = NULL;
@@ -49,10 +56,10 @@ namespace Sys\Layout
 		}
 
 		/**
-		 * Adds a children to the children list
+		 * Adds a child to the children list
 		 * @param \Sys\Layout\Block $value 
 		 */
-		public function addChildren(\Sys\Layout\Block $value)
+		public function addChild(\Sys\Layout\Block $value)
 		{
 			$this->children[$value->getName()] = $value;
 		}
@@ -114,7 +121,10 @@ namespace Sys\Layout
 		public function getChildHtml($childName)
 		{
 			if (!array_key_exists($childName, $this->children))
-				throw new \Sys\Exception("Error in: $this->template. Make sure the child block '$childName' with parent block '$this->name' is defined in the xml file.");
+			{
+				//throw new \Sys\Exception("Error in: $this->template. Make sure the child block '$childName' with parent block '$this->name' is defined in the xml file.");
+				return;
+			}
 			$child = $this->children[$childName];
 			$html = '';
 			/*if ($child->getChildrenCount() > 0)
@@ -164,45 +174,94 @@ namespace Sys\Layout
 
 		// getters, setters
 
+		/**
+		 * Return all the children blocks this block has
+		 * @return <array>
+		 */
 		public function getChildren()
 		{
 			return $this->children;
 		}
 
+		/**
+		 * Set all the block children for this block
+		 * @param <array> $value An array of \Sys\Layout\Block instances
+		 */
 		public function setChildren($value)
 		{
 			$this->children = $value;
 		}
 
+		/**
+		 * Sets the block's name
+		 * @param <string> $value
+		 */
 		public function setName($value)
 		{
 			$this->name = $value;
 		}
 
+		/**
+		 * Returns the block's name
+		 * @return <string>
+		 */
 		public function getName()
 		{
 			return $this->name;
 		}
 
+		/**
+		 * Sets the template file for this block and ALSO loads the template code
+		 * @param <string> $value The path to the php template. eg: 'page/left.php'
+		 */
 		public function setTemplate($value)
 		{
-			//$this->template = $value;
 			$this->loadTemplate($value);
 		}
 
+		/**
+		 * Returns the template filename used by this block
+		 * @return <string> eg: 'page/left.php'
+		 */
 		public function getTemplate()
 		{
 			return $this->template;
 		}
 
+		/**
+		 * Return the PHP/Html code for this block
+		 * @return <string>
+		 */
 		public function getCode()
 		{
 			return $this->code;
 		}
 
+		/**
+		 * Set the PHP/Html code for this block
+		 * @param <string> $value
+		 */
 		public function setCode($value)
 		{
 			$this->code = $value;
+		}
+
+		/**
+		 * Return the parent block name
+		 * @return <string>
+		 */
+		public function getParent()
+		{
+			return $this->parent;
+		}
+
+		/**
+		 * Set the parent block name
+		 * @param <string> $value
+		 */
+		public function setParent($value)
+		{
+			$this->parent = $value;
 		}
 	}
 }

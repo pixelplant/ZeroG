@@ -10,6 +10,13 @@ namespace Sys\Helper
 	{
 		protected static $javascript = NULL;
 
+		/**
+		 * Generate an <a href> tag
+		 * @param <string> $path The url it links to
+		 * @param <string> $text The title shown for the link
+		 * @param <string> $attributes Additional attributes for the <a> tag
+		 * @return <string> Html conten for the processed <a> tag
+		 */
 		public static function link($path, $text, $attributes = '')
 		{
 			if (\App\Config\System::URL_REWRITE === TRUE)
