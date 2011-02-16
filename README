@@ -1,3 +1,18 @@
+Version 1.0.6 -- 16.02.2011@01:15
+Removed support for the old Views class. Only layout/blocks structures are used to
+decorate the design.
+Added the "type" attribute from the block tags, so now Blocks can be extended into other
+classes, each with it's own specific callable actions, in the XML or in the php block file.
+Updated jquery to 1.5.
+Added 4 methods for the page/head blocks, callable in the xml layout:
+ - addCss, removeCss
+ - addJs, removeJs
+ Sample usage:
+ <reference name="head">
+	<action method="addCss"><stylesheet>public/css/style.css</stylesheet></action>
+	<action method="removeJs"><script>public/js/jquery-1.5.min.js</script></action>
+</reference>
+
 Version 1.0.5 --- 15.02.2011@01:55
 Improved the layout/blocks implementation. Blocks can now call children in their
 main blocks. Children are properly referenced by name now. You cannot call child blocks

@@ -14,7 +14,7 @@ namespace
 	spl_autoload_register();
 
 	// define version number
-	const ZEROG_VERSION = '1.0.4';
+	const ZEROG_VERSION = '1.0.5';
 
 	// specify our current running app
 	//const ZEROG_APP = '\\App\\Config\\System';
