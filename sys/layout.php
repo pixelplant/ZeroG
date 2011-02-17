@@ -1,12 +1,15 @@
 <?php
 
-/**
- * Base Layout class (loads and processes layout xml files)
- *
- * @author radu.mogos
- */
 namespace Sys
 {
+	/**
+	* Base Layout class (loads and processes layout xml files)
+	*
+	* @author radu.mogos
+	* @category Sys
+	* @package Sys\Layout
+	* @copyright Radu Mogos, www.pixelplant.ro
+	*/
 	class Layout
 	{
 		/**
@@ -27,6 +30,9 @@ namespace Sys
 		 */
 		protected $version;
 
+		/**
+		* Constructor
+		*/
 		public function __construct($file)
 		{
 			$this->file = $file.'.xml';
@@ -54,7 +60,7 @@ namespace Sys
 				$this->processSection($xml->default);
 			// then we apply the custom action layout. for example, the page /cms/index
 			// would have it's layout defined in "cms_index"
-			$custom_page = \Sys\ZeroG::getContext();
+			$custom_page = \Z::getContext();
 			// if the tag is defined in the xml, process it, otherwise just use the default settings
 			if (isset($xml->$custom_page))
 				$this->processSection($xml->$custom_page);
@@ -63,6 +69,7 @@ namespace Sys
 		/**
 		 * Create the specific blocks for the specified section. A section by default
 		 * links to the "default" xml tag, or to the "controller_action" tag, if it is defined
+		 *
 		 * @param <\SimpleXMLElement> $section
 		 */
 		protected function processSection(\SimpleXMLElement $section)
@@ -75,6 +82,11 @@ namespace Sys
 			//print_r($this->blocks);
 		}
 
+		/**
+		* Generates a block based on an XML node
+		*
+		* @param <\SimpleXMLElement> $xml
+		*/
 		private function createBlock($xml)
 		{
 			$name = (string)$xml["name"];
@@ -90,8 +102,8 @@ namespace Sys
 
 		/**
 		 * Recursively retrieve all blocks from a layout section
-		 * @param \SimpleXMLElement $xml
-		 * @return <type>
+		 *
+		 * @param <\SimpleXMLElement> $xml
 		 */
 		protected function getBlocks(\SimpleXMLElement $xml, $parent = '')
 		{
@@ -137,7 +149,8 @@ namespace Sys
 
 		/**
 		 * Process all references from the XML file
-		 * @param \SimpleXMLElement $references
+		 *
+		 * @param <\SimpleXMLElement> $references
 		 */
 		protected function getReferences(\SimpleXMLElement $references)
 		{
@@ -152,6 +165,7 @@ namespace Sys
 		/**
 		 * Execute all the action calls defined on a block or reference
 		 * Used when we read the blocks and the references from the xml layout
+		 *
 		 * @param <mixed> $reference The xml tag containing the actions
 		 */
 		private function executeActions($reference)
@@ -181,9 +195,10 @@ namespace Sys
 		}
 
 		/**
-		 * Return a Sys\Layout\Block referenced by nam
-		 * @param <string> $name The block name
-		 * @return <Sys\Layout\Block> Block instance reference
+		 * Return a Sys\Layout\Block referenced by name
+		 *
+		 * @param <string> $name
+		 * @return <\Sys\Layout\Block>
 		 */
 		public function getBlock($name)
 		{
@@ -196,7 +211,8 @@ namespace Sys
 
 		/**
 		 * Removes a block from the rendering layout
-		 * @param <type> $name Name of the block to remove
+		 *
+		 * @param <string> $name
 		 */
 		public function removeBlock($name)
 		{

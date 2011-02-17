@@ -19,8 +19,8 @@ namespace App\Controllers
 
 		public function blog()
 		{
-			$view = \Sys\ZeroG::getView('blog/single');
-			$post = \Sys\ZeroG::getModel('ext/blog/record')->load(\Sys\ZeroG::getParam('id'));
+			$view = \Z::getView('blog/single');
+			$post = \Z::getModel('ext/blog/record')->load(\Z::getParam('id'));
 			$view->set('post', $post);
 			$this->setTemplate('content', $view->render());
 		}

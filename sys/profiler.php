@@ -16,9 +16,10 @@ namespace Sys
 
 		/**
 		 * Start the timer
+		 *
 		 * @param <string> $timerName Name of the timer
 		 */
-		public function startTimer($timerName)
+		public function start($timerName)
 		{
 			// get start time
 			$this->timers[$timerName][0] = microtime(TRUE);
@@ -28,9 +29,10 @@ namespace Sys
 
 		/**
 		 * Stop the timer
+		 *
 		 * @param <string> $timerName Name of the timer
 		 */
-		public function stopTimer($timerName)
+		public function stop($timerName)
 		{
 			// get stop time
 			$this->timers[$timerName][1] = microtime(TRUE);
@@ -39,9 +41,22 @@ namespace Sys
 		}
 
 		/**
+		 * Converts a byte value to a more apropriate memory unit
+		 *
+		 * @param <int> $size The size of memory to convert, in bytes
+		 * @return <string> The formated size, with the unit appended
+		 */
+		private function convert($size)
+		{
+			$unit = array('BYTES', 'KB', 'MB', 'GB', 'TB', 'PB');
+			return @round($size / pow(1024 ,($i = floor(log($size, 1024)))), 2).' '.$unit[$i].' ('.$size.' B)';
+		}
+
+		/**
 		 * Returns the statistics from all the timers, regarding execution time and memory used
 		 * Please note that the predefined timer "timer/global" shows the total execution and memory usage
 		 * of the script.
+		 *
 		 * @return <type>
 		 */
 		public function getStatistics()
@@ -56,14 +71,19 @@ namespace Sys
 		}
 
 		/**
-		 * Converts a byte value to a more apropriate memory unit
-		 * @param <int> $size The size of memory to convert, in bytes
-		 * @return <string> The formated size, with the unit appended
+		 * Simple debug of the profiler data
+		 * 
+		 * @return <string>
 		 */
-		private function convert($size)
+		public function __toString()
 		{
-			$unit = array('BYTES', 'KB', 'MB', 'GB', 'TB', 'PB');
-			return @round($size / pow(1024 ,($i = floor(log($size, 1024)))), 2).' '.$unit[$i].' ('.$size.' B)';
+			$statistics = $this->getStatistics();
+			$html = '';
+			foreach ($statistics as $name => $data)
+			{
+				$html .=sprintf('<h3>%s</h3><ul><li>cpu: %s</li><li>memory: %s</li></ul>', $name, $data['cpu'], $data['memory']);
+			}
+			return $html;
 		}
 
 	}

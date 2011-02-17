@@ -1,6 +1,6 @@
 <div class="message">
 	<p>
-		<h3><?php echo \Sys\ZeroG::__('Welcome to the homepage of <strong>ZeroG</strong> MVC', 'cms'); ?></h3>
+		<h3><?php echo \Z::__('Welcome to the homepage of <strong>ZeroG</strong> MVC', 'cms'); ?></h3>
 		<p>Features list:</p>
 		<ul>
 			<li>PHP 5.3 support (namespaces)</li>

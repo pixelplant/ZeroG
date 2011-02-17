@@ -1,36 +1,40 @@
 <?php
 /**
 * Main entrance point to the zerog framework
+ * 
 * @author Radu Mogos <radu.mogos@pixelplant.ro>
-* @version 1.0.3
+* @copyright Radu Mogos, www.pixelplant.ro
+* @version 1.0.6
 */
 
-namespace 
+namespace
 {
-	// disable error reporting
-	//error_reporting(0);
+	require_once('sys/zerog.php');
 	
-	spl_autoload_extensions('.php');
-	spl_autoload_register();
+	/**
+	 * Shortcut to \Sys\ZeroG. You can either use \Sys\ZeroG in your calls, or
+	 * just the \Z shortcut
+	 */
+	final class Z extends \Sys\ZeroG {}
 
-	// define version number
-	const ZEROG_VERSION = '1.0.5';
+	/**
+	* error reporting settings
+	*/
+	\error_reporting(E_ALL);
+	\ini_set('display_errors', '1');
 
-	// specify our current running app
-	//const ZEROG_APP = '\\App\\Config\\System';
-
-	// start global profiler timer
-	Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->startTimer('timer/global');
+	/**
+	* define version number
+	*/
+	const ZEROG_VERSION = '1.0.6';
 
 	try
 	{
-		// initiate database connection, if a database is used
-		Sys\Database\Pdo::getInstance();
-
 		// initialize the framework
-		Sys\ZeroG::init();
-		// process the controller
-		Sys\ZeroG::bootstrap();
+		\Z::init();
+
+		// process the controller->action
+		\Z::bootstrap();
 
 		// test start - remove these lines
 		/*$res = new Sys\Model\Resource("profiles/user");
@@ -41,13 +45,12 @@ namespace
 		var_dump($res->validateFields());
 		var_dump($res);*/
 		// test end
+
+		echo \Z::getProfiler();
+		
 	}
-	catch (Exception $e)
+	catch (\Sys\Exception $e)
 	{
 		echo $e;
 	}
-
-	// end global profiler timer
-	Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->stopTimer('timer/global');
-	print_r(Sys\ZeroG::getModuleInstance(Sys\ZeroG::PROFILER)->getStatistics());
 }

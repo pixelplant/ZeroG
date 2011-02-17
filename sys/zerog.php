@@ -9,17 +9,23 @@
 namespace Sys
 {
 
-	final class ZeroG
+	class ZeroG
 	{
 		/**
 		 * The current running ZeroG Instance
-		 * @var <type>
+		 * @var <\Sys\ZeroG>
 		 */
 		protected static $instance = NULL;
 
 		/**
+		 * Holds an array of various singleton classes
+		 * @var <array>
+		 */
+		protected static $singletons = array();
+
+		/**
 		 * The GET and POST parameters combined
-		 * @var <type>
+		 * @var <array>
 		 */
 		protected static $params = array();
 
@@ -33,32 +39,73 @@ namespace Sys
 		protected static $context = '';
 
 		/**
-		 * A shortcut to the Localization class
+		 * Reference to the Localization/Translation class
+		 * @var <\Sys\L10n\Locale>
 		 */
-		const LOCALE = 'Sys\L10n\Locale';
+		protected static $locale;
 
 		/**
 		 * A shortcut to the Profiler class
 		 */
-		const PROFILER = 'Sys\Profiler';
+		protected static $profiler;
 
 		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
 		 * parameters and configure URL rewrites
 		 * @return <void>
 		 */
-		public static function init()
+		final public static function init()
 		{
-			if (self::$instance === NULL)
-				self::$instance = new ZeroG();
-			else
-				return self::$instance;
+			if (self::$instance !== NULL)
+				return;
+
+			/*
+			* Autoload settings. By default every namespace/class path links directly
+			* to the folder/file path for each class. Which it should, like every other
+			* normal programming language.
+			*/
+			\spl_autoload_extensions('.php');
+			\spl_autoload_register();
+
+			// generate the singleton
+			self::$instance = self::getInstance();
+
+			// load profiler
+			//self::$profiler = self::getSingleton('Sys\\Profiler');
+
+			// start global profiler timer
+			self::getProfiler()->start('timer/global');
+			
 			// load locale settings and labels
-			self::getModuleInstance(self::LOCALE, \App\Config\System::LOCALE);
+			self::$locale = self::getSingleton('Sys\\L10n\\Locale', \App\Config\System::LOCALE);
+
 			// get request parameters
 			self::$params = array_merge($_GET, $_POST);
+			
 			// start url rewriting/routing
 			self::getUrlRewrites(\App\Config\System::URL_REWRITE);
+		}
+
+		/**
+		 * Bootstraps the application, meaning it creates the current controller and then calls the specified action
+		 * @static
+		 * @return <void>
+		 */
+		final public static function bootstrap()
+		{
+			$controller = self::getParam('controller', \App\Config\System::DEFAULT_CONTROLLER);
+			$action = self::getParam('action', \App\Config\System::DEFAULT_ACTION);
+			self::$context = $controller.'_'.$action;
+			$className = ucfirst(\App\Config\System::APP_DIR)."\\Controllers\\".ucfirst($controller);
+			$class = new $className;
+			// we set as function parameters only the paramters starting from
+			// index 2. we already use the 'controller' and 'action' parameters
+			// so the other parameters are set as function calls
+			$class->$action(self::getParams(2));
+			//call_user_func_array(array($class, $action), self::getParams(2));
+
+			// end global profiler timer
+			self::getProfiler()->stop('timer/global');
 		}
 
 		/**
@@ -146,31 +193,26 @@ namespace Sys
 		}
 
 		/**
-		 * Bootstraps the application, meaning it creates the current controller and then calls the specified action
-		 * @static
-		 * @return <void>
-		 */
-		public static function bootstrap()
-		{
-			$controller = self::getParam('controller', \App\Config\System::DEFAULT_CONTROLLER);
-			$action = self::getParam('action', \App\Config\System::DEFAULT_ACTION);
-			self::$context = $controller.'_'.$action;
-			$className = ucfirst(\App\Config\System::APP_DIR)."\\Controllers\\".ucfirst($controller);
-			$class = new $className;
-			// we set as function parameters only the paramters starting from
-			// index 2. we already use the 'controller' and 'action' parameters
-			// so the other parameters are set as function calls
-			$class->$action(self::getParams(2));
-			//call_user_func_array(array($class, $action), self::getParams(2));
-		}
-
-		/**
 		 * Return the cached context name
 		 * @return <string>
 		 */
 		public function getContext()
 		{
 			return self::$context;
+		}
+
+		/**
+		 * Return the profiler
+		 * @return <\Sys\Profiler>
+		 */
+		public function getProfiler()
+		{
+			if (!array_key_exists('\\Sys\\Profiler', self::$singletons))
+			{
+				self::$singletons['\\Sys\\Profiler'] = new \Sys\Profiler();
+				self::$profiler = self::$singletons['\\Sys\\Profiler'];
+			}
+			return self::$profiler;
 		}
 
 		/**
@@ -225,17 +267,6 @@ namespace Sys
 			return $class;
 		}
 
-		/**
-		 * Returns a View class instance
-		 * @static
-		 * @param <string> $view The view's name and location, eg: 'register/new_user' loads 'new_user.php' from folder 'views/register'
-		 * @return <View>
-		 */
-		public static function getView($view)
-		{
-			return new View($view);
-		}
-
 		public static function getExtension($name)
 		{
 			$parts = explode("/", $name);
@@ -251,6 +282,11 @@ namespace Sys
 		 */
 		final public static function getInstance()
 		{
+			if (self::$instance === NULL)
+			{
+				self::$instance = new ZeroG();
+				//self::init();
+			}
 			return self::$instance;
 		}
 
@@ -261,14 +297,16 @@ namespace Sys
 		 * @param <type> $classParams The parameters sent to the class, in case of initialization
 		 * @return class 
 		 */
-		public static function getModuleInstance($class, $classParams = '')
+		public static function getSingleton($class, $classParams = '')
 		{
 			// hold an array  of every instances...
-			static $instances = array();
-			if (!array_key_exists($class, $instances)) {
-				$instances[$class] = new $class($classParams);
+			//static $instances = array();
+			if (!array_key_exists($class, self::$singletons)) {
+				self::getProfiler()->start($class);
+				self::$singletons[$class] = new $class($classParams);
+				self::getProfiler()->stop($class);
 			}
-			$instance = $instances[$class];
+			$instance = self::$singletons[$class];
 			return $instance;
 		}
 
@@ -286,7 +324,7 @@ namespace Sys
 		 */
 		public static function L()
 		{
-			return self::getModuleInstance(self::LOCALE);
+			return self::$locale;
 		}
 
 		/**
@@ -297,7 +335,7 @@ namespace Sys
 		 */
 		public static function __($label, $module = 'global')
 		{
-			return self::L()->__($label, $module);
+			return self::$locale->__($label, $module);
 		}
 
 	}

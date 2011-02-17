@@ -83,6 +83,6 @@ namespace App\Config
 		 * Developer mode disables all caching. When you are ready for production
 		 * set this field to FALSE!
 		 */
-		const DEVELOPER_MODE = TRUE;
+		const DEVELOPER_MODE = FALSE;
 	}
 }
