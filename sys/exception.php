@@ -9,7 +9,7 @@ namespace Sys
 		public function __construct($message = NULL)
 		{
 			parent::__construct($message);
-			//$this->message = \Z::__($message, $params);
+			//$this->message = Z::__($message, $params);
 		}
 		
 		public function __toString()

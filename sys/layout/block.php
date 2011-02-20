@@ -7,6 +7,7 @@
 
 namespace Sys\Layout
 {
+
 	class Block
 	{
 		/**
@@ -73,7 +74,7 @@ namespace Sys\Layout
 		 */
 		protected function getPath()
 		{
-			return \App\Config\System::APP_DIR.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'blocks'.DIRECTORY_SEPARATOR;
+			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'blocks'.DIRECTORY_SEPARATOR;
 		}
 
 		/**
@@ -83,13 +84,16 @@ namespace Sys\Layout
 		public function loadTemplate($template = '')
 		{
 			if ($template != '')
+				$this->template = $this->getPath().$template;
+			// old code, where we first loaded the php/html code
+			/*if ($template != '')
 			{
 				$this->template = $this->getPath().$template;
 				$filesize = filesize($this->template);
 				$file = fopen($this->template, 'r');
 				$this->code = fread($file, $filesize);
 				fclose($file);
-			}
+			}*/
 			//else
 			//	throw new \Sys\Exception('Block file missing: Please specify the block template filename!');
 			return $this;
@@ -101,12 +105,14 @@ namespace Sys\Layout
 		 */
 		public function render()
 		{
-			if ($this->code !== NULL)
+			if ($this->template != '')
 			{
 				ob_start();
-				eval("?>".$this->code);
-				$renderedCode = ob_get_contents();
-				ob_end_clean();
+				/*eval("?>".$this->code);*/
+				include $this->template;
+				//$renderedCode = ob_get_contents();
+				//ob_end_clean();
+				$renderedCode = ob_get_clean();
 				return $renderedCode;
 			}
 			else
@@ -212,7 +218,7 @@ namespace Sys\Layout
 
 		/**
 		 * Sets the template file for this block and ALSO loads the template code
-		 * @param <string> $value The path to the php template. eg: 'page/left.php'
+		 * @param <string> $value The path to the php template. eg: 'page/left.phtml'
 		 */
 		public function setTemplate($value)
 		{
@@ -221,7 +227,7 @@ namespace Sys\Layout
 
 		/**
 		 * Returns the template filename used by this block
-		 * @return <string> eg: 'page/left.php'
+		 * @return <string> eg: 'page/left.phtml'
 		 */
 		public function getTemplate()
 		{

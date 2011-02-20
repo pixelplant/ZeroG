@@ -9,19 +9,12 @@
 
 namespace
 {
-	require_once('sys/zerog.php');
-	
-	/**
-	 * Shortcut to \Sys\ZeroG. You can either use \Sys\ZeroG in your calls, or
-	 * just the \Z shortcut
-	 */
-	final class Z extends \Sys\ZeroG {}
-
+	require_once('z.php');
 	/**
 	* error reporting settings
 	*/
-	\error_reporting(E_ALL);
-	\ini_set('display_errors', '1');
+	error_reporting(E_ALL);
+	ini_set('display_errors', '1');
 
 	/**
 	* define version number
@@ -30,11 +23,8 @@ namespace
 
 	try
 	{
-		// initialize the framework
-		\Z::init();
-
-		// process the controller->action
-		\Z::bootstrap();
+		// initialize and run the framework
+		\Z::run();
 
 		// test start - remove these lines
 		/*$res = new Sys\Model\Resource("profiles/user");

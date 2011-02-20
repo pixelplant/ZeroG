@@ -44,7 +44,7 @@ namespace Sys
 		 */
 		protected function loadLayout()
 		{
-			$xml = new \SimpleXMLElement(\App\Config\System::APP_DIR.'/views/layout/'.$this->file, NULL, TRUE);
+			$xml = new \SimpleXMLElement(\Z::getConfig('app/dir').'/views/layout/'.$this->file, NULL, TRUE);
 
 			// make sure the xml layout file exists and is valid
 			if (!$xml)

@@ -2,6 +2,7 @@
 
 namespace Sys\L10n
 {
+	
 	class Locale
 	{
 		/**
@@ -23,6 +24,13 @@ namespace Sys\L10n
 		protected $shortMonths =  array();
 
 		//abstract public function setLocale();
+
+		public function __construct($locale)
+		{
+			$this->locale = $locale;
+			$this->setLocale();
+			$this->cacheTranslations();
+		}
 
 		public function setLocale()
 		{
@@ -70,13 +78,6 @@ namespace Sys\L10n
 
 			// delete $xml var
 			unset($xml);
-		}
-
-		public function __construct($locale)
-		{
-			$this->locale = $locale;
-			$this->setLocale();
-			$this->cacheTranslations();
 		}
 
 		/**
@@ -141,7 +142,7 @@ namespace Sys\L10n
 		{
 			$cacheFile = 'var/cache/locale/'.$this->locale.'.lng';
 			$localeDir = 'app/locale/'.$this->locale.'/';
-			if (\App\Config\System::DEVELOPER_MODE === TRUE)
+			if (\Z::getConfig('developer/mode') === TRUE)
 				$forceRegenerateCache = TRUE;
 			// if the cache does not exist, regenerate it...
 			if (!file_exists($cacheFile) || $forceRegenerateCache === TRUE)

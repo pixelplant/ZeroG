@@ -10,9 +10,25 @@ namespace Sys
 	class Profiler
 	{
 
+		/**
+		 * Memory and CPU timers
+		 * @var <array>
+		 */
 		protected $timers = array();
 
-		public function  __construct() {}
+		/**
+		 * Constructor
+		 */
+		public function  __construct()
+		{
+			/** set the xdebug profiler, if you use xdebug
+			 * you can easily analize the profiler log with	webgrind
+			 *  https://github.com/jokkedk/webgrind
+			 */
+			//\ini_set('xdebug.profiler_enable', 1);
+			//\ini_set('xdebug.profiler_output_dir', 'd:/');
+			//\ini_set('xdebug.profiler_output_name', 'cachegrind.out.%t.%p');
+		}
 
 		/**
 		 * Start the timer
@@ -23,8 +39,10 @@ namespace Sys
 		{
 			// get start time
 			$this->timers[$timerName][0] = microtime(TRUE);
+			//$this->timers[$timerName][0] = xdebug_time_index();
 			// and memory used so far
 			$this->timers[$timerName][2] = memory_get_usage();
+			//$this->timers[$timerName][2] = xdebug_memory_usage();
 		}
 
 		/**
@@ -36,8 +54,10 @@ namespace Sys
 		{
 			// get stop time
 			$this->timers[$timerName][1] = microtime(TRUE);
+			//$this->timers[$timerName][1] = xdebug_time_index();
 			// and the current memory we have now
 			$this->timers[$timerName][3] = memory_get_usage();
+			//$this->timers[$timerName][3] = xdebug_memory_usage();
 		}
 
 		/**

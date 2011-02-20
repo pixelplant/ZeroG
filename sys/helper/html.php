@@ -6,9 +6,10 @@
 
 namespace Sys\Helper
 {
+	
 	class Html
 	{
-		protected static $javascript = NULL;
+		protected $javascript = NULL;
 
 		/**
 		 * Generate an <a href> tag
@@ -17,10 +18,10 @@ namespace Sys\Helper
 		 * @param <string> $attributes Additional attributes for the <a> tag
 		 * @return <string> Html conten for the processed <a> tag
 		 */
-		public static function link($path, $text, $attributes = '')
+		public function link($path, $text, $attributes = '')
 		{
-			if (\App\Config\System::URL_REWRITE === TRUE)
-				return sprintf('<a href="%s" %s>%s</a>', \App\Config\System::BASE_URL.$path, $attributes, $text);
+			if (\Z::getConfig('url/rewrite') === TRUE)
+				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('base/url').$path, $attributes, $text);
 			else
 			{
 				$data = explode('/', $path);
@@ -39,23 +40,23 @@ namespace Sys\Helper
 							$url .= $field;
 					}
 				}
-				return sprintf('<a href="%sindex.php?controller=%s&action=%s%s" %s>%s</a>', \App\Config\System::BASE_URL, $data[0], $data[1], $url, $attributes, $text);
+				return sprintf('<a href="%sindex.php?controller=%s&action=%s%s" %s>%s</a>', \Z::getConfig('base/url'), $data[0], $data[1], $url, $attributes, $text);
 				//return sprintf('<a href="index.php?controller=%s&action=%s%s" %s>%s</a>', $data[0], $data[1], $url, $attributes, $text);
 			}
 		}
 
-		public static function ajaxlink($path, $text, $callback = array('success' => '', 'error' => ''))
+		public function ajaxlink($path, $text, $callback = array('success' => '', 'error' => ''))
 		{
 			$function = self::processAjaxCall($path, $callback);
 			return self::link($path, $text, 'onclick="javascript:'.$function.'; return false;"');
 			//return sprintf('%s<a href="#" onclick="javascript:%s; return false;">%s</a>', $code, $function, $text);
 		}
 
-		private static function processAjaxCall($path, $callback)
+		private function processAjaxCall($path, $callback)
 		{
 			$onError = '';
 			$onSuccess = '';
-			$path = \App\Config\System::BASE_URL.$path;
+			$path = \Z::getConfig('base/url').$path;
 			$function = 'f'.md5($path).'()';
 			if (isset($callback['success']))
 			{
@@ -95,7 +96,7 @@ HER;
 			return $function;
 		}
 
-		public static function input($name, $text, $attributes = '')
+		public function input($name, $text, $attributes = '')
 		{
 			return sprintf('<input type="text" name="%s" id="%s" value="%s" %s/>', $name, $name, $text, $attributes);
 		}
@@ -104,7 +105,7 @@ HER;
 		 * Caches all javascript AJAX calls in a cache file, in var/cache
 		 * @return <string> the html script insertion code required for the HEAD tag
 		 */
-		public static function getAjaxCalls()
+		public function getAjaxCalls()
 		{
 			// if no javascript code is set on this page, then do not cache any data
 			if (self::$javascript === NULL)
@@ -116,20 +117,75 @@ HER;
 				fwrite($handle, self::$javascript);
 				fclose($handle);
 			}
-			return sprintf('<script type="text/javascript" src="%s"></script>'.chr(10), \App\Config\System::BASE_URL.$file);
+			return sprintf('<script type="text/javascript" src="%s"></script>'.chr(10), \Z::getConfig('base/url').$file);
 		}
 
-		public static function addCss()
+		public function addJs($jsFiles = array())
 		{
-			$filename = md5(implode("", func_get_args()));
-			$file = "var/cache/css/css_".$filename.".css";
-			if (\App\Config\System::DEVELOPER_MODE === TRUE)
+			$filename = md5(implode("", $jsFiles));
+			$file = "var/cache/js/js_".$filename.".js";
+
+			if (\Z::getConfig('developer/mode') === TRUE)
 			{
 				$string = '';
-				for ($i = 0; $i < func_num_args(); $i++)
+				foreach ($jsFiles as $file)
 				{
-					$file = func_get_arg($i);
+					$string .= sprintf('<script src="%s" type="text/javascript"></script>', \Z::getConfig('base/url').$file);
+				}
+				return $string;
+			}
+			else
+			{
+				if (!file_exists($file))
+				{
+					$code = '';
+					foreach ($jsFiles as $jsFile)
+					{
+						$codeOriginal = file_get_contents($jsFile);
+						// remove ALL whitespaces from string. Not ok since we also remove spaces
+						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
+
+						// remove all control characters from the string, except for spaces
+						// whitespace chars - http://en.wikipedia.org/wiki/Whitespace_character#Programming_Languages
+						// solution - http://stackoverflow.com/questions/1497885/remove-control-characters-from-php-string
+						//$cssMinified = preg_replace('/[[:cntrl:]]/', '', $cssOriginal);
+						//$codeMinified = str_replace(array("\r\n", "\r", "\n", "\t", '  ', '    ', '    '), '', $codeOriginal);
+
+						// the last step would be to remove the comments from the css files
+						// if any are present
+						//$codeMinified = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $codeOriginal);
+
+						//$code .= $codeMinified;
+						$code .= $codeOriginal;
+					}
+					file_put_contents($file, $code);
+				}
+				return sprintf('<script src="%s" type="text/javascript"></script>', \Z::getConfig('base/url').$file);
+			}
+		}
+
+		/**
+		 * Adds the css files used by the site. If developer mode is off,
+		 * it concatenates all the css files in 1 big css file and then minifies
+		 * the content of this css
+		 *
+		 * @param <array> The list of css files to add
+		 */
+		public function addCss($cssFiles = array())
+		{
+			$filename = md5(implode("", $cssFiles));
+			$file = "var/cache/css/css_".$filename.".css";
+			if (\Z::getConfig('developer/mode') === TRUE)
+			{
+				$string = '';
+				/*for ($i = 0; $i < $cssFiles; $i++)
+				{
+					$file = $cssFiles[$i];
 					$string .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \App\Config\System::BASE_URL.$file);
+				}*/
+				foreach ($cssFiles as $file)
+				{
+					$string .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \Z::getConfig('base/url').$file);
 				}
 				return $string;
 			}
@@ -138,9 +194,9 @@ HER;
 				if (!file_exists($file))
 				{
 					$cssCode = '';
-					for ($i = 0; $i < func_num_args(); $i++)
+					foreach ($cssFiles as $cssFile)
 					{
-						$cssOriginal = file_get_contents(func_get_arg($i));
+						$cssOriginal = file_get_contents($cssFile);
 						// remove ALL whitespaces from string. Not ok since we also remove spaces
 						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
 					
@@ -161,7 +217,7 @@ HER;
 
 						// now, what we also need to do is find all the url() background attributes in the
 						// css and replace their relative/absolute path with our cached absolute path
-						$cssMinified = str_replace('url(../', 'url('.\App\Config\System::BASE_URL.'public/', $cssMinified);
+						$cssMinified = str_replace('url(../', 'url('.\Z::getConfig('base/url').'public/', $cssMinified);
 						/*$urlMatches = preg_match_all('/url\([^)]+\)/', $cssMinified, $matches);
 						if ($urlMatches > 0)
 						{
@@ -178,7 +234,7 @@ HER;
 					}
 					file_put_contents($file, $cssCode);
 				}
-				return sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \App\Config\System::BASE_URL.$file);
+				return sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \Z::getConfig('base/url').$file);
 			}
 		}
 	}

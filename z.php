@@ -6,28 +6,28 @@
  * Time: 00:36:02
  */
 
-namespace Sys
+namespace
 {
 
-	class ZeroG
+	class Z
 	{
 		/**
 		 * The current running ZeroG Instance
 		 * @var <\Sys\ZeroG>
 		 */
-		protected static $instance = NULL;
+		private static $instance = NULL;
 
 		/**
 		 * Holds an array of various singleton classes
 		 * @var <array>
 		 */
-		public static $singletons = array();
+		private static $singletons = array();
 
 		/**
 		 * The GET and POST parameters combined
 		 * @var <array>
 		 */
-		protected static $params = array();
+		private static $params = array();
 
 		/**
 		 * The current context ZeroG is running in. Eg: cms/index runs in cms_index
@@ -36,25 +36,25 @@ namespace Sys
 		 * should be processed
 		 * @var <string>
 		 */
-		protected static $context = '';
+		private static $context = '';
 
 		/**
 		 * Reference to the Localization/Translation class
 		 * @var <\Sys\L10n\Locale>
 		 */
-		protected static $locale;
+		private static $locale;
 
 		/**
 		 * A shortcut to the Profiler class
 		 * @var <\Sys\Profiler>
 		 */
-		protected static $profiler;
+		private static $profiler;
 
 		/**
 		 * A shortcut to the Configuration class
 		 * @var <App\Config\System>
 		 */
-		protected static $config;
+		private static $config;
 
 		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
@@ -87,13 +87,13 @@ namespace Sys
 			self::$config = self::getSingleton('App\\Config\\System');
 			
 			// load locale settings and labels
-			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getConfig()->LOCALE);
+			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getConfig('locale'));
 
 			// get request parameters
 			self::$params = array_merge($_GET, $_POST);
 			
 			// start url rewriting/routing
-			self::getUrlRewrites(self::getConfig()->URL_REWRITE);
+			self::getUrlRewrites(self::getConfig('url/rewrite'));
 
 			// run the application
 			self::bootstrap();
@@ -109,10 +109,10 @@ namespace Sys
 		 */
 		final public static function bootstrap()
 		{
-			$controller = self::getParam('controller', self::getConfig()->DEFAULT_CONTROLLER);
-			$action = self::getParam('action', self::getConfig()->DEFAULT_ACTION);
+			$controller = self::getParam('controller', self::getConfig('default/controller'));
+			$action = self::getParam('action', self::getConfig('default/action'));
 			self::$context = $controller.'_'.$action;
-			$className = ucfirst(self::getConfig()->APP_DIR).'\\Controllers\\'.ucfirst($controller);
+			$className = ucfirst(self::getConfig('app/dir')).'\\Controllers\\'.ucfirst($controller);
 			$class = new $className;
 			// we set as function parameters only the paramters starting from
 			// index 2. we already use the 'controller' and 'action' parameters
@@ -241,7 +241,7 @@ namespace Sys
 			$extension = $parameters[0];
 			$controller = $parameters[1];
 			$action = $parameters[2];
-			$className = ucfirst(self::getConfig()->EXT_DIR).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller);
+			$className = ucfirst(self::getConfig('ext/dir')).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller);
 			$class = new $className;
 			$class->$action();
 		}
@@ -256,14 +256,14 @@ namespace Sys
 		{
 			$model = strtolower($model);
 			$is_extension = FALSE;
-			$directory = self::getConfig()->APP_DIR;
+			$directory = self::getConfig('app/dir');
 			// extension models start with 'ext/' so we need to load
 			// them from the extension directory
 			if (substr($model, 0, 4) == 'ext/')
 			{
 				$model = substr($model, 4);
 				$is_extension = TRUE;
-				$directory = self::getConfig()->EXT_DIR;
+				$directory = self::getConfig('ext/dir');
 			}
 			$table = str_replace("/", "_", $model);
 			if ($is_extension)
@@ -284,7 +284,7 @@ namespace Sys
 		{
 			$parts = explode("/", $name);
 			$table = str_replace("/", "_", strtolower($name));
-			$modelName = ucfirst(self::getConfig()->EXT_DIR).'\\'.ucfirst($parts[0]).'\\Models\\'.ucfirst($parts[1]);
+			$modelName = ucfirst(self::getConfig('ext/dir')).'\\'.ucfirst($parts[0]).'\\Models\\'.ucfirst($parts[1]);
 			$class = new $modelName($table);
 			return $class;
 		}
@@ -297,7 +297,7 @@ namespace Sys
 		{
 			if (self::$instance === NULL)
 			{
-				self::$instance = new ZeroG();
+				self::$instance = new Z();
 				//self::init();
 			}
 			return self::$instance;
@@ -314,8 +314,15 @@ namespace Sys
 		{
 			//static $singletons = array();
 			if (!array_key_exists($class, self::$singletons)) {
+				//$serializedFile = 'var/cache/serialized/'.md5($class).'.ser';
 				self::getProfiler()->start($class);
-				self::$singletons[$class] = new $class($classParams);
+				//if (!file_exists($serializedFile))
+				//{
+					self::$singletons[$class] = new $class($classParams);
+				//	file_put_contents($serializedFile, serialize(self::$singletons[$class]));
+				//}
+				//else
+				//	self::$singletons[$class] = unserialize(file_get_contents($serializedFile));
 				self::getProfiler()->stop($class);
 			}
 			return self::$singletons[$class];
@@ -341,9 +348,14 @@ namespace Sys
 			return self::getSingleton($name);
 		}
 
-		public static function getConfig()
+		/**
+		 * Return the value of a config variable
+		 * @param <string> $variable
+		 * @return <mixed>
+		 */
+		public static function getConfig($variable)
 		{
-			return self::$config;
+			return self::$config->getData($variable);
 		}
 
 
