@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : routes.xml
+    Created on : 20 februarie 2011, 22:30
+    Author     : radu.mogos
+    Description:
+        Router xml file
+-->
+
+<routes>
+	<!-- this is the default route -->
+	<route>
+		<from>/</from>
+		<to>
+			<controller>cms</controller>
+			<action>index</action>
+		</to>
+	</route>
+	<!-- sample route which loads the French locale -->
+	<route>
+		<from>fr/:controller/:action</from>
+		<from>fr/:controller</from>
+		<to>
+			<locale>fr_FR</locale>
+		</to>
+	</route>
+	<!-- sample route which loads the romanian locale -->
+	<route>
+		<from>ro/:controller/:action</from>
+		<from>ro/:controller</from>
+		<to>
+			<locale>ro_RO</locale>
+		</to>
+	</route>
+</routes>

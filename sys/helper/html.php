@@ -23,26 +23,7 @@ namespace Sys\Helper
 			if (\Z::getConfig('url/rewrite') === TRUE)
 				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('base/url').$path, $attributes, $text);
 			else
-			{
-				$data = explode('/', $path);
-				$url = '';
-				if (sizeof($data) > 2)
-				{
-					$index = 0;
-					foreach ($data as $field)
-					{
-						$index++;
-						if ($index < 3)
-							continue;
-						if ($index % 2 != 0)
-							$url .= '&'.$field.'=';
-						else
-							$url .= $field;
-					}
-				}
-				return sprintf('<a href="%sindex.php?controller=%s&action=%s%s" %s>%s</a>', \Z::getConfig('base/url'), $data[0], $data[1], $url, $attributes, $text);
-				//return sprintf('<a href="index.php?controller=%s&action=%s%s" %s>%s</a>', $data[0], $data[1], $url, $attributes, $text);
-			}
+				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('base/url'), $path, $attributes, $text);
 		}
 
 		public function ajaxlink($path, $text, $callback = array('success' => '', 'error' => ''))
@@ -122,6 +103,8 @@ HER;
 
 		public function addJs($jsFiles = array())
 		{
+			if (sizeof($jsFiles) == 0)
+				return;
 			$filename = md5(implode("", $jsFiles));
 			$file = "var/cache/js/js_".$filename.".js";
 
@@ -173,6 +156,8 @@ HER;
 		 */
 		public function addCss($cssFiles = array())
 		{
+			if (sizeof($cssFiles) == 0)
+				return;
 			$filename = md5(implode("", $cssFiles));
 			$file = "var/cache/css/css_".$filename.".css";
 			if (\Z::getConfig('developer/mode') === TRUE)

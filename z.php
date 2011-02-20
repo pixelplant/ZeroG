@@ -57,6 +57,12 @@ namespace
 		private static $config;
 
 		/**
+		 * The library router
+		 * @var <\Sys\Router>
+		 */
+		private static $router;
+
+		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
 		 * parameters and configure URL rewrites
 		 * @return <void>
@@ -77,23 +83,22 @@ namespace
 			// generate the singleton
 			self::$instance = self::getInstance();
 
-			// load profiler
-			//self::$profiler = self::getSingleton('Sys\\Profiler');
-
 			// start global profiler timer
 			self::getProfiler()->start('timer/global');
 
 			// load config data
 			self::$config = self::getSingleton('App\\Config\\System');
-			
-			// load locale settings and labels
-			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getConfig('locale'));
+
+			self::$router = self::getSingleton('Sys\\Router');
+			self::$router->execute();
 
 			// get request parameters
-			self::$params = array_merge($_GET, $_POST);
-			
-			// start url rewriting/routing
-			self::getUrlRewrites(self::getConfig('url/rewrite'));
+			self::$params = self::$router->getParams();
+			if (self::$params === NULL)
+				throw new \Sys\Exception('No map matched the current route');
+
+			// load locale settings and labels
+			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getParam('locale', self::getConfig('locale')));
 
 			// run the application
 			self::bootstrap();
@@ -109,50 +114,16 @@ namespace
 		 */
 		final public static function bootstrap()
 		{
-			$controller = self::getParam('controller', self::getConfig('default/controller'));
-			$action = self::getParam('action', self::getConfig('default/action'));
+			$controller = self::getParam('controller');
+			$action = self::getParam('action');
 			self::$context = $controller.'_'.$action;
 			$className = ucfirst(self::getConfig('app/dir')).'\\Controllers\\'.ucfirst($controller);
 			$class = new $className;
 			// we set as function parameters only the paramters starting from
 			// index 2. we already use the 'controller' and 'action' parameters
 			// so the other parameters are set as function calls
-			$class->$action(self::getParams(2));
-			//call_user_func_array(array($class, $action), self::getParams(2));
-		}
-
-		/**
-		 * if url rewriting is enabled, this function translates every variable in the
-		 * url string to the proper GET params.
-		 * eg: cms/blog/id/3 => controller=cms, action=blog, id=3
-		 * @param <boolean> $isUrlRewriteEnbled
-		 */
-		public static function getUrlRewrites($isUrlRewriteEnbled = FALSE)
-		{
-			// if there's no url data, then there's nothing to process here...
-			if (!isset($_GET['path']) || strlen($_GET['path']) > 250)
-				return;
-			if ($isUrlRewriteEnbled === TRUE)
-			{
-				$uri = explode("/", $_GET['path']);
-				if (isset($uri[0]))
-					self::$params['controller'] = $uri[0];
-				if (isset($uri[1]))
-					self::$params['action'] = $uri[1];
-				$uri = array_slice($uri, 2);
-				$i = 0;
-				$key = '';
-				foreach ($uri as $value)
-				{
-					$i++;
-					if ($i % 2 == 0)
-					{
-						self::$params[$key] = $value;
-					}
-					else
-						$key = $value;
-				}
-			}
+			//$class->$action(self::getParams(2));
+			$class->$action(self::getParams());
 		}
 
 		/**
@@ -199,7 +170,7 @@ namespace
 		public static function getParam($key, $defaultValue = '', $clean = FALSE)
 		{
 			$processedParam = self::getRequest($key, $clean);
-			if ($processedParam === NULL)
+			if ($processedParam === NULL || $processedParam == '')
 				return $defaultValue;
 			else
 				return $processedParam;

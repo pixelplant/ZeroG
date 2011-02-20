@@ -64,6 +64,13 @@ namespace Sys
 			// if the tag is defined in the xml, process it, otherwise just use the default settings
 			if (isset($xml->$custom_page))
 				$this->processSection($xml->$custom_page);
+			// the third check is to see if we have a context
+			// for the context variable. if we do, we load this one too
+			// which would overwrite the default settings
+			// For more info about contexts, please read the documentation
+			$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('context/variable'));
+			if (isset($xml->$custom_context))
+				$this->processSection($xml->$custom_context);
 		}
 
 		/**
