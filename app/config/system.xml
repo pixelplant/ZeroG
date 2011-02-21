@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : system.xml
-    Created on : 20 februarie 2011, 19:16
-    Author     : radu.mogos
-    Description:
-        System config file
+	Document   : system.xml
+	Created on : 20 februarie 2011, 19:16
+	Author     : radu.mogos
+	Description:
+		System config file
 	Note       : Please set all boolean fields to either 1 (for true) or 0 (for false)
 -->
 

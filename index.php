@@ -9,6 +9,14 @@
 
 namespace
 {
+	function test($errno, $errstr, $errfile, $errline)
+	{
+		$error = sprintf('<p>%s - %s : %s @ %s</p>', $errno, $errstr, $errfile, $errline);
+		throw
+			new \Sys\Exception($error);
+	}
+	set_error_handler('test');
+
 	require_once('z.php');
 	/**
 	* error reporting settings

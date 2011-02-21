@@ -63,6 +63,18 @@ namespace
 		private static $router;
 
 		/**
+		 * Current running controller name
+		 * @var <string>
+		 */
+		private static $controller;
+
+		/**
+		 * Current running action name
+		 * @var <string>
+		 */
+		private static $action;
+
+		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
 		 * parameters and configure URL rewrites
 		 * @return <void>
@@ -116,6 +128,8 @@ namespace
 		{
 			$controller = self::getParam('controller');
 			$action = self::getParam('action');
+			self::$controller = $controller;
+			self::$action = $action;
 			self::$context = $controller.'_'.$action;
 			$className = ucfirst(self::getConfig('app/dir')).'\\Controllers\\'.ucfirst($controller);
 			$class = new $className;
@@ -180,7 +194,7 @@ namespace
 		 * Return the cached context name
 		 * @return <string>
 		 */
-		public function getContext()
+		public static function getContext()
 		{
 			return self::$context;
 		}
@@ -189,7 +203,7 @@ namespace
 		 * Return the profiler
 		 * @return <\Sys\Profiler>
 		 */
-		public function getProfiler()
+		public static function getProfiler()
 		{
 			if (!array_key_exists('Sys\\Profiler', self::$singletons))
 			{
@@ -297,6 +311,24 @@ namespace
 				self::getProfiler()->stop($class);
 			}
 			return self::$singletons[$class];
+		}
+
+		/**
+		 * Get the current controller name
+		 * @return <string>
+		 */
+		public function getController()
+		{
+			return self::$controller;
+		}
+
+		/**
+		 * Get the current action name
+		 * @return <string>
+		 */
+		public function getAction()
+		{
+			return self::$action;
 		}
 
 		/**
