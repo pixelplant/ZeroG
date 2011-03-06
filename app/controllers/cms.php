@@ -4,10 +4,6 @@ namespace App\Controllers
 {
 	class Cms extends \Sys\Template\Controller
 	{
-		/*public function __construct()
-		{
-			//parent::__construct('main');
-		}*/
 
 		/**
 		 * The default action called for this controller. Default settings are
@@ -15,14 +11,15 @@ namespace App\Controllers
 		 */
 		public function index()
 		{
-		}
-
-		public function blog()
-		{
-			$view = \Z::getView('blog/single');
-			$post = \Z::getModel('ext/blog/record')->load(\Z::getParam('id'));
-			$view->set('post', $post);
-			$this->setTemplate('content', $view->render());
+			/*$user = \Z::getModel('profiles/user');
+			$user->getUsername();
+			$user->setUsername('test');
+			$female = \Z::getModel('profiles/user');
+			$female->setUsername('femeie');
+			var_dump($user);
+			var_dump($female);*/
+			$this->loadLayout();
+			$this->renderLayout();
 		}
 
 		public function test()
@@ -33,9 +30,16 @@ namespace App\Controllers
 		public function ajax()
 		{
 			if ($this->isXHR())
-				echo 'yea BABY!';
+			{
+				//echo $this->getLayout()->getBlock('content')->render();
+				echo 'hahaha';
+			}
 			else
+			{
+				$this->loadLayout();
 				$this->getLayout()->getBlock('content')->setCode('YUHUU baby!');
+				$this->renderLayout();
+			}
 		}
 
 		public function ajax2()
@@ -47,7 +51,9 @@ namespace App\Controllers
 			else
 			{
 				//$this->getLayout()->removeBlock('content');
+				$this->loadLayout();
 				$this->getLayout()->getBlock('content')->setCode('Are you not amused!');
+				$this->renderLayout();
 			}
 		}
 	}

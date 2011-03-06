@@ -74,7 +74,7 @@ namespace Sys\Layout
 		 */
 		protected function getPath()
 		{
-			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'blocks'.DIRECTORY_SEPARATOR;
+			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'design'.DIRECTORY_SEPARATOR.\Z::getConfig('design/theme').DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR;
 		}
 
 		/**

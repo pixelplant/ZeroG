@@ -9,8 +9,16 @@ namespace Sys\Template
 	{
 		/**
 		 * @var <Sys\Layout> the main website layout
+		 *
 		 */
 		protected $layout;
+
+		/**
+		 * The name of the xml layout file
+		 *
+		 * @var <string>
+		 */
+		protected $layoutFile;
 
 		/**
 		 * The difference between a base controller and a template controller
@@ -22,20 +30,25 @@ namespace Sys\Template
 		public function __construct($layoutFile = NULL)
 		{
 			parent::__construct();
-			if ($layoutFile === NULL)
-				$layoutFile = 'page';
-			$this->layout = new \Sys\Layout($layoutFile);
+			$this->layoutFile = $layoutFile;
+			if ($this->layoutFile === NULL)
+				$this->layoutFile = 'page';
 		}
 
 		/**
-		 * Destroys the main view associated with our controller. Think of a main
-		 * view as a main template for a page, which contains all the other bits
-		 * of information a page might wantt (usually a list of other views to include)
+		 * Loads the XML layout
 		 */
-		public function __destruct()
+		public function loadLayout()
 		{
-			if (!$this->isXHR())
-				echo $this->layout->render();
+			$this->layout = new \Sys\Layout($this->layoutFile);
+		}
+
+		/**
+		 * Renders the XML layout based on the current context
+		 */
+		public function renderLayout()
+		{
+			echo $this->layout->render();
 		}
 
 		/**

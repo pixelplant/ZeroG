@@ -11,5 +11,11 @@ namespace Sys
 	class Controller
 	{
 		public function __construct() {}
+
+		public function redirect($path)
+		{
+			$redirectTo = \Z::getConfig('base/url').$path;
+			header('Location: '.$redirectTo);
+		}
 	}
 }

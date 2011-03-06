@@ -8,11 +8,11 @@
 
 namespace App\Models\Profiles
 {
-	class User extends \Sys\DatabaseModel
+	class User extends \Sys\Model
 	{
-		public function getUsername()
+		public function __construct($tableName)
 		{
-			return $this->data['username'].'haha';
+			parent::__construct('App\\Models\\Profiles\\Resource\\UserResource');
 		}
 	}
 }

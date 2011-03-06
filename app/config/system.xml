@@ -17,6 +17,12 @@
 	<!-- Defines the location of the extensions used by the application -->
 	<config name="ext/dir" type="string">ext</config>
 
+	<!-- The current theme used by the application
+	Located in app/design -->
+	<config name="design/theme" type="string">default</config>
+
+	<!-- default controller and action, in case you forget it in the
+	routes.xml file -->
 	<config name="default/controller" type="string">cms</config>
 	<config name="default/action" type="string">index</config>
 
@@ -29,7 +35,7 @@
 	editor specific files would be retrieved from, this way you can have
 	parallel downloads of content and assets. Please note that your browser
 	opens up about 2 parallel connections for every domain, so using 1 or
-	2 different hostnames for your media should increase the download speed.
+	2 DIFFERENT hostnames for your media should increase the download speed.
 	This way you can also make sure you're using cookie free domains for
 	your components. -->
 	<config name="media/url" type="string">http://local/zerog/</config>

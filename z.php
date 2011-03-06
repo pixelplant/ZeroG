@@ -99,9 +99,9 @@ namespace
 			self::getProfiler()->start('timer/global');
 
 			// load config data
-			self::$config = self::getSingleton('App\\Config\\System');
+			self::$config = self::getSingleton('Sys\\Config\\System');
 
-			self::$router = self::getSingleton('Sys\\Router');
+			self::$router = self::getSingleton('Sys\\Config\\Router');
 			self::$router->execute();
 
 			// get request parameters
@@ -150,12 +150,12 @@ namespace
 		 */
 		public static function getRequest($key, $clean = FALSE)
 		{
-			if (array_key_exists($key, self::$params))
+			if (array_key_exists($key, self::$params['request']))
 			{
 				if ($clean === TRUE)
-					return htmlspecialchars(self::$params[$key]);
+					return htmlspecialchars(self::$params['request'][$key]);
 				else
-					return self::$params[$key];
+					return self::$params['request'][$key];
 			}
 			else
 				return NULL;
@@ -170,8 +170,8 @@ namespace
 		public static function getParams($index = 0)
 		{
 			if ($index > 0)
-				return array_slice(self::$params, $index);
-			return self::$params;
+				return array_slice(self::$params['request'], $index);
+			return self::$params['request'];
 		}
 
 		/**
@@ -188,6 +188,16 @@ namespace
 				return $defaultValue;
 			else
 				return $processedParam;
+		}
+
+		/**
+		 * Context parameters are read from app/config/routes.xml
+		 *
+		 * @return <array>
+		 */
+		public static function getContextParams()
+		{
+			return self::$params['context'];
 		}
 
 		/**
@@ -313,11 +323,16 @@ namespace
 			return self::$singletons[$class];
 		}
 
+		public static function getResource($resourceName)
+		{
+			return self::getSingleton($resourceName);
+		}
+
 		/**
 		 * Get the current controller name
 		 * @return <string>
 		 */
-		public function getController()
+		public static function getController()
 		{
 			return self::$controller;
 		}
@@ -326,7 +341,7 @@ namespace
 		 * Get the current action name
 		 * @return <string>
 		 */
-		public function getAction()
+		public static function getAction()
 		{
 			return self::$action;
 		}

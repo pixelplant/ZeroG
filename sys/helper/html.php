@@ -9,7 +9,15 @@ namespace Sys\Helper
 	
 	class Html
 	{
-		protected $javascript = NULL;
+
+		public function directLink($path, $text, $attributes = '')
+		{
+			// We generate the url, based on wether we want url rewrites or not
+			if (\Z::getConfig('url/rewrite') === TRUE)
+				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('base/url').$path, $attributes, $text);
+			else
+				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('base/url'), $path, $attributes, $text);
+		}
 
 		/**
 		 * Generate an <a href> tag
@@ -20,85 +28,27 @@ namespace Sys\Helper
 		 */
 		public function link($path, $text, $attributes = '')
 		{
-			if (\Z::getConfig('url/rewrite') === TRUE)
-				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('base/url').$path, $attributes, $text);
-			else
-				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('base/url'), $path, $attributes, $text);
-		}
-
-		public function ajaxlink($path, $text, $callback = array('success' => '', 'error' => ''))
-		{
-			$function = self::processAjaxCall($path, $callback);
-			return self::link($path, $text, 'onclick="javascript:'.$function.'; return false;"');
-			//return sprintf('%s<a href="#" onclick="javascript:%s; return false;">%s</a>', $code, $function, $text);
-		}
-
-		private function processAjaxCall($path, $callback)
-		{
-			$onError = '';
-			$onSuccess = '';
-			$path = \Z::getConfig('base/url').$path;
-			$function = 'f'.md5($path).'()';
-			if (isset($callback['success']))
+			/**
+			 * First we must add the context parameters, which must always be
+			 * prepended to the current uri
+			 * For example: if the "locale" variable is set to ro_RO, and the
+			 * context of ro_RO is set to "ro", then "ro/" will be prepended to
+			 * any generated url
+			 */
+			foreach (\Z::getContextParams() as $from => $to)
 			{
-				$success = $callback['success'];
-				$onSuccess = <<< ONS
-			success: function(data, text, xhr) {
-				$success
-			},
-
-ONS;
+				if (array_key_exists(\Z::getParam($from), $to))
+					$path = $to[\Z::getParam($from)].'/'.$path;
 			}
-			if (isset($callback['error']))
-			{
-				// get the error action
-				$error = $callback['error'];
-				$onError = <<< ONE
-			error: function(xhr, text, exception) {
-				$error
-			},
-
-ONE;
-			}
-			$code = <<<HER
-	//<script type="text/javascript">
-	function $function
-	{
-		$.ajax({
-			url: '$path',
-$onSuccess
-$onError
-		});
-	}
-	//</script>
-
-HER;
-			self::$javascript .= $code;
-			return $function;
-		}
-
-		public function input($name, $text, $attributes = '')
-		{
-			return sprintf('<input type="text" name="%s" id="%s" value="%s" %s/>', $name, $name, $text, $attributes);
+			return $this->directLink($path, $text, $attributes);
 		}
 
 		/**
-		 * Caches all javascript AJAX calls in a cache file, in var/cache
-		 * @return <string> the html script insertion code required for the HEAD tag
-		 */
-		public function getAjaxCalls()
+		 * Simple input tag helper
+		*/
+		public function input($name, $text, $attributes = '')
 		{
-			// if no javascript code is set on this page, then do not cache any data
-			if (self::$javascript === NULL)
-				return;
-			$file = "var/cache/ajax/ajax_".md5(self::$javascript).".js";
-			if (!file_exists($file))
-			{
-				$handle = fopen($file, "w");
-				fwrite($handle, self::$javascript);
-				fclose($handle);
-			}
-			return sprintf('<script type="text/javascript" src="%s"></script>'.chr(10), \Z::getConfig('base/url').$file);
+			return sprintf('<input type="text" name="%s" id="%s" value="%s" %s/>', $name, $name, $text, $attributes);
 		}
 
 		public function addJs($jsFiles = array())

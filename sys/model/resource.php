@@ -24,7 +24,7 @@ namespace Sys\Model
 
 		private function loadResource($descriptionFile)
 		{
-			$xml = new \SimpleXMLElement('app/models/'.$descriptionFile, NULL, TRUE);
+			$xml = new \SimpleXMLElement($descriptionFile, NULL, TRUE);
 
 			// make sure the xml is loaded
 			if (!$xml)
@@ -63,6 +63,16 @@ namespace Sys\Model
 		public function getField($fieldName)
 		{
 			return $this->fields[$fieldName];
+		}
+
+		/**
+		 * Return all the fields for this resource
+		 *
+		 * @return <array>
+		 */
+		public function getFields()
+		{
+			return $this->fields;
 		}
 	}
 }

@@ -9,6 +9,18 @@
 -->
 
 <routes>
+	<!-- context variables and their value -->
+	<context>
+		<locale>
+			<translate from="fr_FR" to="fr" />
+			<translate from="ro_RO" to="ro" />
+		</locale>
+		<type>
+			<translate from="100" to="print" />
+			<translate from="101" to="rss" />
+			<translate from="102" to="xml" />
+		</type>
+	</context>
 	<!-- this is the default route -->
 	<route>
 		<from>/</from>

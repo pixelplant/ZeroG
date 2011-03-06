@@ -12,6 +12,7 @@ namespace
 	function test($errno, $errstr, $errfile, $errline)
 	{
 		$error = sprintf('<p>%s - %s : %s @ %s</p>', $errno, $errstr, $errfile, $errline);
+
 		throw
 			new \Sys\Exception($error);
 	}
@@ -49,6 +50,7 @@ namespace
 	}
 	catch (\Sys\Exception $e)
 	{
+		//header('Location: error/index.html');
 		echo $e;
 	}
 }

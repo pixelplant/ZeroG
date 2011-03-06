@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : map.xml
+    Created on : 28 februarie 2011, 10:12
+    Author     : radu.mogos
+    Description:
+        Add you list of maps here.
+		A map links a name to a class, so instead of calling a system helper like
+		this: \Sys\Helper\Html::link(etc), you call it by it's map name, eg:
+		\Z::getHelper('html/helper')->link(etc). This allows you to easily map
+		the 'html/helper' name to any class you want, including your own, which
+		may or may not overwrite the Sys\Helper\Html class.
+
+		If you want to "map" url's to different controllers/actions, then have a
+		look in the	routes.xml file
+-->
+
+<maps>
+	<!-- specify helper maps -->
+	<helpers>
+		<map>
+			<name>html/helper</name>
+			<to>\Sys\Helper\Html</to>
+		</map>
+		<map>
+			<name>html/csv</name>
+			<to>\Sys\Helper\Csv</to>
+		</map>
+	</helpers>
+
+	<!-- specify model maps -->
+	<models>
+	</models>
+</maps>

@@ -39,38 +39,56 @@ namespace Sys
 			$this->loadLayout();
 		}
 
+		protected function getPath()
+		{
+			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'design'.DIRECTORY_SEPARATOR.\Z::getConfig('design/theme').DIRECTORY_SEPARATOR.'layout'.DIRECTORY_SEPARATOR;
+		}
+
 		/**
 		 * Read the layout from the XML file
 		 */
 		protected function loadLayout()
 		{
-			$xml = new \SimpleXMLElement(\Z::getConfig('app/dir').'/views/layout/'.$this->file, NULL, TRUE);
-
-			// make sure the xml layout file exists and is valid
-			if (!$xml)
-				throw new \Sys\Exception("Current layout ".$this->file." file does not exist or is not a valid xml");
-
-			// get the version number and store it as a float
-			// this way we can do version requirement checks in the future
-			$this->version = (float)$xml["version"];
-
-			// first we read the "default" block in the xml which holds the settings
-			// for all the actions of this page
-			if (isset($xml->default))
-				$this->processSection($xml->default);
-			// then we apply the custom action layout. for example, the page /cms/index
-			// would have it's layout defined in "cms_index"
 			$custom_page = \Z::getContext();
-			// if the tag is defined in the xml, process it, otherwise just use the default settings
-			if (isset($xml->$custom_page))
-				$this->processSection($xml->$custom_page);
-			// the third check is to see if we have a context
-			// for the context variable. if we do, we load this one too
-			// which would overwrite the default settings
-			// For more info about contexts, please read the documentation
 			$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('context/variable'));
-			if (isset($xml->$custom_context))
-				$this->processSection($xml->$custom_context);
+			$hash = md5(\Z::getConfig('design/theme') . $this->file . $custom_page . $custom_context);
+			$cacheXml = 'var/cache/serialized/xml_'.md5($hash).'.ser';
+			if (file_exists($cacheXml))
+			{
+				$this->blocks = unserialize(file_get_contents($cacheXml));
+			}
+			else
+			{
+				$xml = new \SimpleXMLElement($this->getPath().$this->file, NULL, TRUE);
+				// make sure the xml layout file exists and is valid
+				if (!$xml)
+					throw new \Sys\Exception("Current layout ".$this->getPath().$this->file." file does not exist or is not a valid xml");
+
+				// get the version number and store it as a float
+				// this way we can do version requirement checks in the future
+				$this->version = (float)$xml["version"];
+				// first we read the "default" block in the xml which holds the settings
+				// for all the actions of this page
+
+				if (isset($xml->default))
+					$this->processSection($xml->default);
+				// then we apply the custom action layout. for example, the page /cms/index
+				// would have it's layout defined in "cms_index"
+				//$custom_page = \Z::getContext();
+				// if the tag is defined in the xml, process it, otherwise just use the default settings
+				if (isset($xml->$custom_page))
+					$this->processSection($xml->$custom_page);
+				// the third check is to see if we have a context
+				// for the context variable. if we do, we load this one too
+				// which would overwrite the default settings
+				// For more info about contexts, please read the documentation
+				//$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('context/variable'));
+				if (isset($xml->$custom_context))
+					$this->processSection($xml->$custom_context);
+
+				// cache everything...
+				file_put_contents($cacheXml, serialize($this->blocks));
+			}
 		}
 
 		/**
