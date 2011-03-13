@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 06 martie 2011, 16:11
+    Author     : radu.mogos
+    Description:
+        Config file for the Pixelplant_Slider extension
+-->
+
+<config>
+	<modules>
+		<Pixelplant_Slider>
+			<version>0.1.0</version>
+		</Pixelplant_Slider>
+	</modules>
+
+	<global>
+		<blocks>
+			<slider>
+				<class>Pixelplant\Slider\Block</class>
+			</slider>
+		</blocks>
+
+		<models>
+			<slider>
+				<class>Pixelplant\Slider\Model</class>
+				<resourceModel>slider_mysql</resourceModel>
+			</slider>
+			<slider_mysql>
+				<class>Pixelplant\Slider\Model\Resource</class>
+				<entities>
+					<record>
+						<table>slider_record</table>
+					</record>
+				</entities>
+			</slider_mysql>
+		</models>
+
+		<helpers>
+			<slider>
+				<class>Pixelplant\Slider\Helper</class>
+			</slider>
+		</helpers>
+	</global>
+
+</config>

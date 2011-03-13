@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : config.xml
+    Created on : 06 martie 2011, 16:11
+    Author     : radu.mogos
+    Description:
+        Config file for the Pixelplant_Blog extension
+-->
+
+<config>
+	<modules>
+		<Pixelplant_Blog>
+			<version>0.1.0</version>
+		</Pixelplant_Blog>
+	</modules>
+
+	<global>
+		<blocks>
+			<blog>
+				<class>Pixelplant\Blog\Block</class>
+			</blog>
+		</blocks>
+
+		<models>
+			<blog>
+				<class>Pixelplant\Blog\Model</class>
+				<resourceModel>blog_mysql</resourceModel>
+			</blog>
+			<blog_mysql>
+				<class>Pixelplant\Blog\Model\Resource</class>
+				<entities>
+					<post>
+						<table>blog_post</table>
+					</post>
+					<category>
+						<table>blog_category</table>
+					</category>
+				</entities>
+			</blog_mysql>
+		</models>
+
+		<helpers>
+			<blog>
+				<class>Pixelplant\Blog\Helper</class>
+			</blog>
+		</helpers>
+	</global>
+
+	<frontend>
+		<routers>
+			<commentboxadmin>
+				<use>frontend</use>
+				<args>
+					<module>Pixelplant_Blog</module>
+					<frontName>blog</frontName>
+				</args>
+			</commentboxadmin>
+		</routers>
+	</frontend>
+
+</config>

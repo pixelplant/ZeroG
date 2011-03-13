@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category   Pixelplant
+ * @package    Pixelplant_Blog
+ * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
+ * @license    M.O.K.A.
+ */
+ -->
+<config>
+	<modules>
+		<Pixelplant_Blog>
+			<active>true</active>
+			<codePool>local</codePool>
+		</Pixelplant_Blog>
+	</modules>
+</config>

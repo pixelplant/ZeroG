@@ -97,7 +97,7 @@ namespace
 
 			// start global profiler timer
 			self::getProfiler()->start('timer/global');
-
+$cfg = new \Sys\Config();
 			// load config data
 			self::$config = self::getSingleton('Sys\\Config\\System');
 

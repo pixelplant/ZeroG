@@ -12,7 +12,7 @@ namespace Sys\Config
 
 		public function __construct()
 		{
-			$xml = new \SimpleXMLElement('app/config/system.xml', NULL, TRUE);
+			$xml = new \SimpleXMLElement('app/etc/local.xml', NULL, TRUE);
 			foreach ($xml->config as $config)
 			{
 				$value = (string)$config[0];
