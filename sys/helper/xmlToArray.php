@@ -8,21 +8,40 @@ namespace Sys\Helper
 {
 	class XmlToArray
 	{
+		/**
+		 * Name of the config xml file to load
+		 *
+		 * @var <string>
+		 */
 		private $xml;
 
+		/**
+		 * Array holding the flat data for this config file
+		 * 
+		 * @var <array>
+		 */
+		private $flat;
+
+		/**
+		 * Constructor
+		 *
+		 * @param <string> $xmlFile
+		 */
 		public function __construct($xmlFile)
 		{
 			$this->xml = file_get_contents($xmlFile);
 		}
 
 		/**
-		 * Our recursive building function
+		 * Our recursive building function.
+		 * Update: We're now storing the array + the flat data.
+		 * Flat data can be retrieved by calling getFlatData()
 		 *
 		 * @param <array> $values
 		 * @param <int> $i
 		 * @return <array>
 		 */
-		private function struct_to_array($values, &$i)
+		private function struct_to_array($values, &$i, $parent = 'config')
 		{
 			$child = array();
 			if (isset($values[$i]['value']))
@@ -34,13 +53,17 @@ namespace Sys\Helper
 					{
 						case 'cdata':
 							array_push($child, $values[$i]['value']);
+							$this->flat[$parent] = $values[$i]['value'];
 						break;
 
 						case 'complete':
+							$path = $parent.'/'.$values[$i]['tag'];
 							$name = $values[$i]['tag'];
+							$flatName = $path;
 							if(!empty($name))
 							{
-								$child[$name]= ($values[$i]['value'])?($values[$i]['value']):'';
+								$this->flat[$flatName]= isset($values[$i]['value'])?($values[$i]['value']):'';
+								$child[$name]= isset($values[$i]['value'])?($values[$i]['value']):'';
 								if(isset($values[$i]['attributes']))
 								{
 									$child[$name] = $values[$i]['attributes'];
@@ -49,12 +72,15 @@ namespace Sys\Helper
 						break;
 
 					case 'open':
+						$path = $parent.'/'.$values[$i]['tag'];
 						$name = $values[$i]['tag'];
+						$flatName = $path;
 						//$size = isset($child[$name]) ? sizeof($child[$name]) : 0;
-						$child[$name] = $this->struct_to_array($values, $i);
+						$child[$name] = $this->struct_to_array($values, $i, $flatName);
 					break;
 
 					case 'close':
+						$path = '';
 						return $child;
 					break;
 					}
@@ -82,6 +108,16 @@ namespace Sys\Helper
 			$array[$name] = isset($values[$i]['attributes']) ? $values[$i]['attributes'] : '';
 			$array[$name] = $this->struct_to_array($values, $i);
 			return $array;
+		}
+
+		/**
+		 * Returns the config array as a flat one level array
+		 * 
+		 * @return <array>
+		 */
+		public function getFlatData()
+		{
+			return $this->flat;
 		}
 	}
 

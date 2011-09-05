@@ -9,21 +9,40 @@
 
 namespace
 {
-	function test($errno, $errstr, $errfile, $errline)
+	function error_handler($errno, $errstr, $errfile, $errline)
 	{
 		$error = sprintf('<p>%s - %s : %s @ %s</p>', $errno, $errstr, $errfile, $errline);
 
 		throw
 			new \Sys\Exception($error);
 	}
-	set_error_handler('test');
 
-	require_once('z.php');
+	function shutdown_function()
+	{
+		$lastError = error_get_last();
+
+		if ($lastError['type'] == E_ERROR || $lastError['type'] == E_USER_ERROR)
+		{
+			$error = 'Fatal error in file: '.$lastError['file'];
+			die($error);
+		}
+	}
+	set_error_handler('error_handler');
+	register_shutdown_function('shutdown_function');
+
+	/*
+	* Autoload settings. By default every namespace/class path links directly
+	* to the folder/file path for each class. Which it should, like every other
+	* normal programming language.
+	*/
+	\spl_autoload_extensions('.php');
+	\spl_autoload_register();
+
 	/**
 	* error reporting settings
 	*/
-	error_reporting(E_ALL);
-	ini_set('display_errors', '1');
+	//error_reporting(E_ALL);
+	//ini_set('display_errors', '1');
 
 	/**
 	* define version number
@@ -34,6 +53,9 @@ namespace
 	{
 		// initialize and run the framework
 		\Z::run();
+		
+		$test = \Z::getModel('blog/post');
+		echo $test->getName();
 
 		// test start - remove these lines
 		/*$res = new Sys\Model\Resource("profiles/user");

@@ -5,4 +5,12 @@
 			<version>0.1.0</version>
 		</ZeroG_Core>
 	</modules>
+
+	<global>
+		<blocks>
+			<core>
+				<class>ZeroG\Core\Block</class>
+			</core>
+		</blocks>
+	</global>
 </config>

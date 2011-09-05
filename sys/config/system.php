@@ -23,7 +23,9 @@ namespace Sys\Config
 
 		public function getData($name)
 		{
-			return $this->configData[$name];
+			if (isset($this->configData[$name]))
+				return $this->configData[$name];
+			throw new \Sys\Exception('Config parameter: '.$name.' not found');
 		}
 	}
 }

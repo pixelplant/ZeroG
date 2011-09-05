@@ -6,14 +6,24 @@
  */
 namespace Sys
 {
+	use \Sys\Config\Module;
+	use \Sys\Config\Router;
+
 	class Config
 	{
 		/**
 		 * Array containing all config xml data, merged
 		 *
-		 * @var <type>
+		 * @var <array>
 		 */
 		protected $configData;
+
+		/**
+		 * Array containing all config data in a flattened array
+		 *
+		 * @var <array>
+		 */
+		protected $flatData;
 
 		/**
 		 * Array holding the module names
@@ -21,6 +31,31 @@ namespace Sys
 		 * @var <array>
 		 */
 		private $modules;
+		
+		/**
+		 * Array holding all the models that can be accesed in the framework
+		 *
+		 * @var <array>
+		 */
+		private $models;
+
+		/**
+		 * Array holding all blocks defined in the xml files
+		 * @var <array>
+		 */
+		private $blocks;
+
+		/**
+		 * Array holding all helpers defined in the xml files
+		 * @var <array>
+		 */
+		private $helpers;
+
+		/**
+		 * The library router
+		 * @var <\Sys\Router>
+		 */
+		private $router;
 
 		/**
 		 * Constructor
@@ -28,15 +63,78 @@ namespace Sys
 		public function __construct()
 		{
 			$this->configData = array();
+			$this->flatData = array();
 			$this->modules = array();
-			
+			$this->blocks = array();
+			$this->helpers = array();
+			$this->models = array();
+
+			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
+			// then we read the system config in app/etc/local.xml
+			$this->load('app/etc/');
+			// and then each module's specific xml file
 			foreach ($this->configData['config']['modules'] as $moduleName => $moduleData)
 			{
-				$moduleCodePool = $moduleData['codePool'];
-				$modulePath = $moduleCodePool.'/'.str_replace('_', '/', $moduleName);
-				$this->load('app/code/'.$modulePath.'/etc/');
+				// there's no use in reading inactive module's data...
+				if ($moduleData['active'] == 'true')
+				{
+					$moduleCodePool = $moduleData['codePool'];
+					$modulePath = $moduleCodePool.'/'.str_replace('_', '/', $moduleName);
+					// read the xml data for each module, and add it to the global config
+					$this->load('app/code/'.$modulePath.'/etc/');
+					// make an object out of each module, for easy handling
+					$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']['modules'][$moduleName]);
+				}
 			}
+			$this->setReferences();
+			
+			// load and execute the Router
+			$this->router = new Router($this);
+			// load all the frontend routes
+			$this->router->loadRules($this->configData['config']['frontend']['routers']);
+			$this->router->execute();
+		}
+
+		private function setReferences()
+		{
+			$this->setBlocksAndHelpers($this->configData);
+		}
+
+		/**
+		 * Set the references from names to classnames for each block
+		 *
+		 * @param <array> $configData
+		 */
+		private function setBlocksAndHelpers($configData)
+		{
+			if (isset($configData['config']['global']['blocks']))
+				foreach ($configData['config']['global']['blocks'] as $key => $block)
+				{
+					foreach ($block as $class)
+					{
+						//$codePool = $configData['config']['module']['codePool'];
+						$parts = explode("\\", $class);
+						$module = $parts[0].'_'.$parts[1];
+						// set the class name for these block types, adding the codepool
+						// and all the other info stored in the module
+						$this->blocks[$key] = $this->getModule($module)->getClassName('Blocks');
+						$this->helpers[$key] = $this->getModule($module)->getClassName('Helpers');
+					}
+				}
+				
+			if (isset($configData['config']['global']['models']))
+				foreach ($configData['config']['global']['models'] as $key => $model)
+				{
+					$parts = explode("\\", $model['class']);
+					$module = $parts[0].'_'.$parts[1];
+					$this->models[$key] = $this->getModule($module)->getClassName('Models');
+					/*print_r($model);
+					foreach ($model as $class)
+					{
+					}*/
+				}
+			//print_r($this->models);
 		}
 
 		/**
@@ -55,13 +153,25 @@ namespace Sys
 					{
 						$moduleConfig = new \Sys\Helper\XmlToArray($path.$file);
 						$moduleArray = $moduleConfig->createArray();
+						$flattenArray = $moduleConfig->getFlatData();
 						$this->configData = array_replace_recursive($this->configData, $moduleArray);
+						$this->flatData = array_replace_recursive($this->flatData, $flattenArray);
 					}
 				}
 				closedir($handle);
 			}
 			else
 				throw new \Sys\Exception('Cannot read xml modules data in app/etc');
+		}
+
+		/**
+		 * Return the router instance
+		 * 
+		 * @return <type>
+		 */
+		public function getRouter()
+		{
+			return $this->router;
 		}
 
 		/**
@@ -72,6 +182,91 @@ namespace Sys
 		public function getData()
 		{
 			return $this->configData;
+		}
+
+		/**
+		 * Return a config variable value by name
+		 * 
+		 * @param <string> $name
+		 * @return <mixed>
+		 */
+		public function getConfig($name = NULL)
+		{
+			if ($name == NULL)
+				return $this;
+			return $this->flatData[$name];
+		}
+
+		/**
+		 * Returns specific module data
+		 *
+		 * @param <string> $name Module name
+		 * @return <\Sys\Config\Module>
+		 */
+		public function getModule($name)
+		{
+			if (isset($this->modules[$name]))
+				return $this->modules[$name];
+			throw
+				new \Sys\Exception("Config class: Could not find module name $name in the loaded modules list");
+		}
+
+		/**
+		 * Transform a block path into a block classname
+		 * @param <type> $name
+		 * @return <type>
+		 */
+		public function getBlockClass($name)
+		{
+			$data = $this->classAddition($name);
+			if (!isset($this->blocks[$data['index']]))
+				throw new \Sys\Exception('The block type '.$data['index'].' is not a registered block');
+			return $this->blocks[$data['index']].$data['class'];
+		}
+		
+		/**
+		 * Returns the classname of a model
+		 * @param <type> $name
+		 * @return <type>
+		 */
+		public function getModelClass($name)
+		{
+			$data = $this->classAddition($name);
+			if (!isset($this->models[$data['index']]))
+				throw new \Sys\Exception('The model name '.$data['index'].' is not a registered model');
+			return $this->models[$data['index']].$data['class'];
+		}
+
+		/**
+		 * Transform a helper path into a helper classname
+		 * @param <string> $name
+		 * @return <string>
+		 */
+		public function getHelperClass($name)
+		{
+			$data = $this->classAddition($name);
+			if (!isset($this->helpers[$data['index']]))
+				throw new \Sys\Exception('The helper type '.$data['index'].' is not a registered helper');
+			return $this->helpers[$data['index']].$data['class'];
+		}
+
+		/**
+		 * Return the relative class name of a block/helper/model. Eg: page/test/user becomes Test\User
+		 * @param <type> $name
+		 * @return <array> Holds index and class name
+		 */
+		private function classAddition($name)
+		{
+			$parts = explode("/", $name);
+			$index = $parts[0];
+			$class = '';
+			for ($i = 1; $i < sizeof($parts); $i++)
+			{
+				$class .= '\\'.ucfirst($parts[$i]);
+			}
+			$data['index'] = $index;
+			$data['class'] = $class;
+			return $data;
 		}
 	}
 }

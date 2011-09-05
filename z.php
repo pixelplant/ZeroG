@@ -57,10 +57,18 @@ namespace
 		private static $config;
 
 		/**
-		 * The library router
-		 * @var <\Sys\Router>
+		 * The internal registry holding array of mixed types
+		 * 
+		 * @var <array>
 		 */
-		private static $router;
+		private static $registry;
+
+		/**
+		 * Current running module name
+		 *
+		 * @var <string>
+		 */
+		private static $module;
 
 		/**
 		 * Current running controller name
@@ -84,33 +92,25 @@ namespace
 			if (self::$instance !== NULL)
 				return;
 
-			/*
-			* Autoload settings. By default every namespace/class path links directly
-			* to the folder/file path for each class. Which it should, like every other
-			* normal programming language.
-			*/
-			\spl_autoload_extensions('.php');
-			\spl_autoload_register();
-
 			// generate the singleton
 			self::$instance = self::getInstance();
 
+			// initialize the registry
+			self::resetRegistry();
+
 			// start global profiler timer
 			self::getProfiler()->start('timer/global');
-$cfg = new \Sys\Config();
-			// load config data
-			self::$config = self::getSingleton('Sys\\Config\\System');
 
-			self::$router = self::getSingleton('Sys\\Config\\Router');
-			self::$router->execute();
+			// load config data + execute router
+			self::$config = self::getSingleton('Sys\\Config');
 
 			// get request parameters
-			self::$params = self::$router->getParams();
+			self::$params = self::getConfig()->getRouter()->getParams();
 			if (self::$params === NULL)
 				throw new \Sys\Exception('No map matched the current route');
 
 			// load locale settings and labels
-			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getParam('locale', self::getConfig('locale')));
+			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getParam('locale', self::getConfig('config/global/default/locale')));
 
 			// run the application
 			self::bootstrap();
@@ -121,17 +121,24 @@ $cfg = new \Sys\Config();
 
 		/**
 		 * Bootstraps the application, meaning it creates the current controller and then calls the specified action
+		 *
 		 * @static
 		 * @return <void>
 		 */
 		final public static function bootstrap()
 		{
+			$module = self::getParam('module');
 			$controller = self::getParam('controller');
 			$action = self::getParam('action');
+			// register also the module, so we can attach it to the modules config class
+			self::register('current_module', self::getConfig()->getModule($module));
+			self::$context = self::registry('current_module')->getRouterName().'_'.$controller.'_'.$action;
+			self::$module = $module;
 			self::$controller = $controller;
+			$action .= 'Action';
 			self::$action = $action;
-			self::$context = $controller.'_'.$action;
-			$className = ucfirst(self::getConfig('app/dir')).'\\Controllers\\'.ucfirst($controller);
+			$className = self::getConfig()->getModule($module)->getControllerClass($controller);
+			//$className = 'App\\Controllers\\'.ucfirst($controller);
 			$class = new $className;
 			// we set as function parameters only the paramters starting from
 			// index 2. we already use the 'controller' and 'action' parameters
@@ -176,6 +183,7 @@ $cfg = new \Sys\Config();
 
 		/**
 		 * Returns a REQUEST parameter specified by Key
+		 *
 		 * @param <type> $key The parameter to return
 		 * @param <type> $defaultValue The default value to set if the REQUEST parameter has no value
 		 * @param <type> $clean Set to TRUE to XSS clean the returned value
@@ -197,11 +205,12 @@ $cfg = new \Sys\Config();
 		 */
 		public static function getContextParams()
 		{
-			return self::$params['context'];
+			return self::$config->getRouter()->getContextParams();
 		}
 
 		/**
 		 * Return the cached context name
+		 *
 		 * @return <string>
 		 */
 		public static function getContext()
@@ -211,6 +220,7 @@ $cfg = new \Sys\Config();
 
 		/**
 		 * Return the profiler
+		 *
 		 * @return <\Sys\Profiler>
 		 */
 		public static function getProfiler()
@@ -228,6 +238,8 @@ $cfg = new \Sys\Config();
 		 * slash, and then followed by the action name to perform.
 		 * Eg: callController('blog/list') would return the data for the blog
 		 * controller, and the list action.
+		 *
+		 * @static
 		 * @param <string> $controller Controller/Action name
 		 */
 		public static function callController($controller)
@@ -239,49 +251,6 @@ $cfg = new \Sys\Config();
 			$className = ucfirst(self::getConfig('ext/dir')).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller);
 			$class = new $className;
 			$class->$action();
-		}
-
-		/**
-		 * Returns a Model class instance
-		 * @static
-		 * @param  <string> $model the models name, eg: 'profiles/user' loads the User class from the 'models/profiles' location
-		 * @return <Model> A Model derived class
-		 */
-		public static function getModel($model)
-		{
-			$model = strtolower($model);
-			$is_extension = FALSE;
-			$directory = self::getConfig('app/dir');
-			// extension models start with 'ext/' so we need to load
-			// them from the extension directory
-			if (substr($model, 0, 4) == 'ext/')
-			{
-				$model = substr($model, 4);
-				$is_extension = TRUE;
-				$directory = self::getConfig('ext/dir');
-			}
-			$table = str_replace("/", "_", $model);
-			if ($is_extension)
-			{
-				$parts = explode('_', $table);
-				$modelName = ucfirst($directory)."\\".ucfirst($parts[0])."\\Models\\".ucfirst($parts[1]);
-			}
-			else
-			{
-				$model = str_replace("/", "\\", ucwords($model));
-				$modelName = ucfirst($directory)."\\Models\\".$model;
-			}
-			$class = new $modelName($table);
-			return $class;
-		}
-
-		public static function getExtension($name)
-		{
-			$parts = explode("/", $name);
-			$table = str_replace("/", "_", strtolower($name));
-			$modelName = ucfirst(self::getConfig('ext/dir')).'\\'.ucfirst($parts[0]).'\\Models\\'.ucfirst($parts[1]);
-			$class = new $modelName($table);
-			return $class;
 		}
 
 		/**
@@ -347,6 +316,38 @@ $cfg = new \Sys\Config();
 		}
 
 		/**
+		 * Store a value in the registry
+		 *
+		 * @param <string> $name
+		 * @param <mixed> $value
+		 */
+		public static function register($name, $value)
+		{
+			self::$registry[$name] = $value;
+		}
+
+		/**
+		 * Return a value from the registry
+		 *
+		 * @param <string> $name
+		 * @return <mixed>
+		 */
+		public static function registry($name)
+		{
+			if (isset(self::$registry[$name]))
+				return self::$registry[$name];
+			return FALSE;
+		}
+
+		/**
+		 * Resets the registry records
+		 */
+		public static function resetRegistry()
+		{
+			self::$registry = array();
+		}
+
+		/**
 		 * Prevent cloning
 		 */
 		final private function __clone() {}
@@ -363,22 +364,37 @@ $cfg = new \Sys\Config();
 		 */
 		public static function getHelper($name)
 		{
-			return self::getSingleton($name);
+			if (substr($name, 0, 4) == "Sys\\")
+				return self::getSingleton($name);
+			return self::getSingleton(self::$config->getHelperClass($name));
+		}
+		
+		/**
+		 * Returns a model class by identifier
+		 *
+		 * @param <string> $name
+		 * @return <mixed>
+		 */
+		public static function getModel($name)
+		{
+			return self::getSingleton(self::$config->getModelClass($name));
 		}
 
 		/**
 		 * Return the value of a config variable
+		 *
 		 * @param <string> $variable
 		 * @return <mixed>
 		 */
-		public static function getConfig($variable)
+		public static function getConfig($variable = NULL)
 		{
-			return self::$config->getData($variable);
+			return self::$config->getConfig($variable);
 		}
 
 
 		/**
-		 * Returns a reference to the current locale class
+		 * Returns a reference to the current locale
+		 *
 		 * @see L()
 		 *
 		 * @return <\Sys\L10n\Locale>
@@ -390,6 +406,7 @@ $cfg = new \Sys\Config();
 
 		/**
 		 * Returns a reference to the current locale class (short version)
+		 *
 		 * @see getLocale()
 		 *
 		 * @return <\Sys\L10n\Locale> Reference to Locale class
@@ -401,6 +418,7 @@ $cfg = new \Sys\Config();
 
 		/**
 		 * Return a translated label, based on the current locale
+		 *
 		 * @param <string> $label The label to translate, in english
 		 * @param <string> $module The module the label belongs to
 		 * @return <string> The translated label

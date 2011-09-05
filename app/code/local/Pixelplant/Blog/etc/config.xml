@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : config.xml
-    Created on : 06 martie 2011, 16:11
-    Author     : radu.mogos
-    Description:
-        Config file for the Pixelplant_Blog extension
+	Document   : config.xml
+	Created on : 06 martie 2011, 16:11
+	Author     : radu.mogos
+	Description:
+		Config file for the Pixelplant_Blog extension
 -->
 
 <config>
@@ -18,7 +18,7 @@
 	<global>
 		<blocks>
 			<blog>
-				<class>Pixelplant\Blog\Block</class>
+				<class>Pixelplant\Blog\Blocks</class>
 			</blog>
 		</blocks>
 
@@ -49,14 +49,20 @@
 
 	<frontend>
 		<routers>
-			<commentboxadmin>
-				<use>frontend</use>
-				<args>
+			<blog>
+				<from>blog</from>
+				<to>
 					<module>Pixelplant_Blog</module>
-					<frontName>blog</frontName>
-				</args>
-			</commentboxadmin>
+				</to>
+			</blog>
 		</routers>
+		<layout>
+			<updates>
+				<blog>
+					<file>blog.xml</file>
+				</blog>
+			</updates>
+		</layout>
 	</frontend>
 
 </config>

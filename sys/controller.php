@@ -14,7 +14,7 @@ namespace Sys
 
 		public function redirect($path)
 		{
-			$redirectTo = \Z::getConfig('base/url').$path;
+			$redirectTo = \Z::getConfig('config/global/default/base/url').$path;
 			header('Location: '.$redirectTo);
 		}
 	}

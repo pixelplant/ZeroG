@@ -74,7 +74,9 @@ namespace Sys\Layout
 		 */
 		protected function getPath()
 		{
-			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'design'.DIRECTORY_SEPARATOR.\Z::getConfig('design/theme').DIRECTORY_SEPARATOR.'template'.DIRECTORY_SEPARATOR;
+			return sprintf('app/design/frontend/%s/%s/template/',
+					\Z::getConfig('config/global/default/package'),
+					\Z::getConfig('config/global/default/template'));
 		}
 
 		/**
@@ -109,7 +111,10 @@ namespace Sys\Layout
 			{
 				ob_start();
 				/*eval("?>".$this->code);*/
-				include $this->template;
+				if ($this->code == NULL)
+					include $this->template;
+				else
+					eval("?>".$this->code);
 				//$renderedCode = ob_get_contents();
 				//ob_end_clean();
 				$renderedCode = ob_get_clean();
@@ -268,6 +273,35 @@ namespace Sys\Layout
 		public function setParent($value)
 		{
 			$this->parent = $value;
+		}
+
+		// shortcuts to be used in every block phtml file
+
+		/**
+		 * Return a specific helper
+		 * @param <string> $name
+		 * @return <Object>
+		 */
+		public function helper($name)
+		{
+			return \Z::getHelper($name);
+		}
+
+		/**
+		 * Return a translated label
+		 *
+		 * @param <string> $label the label to translate
+		 * @param <string> $module the name of the module holding the translation
+		 * @return <string> The translation for the curent locale
+		 */
+		public function __($label, $module = 'global')
+		{
+			return \Z::getLocale()->__($label, $module);
+		}
+
+		public function getUrl($path)
+		{
+			
 		}
 	}
 }

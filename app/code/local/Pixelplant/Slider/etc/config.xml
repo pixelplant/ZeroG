@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : config.xml
-    Created on : 06 martie 2011, 16:11
-    Author     : radu.mogos
-    Description:
-        Config file for the Pixelplant_Slider extension
+	Document   : config.xml
+	Created on : 06 martie 2011, 16:11
+	Author     : radu.mogos
+	Description:
+		Config file for the Pixelplant_Slider extension
 -->
 
 <config>
@@ -43,5 +43,16 @@
 			</slider>
 		</helpers>
 	</global>
+
+	<frontend>
+		<routers>
+			<slider>
+				<from>slider</from>
+				<to>
+					<module>Pixelplant_Slider</module>
+				</to>
+			</slider>
+		</routers>
+	</frontend>
 
 </config>

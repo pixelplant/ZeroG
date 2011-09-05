@@ -54,38 +54,33 @@ namespace Sys\Config
 		protected $routeFound = false;
 
 		/**
-		 * Router xml file, by default it is routes.xml
-		 * @var <string>
+		 * Reference to the main config
+		 *
+		 * @var <\Sys\Config>
 		 */
-		private $file = '';
+		private $config;
 
 		/**
 		 * Constructor
 		 */
-		public function __construct()
+		public function __construct($config)
 		{
 			$request = isset($_GET['path']) ? $_GET['path'] : '/';
 
+			$this->config = $config;
 			$this->requestUri = $request;
 			$this->routes = array();
-
-			$this->file = 'routes.xml';
-
-			// first load the xml rules, which have the highest priority
-			$this->loadRules();
-			// then load the default rules, which have the lowest priority
-			$this->defaultRoutes();
 		}
 
 		private function getPath()
 		{
-			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
+			return 'app'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
 		}
 
 		/**
 		 * Load the rules from routes.xml
 		 */
-		public function loadRules()
+		/*public function loadRules()
 		{
 			$xml = new \SimpleXMLElement($this->getPath().$this->file, NULL, TRUE);
 			if (!$xml)
@@ -116,6 +111,41 @@ namespace Sys\Config
 					$this->params['context'][(string)$key][(string)$translate['from']] = (string)$translate['to'];
 				}
 			}
+		}*/
+
+		/**
+		 * Load all the routing rules specified in the xml files
+		 * 
+		 * @param <array> $routes
+		 */
+		public function loadRules($routes)
+		{
+			// load the custom rules specified per module
+			foreach ($routes as $route)
+			{
+				$toArray = $route['to'];
+				$routeTo = array();
+				foreach ($toArray as $key => $value)
+				{
+					$routeTo[(string)$key] = (string)$value;
+				}
+
+				//$fromArray = $route['from'];
+				$fromArray = array();
+				$fromArray[] = $route['from'];
+				$fromArray[] = $route['from'].'/:controller';
+				$fromArray[] = $route['from'].'/:controller/:action';
+				$routeFrom = array();
+				if (is_array($fromArray))
+					foreach ($fromArray as $from)
+					{
+						$this->map((string)$from, $routeTo);
+					}
+				else
+					$this->map((string)$fromArray, $routeTo);
+			}
+			// then load the default rules, which have the lowest priority
+			$this->defaultRoutes();
 		}
 
 		/**
@@ -133,9 +163,10 @@ namespace Sys\Config
 		 * Set the default routes
 		 */
 		public function defaultRoutes()
-		{
-			$this->map(':controller');
-			$this->map(':controller/:action');
+		{	
+			$this->map(':module');
+			$this->map(':module/:controller');
+			$this->map(':module/:controller/:action');
 		}
 
 		/**
@@ -146,11 +177,13 @@ namespace Sys\Config
 		{
 			$this->routeFound = true;
 			$params = $route->getParams();
+			if (empty($params['module']))
+				$params['module'] = $this->config->getConfig('config/global/default/module');
 			if (empty($params['controller']))
-				$params['controller'] = \Z::getConfig('default/controller');
+				$params['controller'] = $this->config->getConfig('config/global/default/controller');
 			$this->controller = $params['controller'];
 			if (empty($params['action']))
-				$params['action'] = \Z::getConfig('default/action');
+				$params['action'] = $this->config->getConfig('config/global/default/action');
 			$this->action = $params['action'];
 			$this->params['request'] = array_merge($params, $_GET);
 
@@ -183,6 +216,14 @@ namespace Sys\Config
 		public function getParams()
 		{
 			return $this->params;
+		}
+
+		/**
+		 * To be defined
+		 */
+		public function getContextParams()
+		{
+			return array('locale' => array('fr_FR' => 'fr_FR', 'ro_RO' => 'ro'));
 		}
 	}
 }

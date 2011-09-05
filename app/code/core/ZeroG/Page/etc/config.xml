@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<ZeroG_Page>
+			<version>0.1.0</version>
+		</ZeroG_Page>
+	</modules>
+
+	<global>
+		<blocks>
+			<page>
+				<class>ZeroG\Page\Block</class>
+			</page>
+		</blocks>
+	</global>
+</config>

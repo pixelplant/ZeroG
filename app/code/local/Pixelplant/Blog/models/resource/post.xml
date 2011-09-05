@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Document   : post.xml
+	Created on : 28 iulie 2011, 17:05
+	Author     : radu.mogos
+	Description:
+		Each Model must have it's own xml file in which every field of the model,
+		(be it a database model or not) is described: the type of every field,
+		the maximum or minimum length, filters to be applied to these fields, etc
+-->
+
+<fields>
+	<field>
+		<name>author</name>
+		<type>varchar</type>
+		<actions>
+			<minimumLength>0</minimumLength>
+			<maximumLength>40</maximumLength>
+		</actions>
+	</field>
+	<field>
+		<name>title</name>
+		<type>varchar</type>
+		<actions>
+			<postProcess>Sys\Helper\Password::postProcess</postProcess>
+			<minimumLength>5</minimumLength>
+			<maximumLength>40</maximumLength>
+		</actions>
+	</field>
+	<field>
+		<name>text</name>
+		<type>text</type>
+		<actions>
+			<minimumValue>5</minimumValue>
+			<maximumValue>30</maximumValue>
+		</actions>
+		<onChange>
+			<action>Sys\Helper\Html::retrieveAge</action>
+			<params>username,password</params>
+		</onChange>
+	</field>
+</fields>

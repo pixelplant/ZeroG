@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : page.xml
+    Created on : 12 februarie 2011, 23:53
+    Author     : radu.mogos
+    Description:
+        The base xml layout specifying the structure of the page
+-->
+
+<layout version="1.0">
+	<default>
+		<block type="page/html" name="root" template="page/main.phtml">
+			<block type="page/html/head" name="head" template="page/html/head.phtml">
+				<action method="addCss"><stylesheet>css/reset.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/style.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/theme-cool.css</stylesheet></action>
+				<action method="addJs"><script>js/jquery-1.5.min.js</script></action>
+				<action method="addJs"><script>js/ajax_calls.js</script></action>
+				<action method="setTitle"><title>Welcome to ZeroG v1</title></action>
+			</block>
+			<block type="core/base" name="header" template="page/html/header.phtml">
+				<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
+			</block>
+			<block type="core/base" name="left">
+				<block type="core/base" name="ads" />
+				<block type="core/base" name="menu" template="page/left/menu.phtml">
+					<block type="core/base" name="left.mainmenu" template="page/left/menu/mainmenu.phtml"/>
+					<block type="core/base" name="left.submenu" />
+				</block>
+			</block>
+			<block type="core/base" name="right" />
+			<block type="core/base" name="content" template="cms/content.phtml"/>
+			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
+		</block>
+	</default>
+
+	<print>
+		<block type="page/html" name="root" template="page/print.phtml">
+			<action method="addCss"><stylesheet>css/print.css</stylesheet><params>media="print"</params></action>
+		</block>
+	</print>
+
+</layout>

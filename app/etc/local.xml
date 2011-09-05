@@ -1,78 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!--
-	Document   : system.xml
-	Created on : 20 februarie 2011, 19:16
-	Author     : radu.mogos
-	Description:
-		System config file
-	Note       : Please set all boolean fields to either 1 (for true) or 0 (for false)
--->
-
-<system>
-	<!-- Defines the location of the application directory, for the custom
-	models, views controllers of this app -->
-	<config name="app/dir" type="string">app</config>
-
-	<!-- Defines the location of the extensions used by the application -->
-	<config name="ext/dir" type="string">ext</config>
-
-	<!-- The current theme used by the application
-	Located in app/design -->
-	<config name="design/theme" type="string">default</config>
-
-	<!-- default controller and action, in case you forget it in the
-	routes.xml file -->
-	<config name="default/controller" type="string">cms</config>
-	<config name="default/action" type="string">index</config>
-
-	<!-- Defines the base url, used for link generation + css and js linking. 
-	All content images (besides images used in the css) will be linked to
-	MEDIA_URL below -->
-	<config name="base/url" type="string">http://local/zerog/</config>
-
-	<!-- You can define a separate url from where images, pdf files and other
-	editor specific files would be retrieved from, this way you can have
-	parallel downloads of content and assets. Please note that your browser
-	opens up about 2 parallel connections for every domain, so using 1 or
-	2 DIFFERENT hostnames for your media should increase the download speed.
-	This way you can also make sure you're using cookie free domains for
-	your components. -->
-	<config name="media/url" type="string">http://local/zerog/</config>
-
-	<!-- Default controller called when no controller is specified in the url -->
-	<config name="default/controller" type="string">cms</config>
-
-	<!-- The default action called when no action is specified for the
-	controller -->
-	<config name="default/action" type="string">index</config>
-
-	<!-- Developer mode disables all caching. When you are ready for production
-	set this field to 0 -->
-	<config name="developer/mode" type="bool">1</config>
-
-	<!-- enables nice urls or not. if set to TRUE, the mod_rewrite module
-	must be also loaded in Apache. -->
-	<config name="url/rewrite" type="bool">1</config>
-
-	<!-- Locale settings
-	To change the settings for the current locale open the coresponding
-	xx_XX.xml file in sys\locale. Make sure you save the file as UTF-8 -->
-	<config name="locale" type="string">ro_RO</config>
-
-	<!-- Variable used for context switching. By default it's the locale
-	parameter -->
-	<config name="context/variable" type="string">locale</config>
-
-	<!-- Do you need a database connection? -->
-	<config name="use/db" type="bool">0</config>
-
-	<!-- Database DSN connection -->
-	<config name="db/dsn" type="string">mysql:host=localhost;port=3306;dbname=zerog</config>
-
-	<!-- Database user -->
-	<config name="db/user" type="string">root</config>
-
-	<!-- Database password -->
-	<config name="db/password" type="string"></config>
-</system>
+<config>
+	<global>
+		<resources>
+			<db>
+				<table_prefix></table_prefix>
+			</db>
+			<default_setup>
+				<!-- Enter your database settigns here -->
+				<adapter>mysql</adapter>
+				<host>localhost</host>
+				<username>root</username>
+				<password></password>
+				<dbname>zerog</dbname>
+				<!-- Do we need a database connection or not? -->
+				<active>0</active>
+			</default_setup>
+		</resources>
+		<session_save>files</session_save>
+		<default>
+			<!-- everybody knows what this is... -->
+			<base>
+				<url>http://local/zerog/</url>
+			</base>
+			<!-- your media files (images,css,js) can be fetched from another url -->
+			<media>
+				<url>http://local/zerog/</url>
+			</media>
+			<!-- do we need fancy urls? -->
+			<url>
+				<rewrite>true</rewrite>
+			</url>
+			<!-- default website locale -->
+			<locale>ro_RO</locale>
+			<!-- default module loaded when people go to the index page -->
+			<module>Pixelplant_Blog</module>
+			<!-- default controller called for the above module -->
+			<controller>index</controller>
+			<!-- default action called in the above module -->
+			<action>index</action>
+			<!-- below you can find the template settings for your application
+			First is the package (directory name in app/design/BELOW_NAME) -->
+			<package>default</package>
+			<!-- this is the name of the default skin directory, where your
+			images,css,js and other stuff are located
+			Links to skin/frontend/PACKAGE/BELOW_NAME
+			-->
+			<skin>default</skin>
+			<!-- Which layout xml files do we use?
+			Located in app/design/frontend/PACKAGE/BELOW_NAME/layout
+			-->
+			<layout>default</layout>
+			<!-- This is where all our block .phtml files are located
+			Links to app/design/frontend/PACKAGE/BELOW_NAME/template
+			-->
+			<template>default</template>
+			<!-- developer settings
+			mode=TRUE disables all caching (Set to false when in production) -->
+			<developer>
+				<mode>false</mode>
+			</developer>
+			<!-- context sensitive data -->
+			<context>
+				<variable>locale</variable>
+			</context>
+		</default>
+	</global>
+</config>

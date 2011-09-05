@@ -35,13 +35,22 @@ namespace Sys
 		*/
 		public function __construct($file)
 		{
-			$this->file = $file.'.xml';
+			// always load page xml first
+			$this->file = 'page.xml';
 			$this->loadLayout();
+			// then load current module's xml file
+			if (\Z::registry('current_module')->getLayout())
+			{
+				$this->file = \Z::registry('current_module')->getLayout();
+				$this->loadLayout();
+			}
 		}
 
 		protected function getPath()
 		{
-			return \Z::getConfig('app/dir').DIRECTORY_SEPARATOR.'design'.DIRECTORY_SEPARATOR.\Z::getConfig('design/theme').DIRECTORY_SEPARATOR.'layout'.DIRECTORY_SEPARATOR;
+			return sprintf('app/design/frontend/%s/%s/layout/',
+					\Z::getConfig('config/global/default/package'),
+					\Z::getConfig('config/global/default/layout'));
 		}
 
 		/**
@@ -50,14 +59,14 @@ namespace Sys
 		protected function loadLayout()
 		{
 			$custom_page = \Z::getContext();
-			$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('context/variable'));
-			$hash = md5(\Z::getConfig('design/theme') . $this->file . $custom_page . $custom_context);
+			$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('config/global/default/context/variable'));
+			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->file . $custom_page . $custom_context);
 			$cacheXml = 'var/cache/serialized/xml_'.md5($hash).'.ser';
-			if (file_exists($cacheXml))
+			/*if (file_exists($cacheXml))
 			{
 				$this->blocks = unserialize(file_get_contents($cacheXml));
 			}
-			else
+			else*/
 			{
 				$xml = new \SimpleXMLElement($this->getPath().$this->file, NULL, TRUE);
 				// make sure the xml layout file exists and is valid
@@ -104,6 +113,10 @@ namespace Sys
 			// thankfully references are not recursive
 			if ($section->reference)
 				$this->getReferences($section->reference);
+			if ($section->remove)
+			{
+				$this->removeBlocks($section->remove);
+			}
 			//print_r($this->blocks);
 		}
 
@@ -116,13 +129,14 @@ namespace Sys
 		{
 			$name = (string)$xml["name"];
 			$type = (string)$xml["type"];
-			$typeParts = explode("/", $type);
+			/*$typeParts = explode("/", $type);
 			foreach ($typeParts as $key => $value)
 			{
 				$typeParts[$key] = ucfirst($value);
-			}
-			$type = "App\\Models\\Blocks\\".implode("\\", $typeParts);
-			return new $type($name, $xml);
+			}*/
+			$class = \Z::getConfig()->getBlockClass($type);
+			//$type = "App\\Models\\Blocks\\".implode("\\", $typeParts);
+			return new $class($name, $xml);
 		}
 
 		/**
@@ -181,9 +195,27 @@ namespace Sys
 		{
 			foreach ($references as $reference)
 			{
+				// if we have any new blocks added in the reference, process them
 				if ($reference->block)
 					$this->getBlocks($reference->block, (string)$reference["name"]);
+				// if there are actions defined, process these too
 				$this->executeActions($reference);
+			}
+		}
+
+		/**
+		 * Remove all blocks marked by a <remove> tag in the layout xml
+		 * Syntax: <remove name="BLOCK_NAME"/>
+		 * 
+		 * @param \SimpleXmlElement $blocks
+		 */
+		protected function removeBlocks(\SimpleXmlElement $blocks)
+		{
+			// process all <remove> tags found
+			foreach ($blocks as $block)
+			{
+				$name = (string)$block["name"];
+				$this->removeBlock($name);
 			}
 		}
 

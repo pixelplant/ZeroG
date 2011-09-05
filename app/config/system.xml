@@ -29,7 +29,7 @@
 	<!-- Defines the base url, used for link generation + css and js linking. 
 	All content images (besides images used in the css) will be linked to
 	MEDIA_URL below -->
-	<config name="base/url" type="string">http://local/zerog/</config>
+	<config name="base/url" type="string">http://zerog.dev/</config>
 
 	<!-- You can define a separate url from where images, pdf files and other
 	editor specific files would be retrieved from, this way you can have
@@ -38,7 +38,7 @@
 	2 DIFFERENT hostnames for your media should increase the download speed.
 	This way you can also make sure you're using cookie free domains for
 	your components. -->
-	<config name="media/url" type="string">http://local/zerog/</config>
+	<config name="media/url" type="string">http://zerog.dev/</config>
 
 	<!-- Default controller called when no controller is specified in the url -->
 	<config name="default/controller" type="string">cms</config>

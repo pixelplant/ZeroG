@@ -142,7 +142,7 @@ namespace Sys\L10n
 		{
 			$cacheFile = 'var/cache/locale/'.$this->locale.'.lng';
 			$localeDir = 'app/locale/'.$this->locale.'/';
-			if (\Z::getConfig('developer/mode') === TRUE)
+			if (\Z::getConfig('config/global/default/developer/mode') === TRUE)
 				$forceRegenerateCache = TRUE;
 			// if the cache does not exist, regenerate it...
 			if (!file_exists($cacheFile) || $forceRegenerateCache === TRUE)

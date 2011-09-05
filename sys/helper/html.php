@@ -13,10 +13,10 @@ namespace Sys\Helper
 		public function directLink($path, $text, $attributes = '')
 		{
 			// We generate the url, based on wether we want url rewrites or not
-			if (\Z::getConfig('url/rewrite') === TRUE)
-				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('base/url').$path, $attributes, $text);
+			if (\Z::getConfig('config/global/default/url/rewrite') == 'true')
+				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url').$path, $attributes, $text);
 			else
-				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('base/url'), $path, $attributes, $text);
+				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url'), $path, $attributes, $text);
 		}
 
 		/**
@@ -58,12 +58,15 @@ namespace Sys\Helper
 			$filename = md5(implode("", $jsFiles));
 			$file = "var/cache/js/js_".$filename.".js";
 
-			if (\Z::getConfig('developer/mode') === TRUE)
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
+
+			if (\Z::getConfig('config/global/default/developer/mode') == 'true')
 			{
 				$string = '';
 				foreach ($jsFiles as $file)
 				{
-					$string .= sprintf('<script src="%s" type="text/javascript"></script>', \Z::getConfig('base/url').$file);
+					$string .= sprintf('<script src="%s" type="text/javascript"></script>',
+											$skin.$file);
 				}
 				return $string;
 			}
@@ -74,6 +77,7 @@ namespace Sys\Helper
 					$code = '';
 					foreach ($jsFiles as $jsFile)
 					{
+						$jsFile = 'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$jsFile;
 						$codeOriginal = file_get_contents($jsFile);
 						// remove ALL whitespaces from string. Not ok since we also remove spaces
 						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
@@ -93,7 +97,7 @@ namespace Sys\Helper
 					}
 					file_put_contents($file, $code);
 				}
-				return sprintf('<script src="%s" type="text/javascript"></script>', \Z::getConfig('base/url').$file);
+				return sprintf('<script src="%s" type="text/javascript"></script>', \Z::getConfig('config/global/default/base/url').$file);
 			}
 		}
 
@@ -110,7 +114,10 @@ namespace Sys\Helper
 				return;
 			$filename = md5(implode("", $cssFiles));
 			$file = "var/cache/css/css_".$filename.".css";
-			if (\Z::getConfig('developer/mode') === TRUE)
+
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
+
+			if (\Z::getConfig('config/global/default/developer/mode') == 'true')
 			{
 				$string = '';
 				/*for ($i = 0; $i < $cssFiles; $i++)
@@ -120,7 +127,7 @@ namespace Sys\Helper
 				}*/
 				foreach ($cssFiles as $file)
 				{
-					$string .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \Z::getConfig('base/url').$file);
+					$string .= sprintf('<link rel="stylesheet" type="text/css" href="%s" />', $skin.$file);
 				}
 				return $string;
 			}
@@ -131,6 +138,7 @@ namespace Sys\Helper
 					$cssCode = '';
 					foreach ($cssFiles as $cssFile)
 					{
+						$cssFile = 'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$cssFile;
 						$cssOriginal = file_get_contents($cssFile);
 						// remove ALL whitespaces from string. Not ok since we also remove spaces
 						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
@@ -152,7 +160,7 @@ namespace Sys\Helper
 
 						// now, what we also need to do is find all the url() background attributes in the
 						// css and replace their relative/absolute path with our cached absolute path
-						$cssMinified = str_replace('url(../', 'url('.\Z::getConfig('base/url').'public/', $cssMinified);
+						$cssMinified = str_replace('url(../', 'url('.\Z::getConfig('config/global/default/base/url').'public/', $cssMinified);
 						/*$urlMatches = preg_match_all('/url\([^)]+\)/', $cssMinified, $matches);
 						if ($urlMatches > 0)
 						{
@@ -169,7 +177,7 @@ namespace Sys\Helper
 					}
 					file_put_contents($file, $cssCode);
 				}
-				return sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \Z::getConfig('base/url').$file);
+				return sprintf('<link rel="stylesheet" type="text/css" href="%s" />', \Z::getConfig('config/global/default/base/url').$file);
 			}
 		}
 	}

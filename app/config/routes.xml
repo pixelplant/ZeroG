@@ -25,24 +25,37 @@
 	<route>
 		<from>/</from>
 		<to>
-			<controller>cms</controller>
+			<module>Pixelplant_Blog</module>
+			<controller>index</controller>
 			<action>index</action>
+		</to>
+	</route>
+	<route>
+		<from>cms</from>
+		<from>cms/:controller</from>
+		<from>cms/:controller/:action</from>
+		<to>
+			<module>Pixelplant_Blog</module>
 		</to>
 	</route>
 	<!-- sample route which loads the French locale -->
 	<route>
-		<from>fr/:controller/:action</from>
-		<from>fr/:controller</from>
+		<from>fr/:module/:controller/:action</from>
+		<from>fr/:module/:controller</from>
+		<from>fr/:module</from>
 		<to>
 			<locale>fr_FR</locale>
+			<module>Pixelplant_Blog</module>
 		</to>
 	</route>
 	<!-- sample route which loads the romanian locale -->
 	<route>
-		<from>ro/:controller/:action</from>
-		<from>ro/:controller</from>
+		<from>ro/:module/:controller/:action</from>
+		<from>ro/:module/:controller</from>
+		<from>ro/:module</from>
 		<to>
 			<locale>ro_RO</locale>
+			<module>Pixelplant_Blog</module>
 		</to>
 	</route>
 </routes>
