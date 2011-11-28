@@ -163,10 +163,11 @@ namespace Sys\Config
 		 * Set the default routes
 		 */
 		public function defaultRoutes()
-		{	
-			$this->map(':module');
-			$this->map(':module/:controller');
-			$this->map(':module/:controller/:action');
+		{
+			$this->map('/');
+			$this->map(':router');
+			$this->map(':router/:controller');
+			$this->map(':router/:controller/:action');
 		}
 
 		/**
@@ -177,8 +178,10 @@ namespace Sys\Config
 		{
 			$this->routeFound = true;
 			$params = $route->getParams();
+			if (empty($params['router']))
+				$params['router'] = $this->config->getConfig('config/global/default/router');
 			if (empty($params['module']))
-				$params['module'] = $this->config->getConfig('config/global/default/module');
+				$params['module'] = $this->config->getCurrentModule($params['router']);
 			if (empty($params['controller']))
 				$params['controller'] = $this->config->getConfig('config/global/default/controller');
 			$this->controller = $params['controller'];
@@ -187,6 +190,8 @@ namespace Sys\Config
 			$this->action = $params['action'];
 			$this->params['request'] = array_merge($params, $_GET);
 
+			// transforms a controller named "do_something_evil" into "doSomethingEvil"
+			// so we can easily call the action "doSomethingEvilAction"
 			$w = explode('_', $this->controller);
 			foreach($w as $k => $v)
 				$w[$k] = ucfirst($v);

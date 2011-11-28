@@ -10,13 +10,38 @@ namespace Sys\Helper
 	class Html
 	{
 
+		/**
+		 * Return the anchor tag + url and attributes
+		 * @param <string> $path
+		 * @param <string> $text
+		 * @param <string> $attributes
+		 * @return <string>
+		 */
 		public function directLink($path, $text, $attributes = '')
 		{
+			$path = htmlspecialchars($path);
 			// We generate the url, based on wether we want url rewrites or not
 			if (\Z::getConfig('config/global/default/url/rewrite') == 'true')
 				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url').$path, $attributes, $text);
 			else
 				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url'), $path, $attributes, $text);
+		}
+
+		/**
+		 * Return only the link's url
+		 * @param <string> $path
+		 * @return <string>
+		 */
+		public function url($path)
+		{
+			$path = htmlspecialchars($path);
+			// We generate the url, based on wether we want url rewrites or not
+			if (\Z::getConfig('config/global/default/url/rewrite') == 'true')
+			{
+				return \Z::getConfig('config/global/default/base/url').$path;
+			}
+			else
+				return sprintf('%sindex.php?path=%s', \Z::getConfig('config/global/default/base/url'), $path);
 		}
 
 		/**

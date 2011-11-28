@@ -13,4 +13,22 @@
 			</page>
 		</blocks>
 	</global>
+
+	<frontend>
+		<routers>
+			<page>
+				<from>page</from>
+				<to>
+					<module>ZeroG_Page</module>
+				</to>
+			</page>
+		</routers>
+		<!--<layout>
+			<updates>
+				<blog>
+					<file>page.xml</file>
+				</blog>
+			</updates>
+		</layout>-->
+	</frontend>
 </config>

@@ -299,9 +299,14 @@ namespace Sys\Layout
 			return \Z::getLocale()->__($label, $module);
 		}
 
+		/**
+		 * Returns an absolute url containing the module+controller+action to be called
+		 * @param <string> $path
+		 * @return <string>
+		 */
 		public function getUrl($path)
 		{
-			
+			return $this->helper('Sys\Helper\Html')->url($path);
 		}
 	}
 }

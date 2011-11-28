@@ -3,18 +3,36 @@
 	<global>
 		<resources>
 			<db>
-				<table_prefix></table_prefix>
+				<default_setup>
+					<!-- Enter your database settigns here -->
+					<table_prefix></table_prefix>
+					<adapter>mysql</adapter>
+					<host>localhost</host>
+					<username>root</username>
+					<password></password>
+					<dbname>zerog</dbname>
+					<!-- Do we need a database connection or not? -->
+					<active>1</active>
+				</default_setup>
+				<bgame_setup>
+					<!-- Settings for the bgame database -->
+					<table_prefix></table_prefix>
+					<adapter>mysql</adapter>
+					<host>localhost</host>
+					<dbname>bgame</dbname>
+					<password></password>
+					<username>root</username>
+					<active>1</active>
+				</bgame_setup>
+				<sqlite_test>
+					<table_prefix></table_prefix>
+					<adapter>sqlite</adapter>
+					<dsn>sqlite:D:/wamp/bin/sqlite/zerog</dsn>
+					<username></username>
+					<password></password>
+					<active>1</active>
+				</sqlite_test>
 			</db>
-			<default_setup>
-				<!-- Enter your database settigns here -->
-				<adapter>mysql</adapter>
-				<host>localhost</host>
-				<username>root</username>
-				<password></password>
-				<dbname>zerog</dbname>
-				<!-- Do we need a database connection or not? -->
-				<active>0</active>
-			</default_setup>
 		</resources>
 		<session_save>files</session_save>
 		<default>
@@ -33,7 +51,7 @@
 			<!-- default website locale -->
 			<locale>ro_RO</locale>
 			<!-- default module loaded when people go to the index page -->
-			<module>Pixelplant_Blog</module>
+			<router>page</router>
 			<!-- default controller called for the above module -->
 			<controller>index</controller>
 			<!-- default action called in the above module -->
@@ -45,19 +63,19 @@
 			images,css,js and other stuff are located
 			Links to skin/frontend/PACKAGE/BELOW_NAME
 			-->
-			<skin>default</skin>
+			<skin>mobile</skin>
 			<!-- Which layout xml files do we use?
 			Located in app/design/frontend/PACKAGE/BELOW_NAME/layout
 			-->
-			<layout>default</layout>
+			<layout>mobile</layout>
 			<!-- This is where all our block .phtml files are located
 			Links to app/design/frontend/PACKAGE/BELOW_NAME/template
 			-->
-			<template>default</template>
+			<template>mobile</template>
 			<!-- developer settings
 			mode=TRUE disables all caching (Set to false when in production) -->
 			<developer>
-				<mode>false</mode>
+				<mode>true</mode>
 			</developer>
 			<!-- context sensitive data -->
 			<context>

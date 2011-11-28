@@ -2,7 +2,8 @@
 
 namespace Sys
 {
-	class Model
+
+	abstract class Model
 	{
 		/**
 		 * @var <array> Data contained by the models. If a database is used, a direct mapping of the table fields is made
@@ -10,20 +11,21 @@ namespace Sys
 		protected $data = array();
 
 		/**
-		 *
-		 * @var <\Sys\Model\Resource>
-		 */
-		protected $resource = NULL;
-
-		/**
 		 * @var <string> An internal cache of the class name, so we won't have to recall get_class everytime we need this info
 		 */
 		protected $className;
 
-		public function __construct($resourceName)
+		/**
+		 * Is this a new model, or a loaded one?
+		 * @var <bool>
+		 */
+		protected $isNew;
+
+		public function __construct()
 		{
-			$this->resource = \Z::getResource($resourceName);
-			$this->data = $this->resource->getFields();
+			//$this->resource = \Z::getResource($resourceName);
+			//$this->data = $this->resource->getFields();
+			$this->isNew = true;
 			$this->className = get_class($this);
 		}
 
@@ -41,8 +43,17 @@ namespace Sys
 			$field = substr($name, 3);
 			switch ($type)
 			{
-				case 'get': return $this->data[$field]->getValue(); break;
-				case 'set': $this->data[$field]->setValue($arguments[0]); return; break;
+				//case 'get': return $this->data[$field]->getValue(); break;
+				//case 'set': $this->data[$field]->setValue($arguments[0]); return; break;
+				case 'get': 
+					if (!isset($this->data[$field]))
+						throw new \Sys\Exception("Property: $field not found in class: $this->className");
+					return $this->data[$field];
+					break;
+				case 'set':
+					$this->data[$field] = $arguments[0];
+					return $this;
+					break;
 			}
 		}
 

@@ -42,45 +42,52 @@ namespace
 		 * Reference to the Localization/Translation class
 		 * @var <\Sys\L10n\Locale>
 		 */
-		private static $locale;
+		private static $locale = NULL;
 
 		/**
 		 * A shortcut to the Profiler class
 		 * @var <\Sys\Profiler>
 		 */
-		private static $profiler;
+		private static $profiler = NULL;
 
 		/**
 		 * A shortcut to the Configuration class
 		 * @var <App\Config\System>
 		 */
-		private static $config;
+		private static $config = NULL;
 
 		/**
 		 * The internal registry holding array of mixed types
 		 * 
 		 * @var <array>
 		 */
-		private static $registry;
+		private static $registry = array();
 
 		/**
 		 * Current running module name
 		 *
 		 * @var <string>
 		 */
-		private static $module;
+		private static $module = '';
+
+		/**
+		 * An array of the current available db connections
+		 *
+		 * @var <array>
+		 */
+		private static $connections = array();
 
 		/**
 		 * Current running controller name
 		 * @var <string>
 		 */
-		private static $controller;
+		private static $controller = '';
 
 		/**
 		 * Current running action name
 		 * @var <string>
 		 */
-		private static $action;
+		private static $action = '';
 
 		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
@@ -127,24 +134,37 @@ namespace
 		 */
 		final public static function bootstrap()
 		{
+			// current frontend router
+			$router = self::getParam('router');
+			// current module (extension)
 			$module = self::getParam('module');
+			// current controller called in our extension
 			$controller = self::getParam('controller');
+			// current action called in our controller
 			$action = self::getParam('action');
 			// register also the module, so we can attach it to the modules config class
 			self::register('current_module', self::getConfig()->getModule($module));
-			self::$context = self::registry('current_module')->getRouterName().'_'.$controller.'_'.$action;
+			// current context, used to fetch the current layout xml tag
+			self::$context = $router.'_'.$controller.'_'.$action;
+			// store the current module, controller, and action
 			self::$module = $module;
+			// store the current controller
 			self::$controller = $controller;
+			// store the current action
 			$action .= 'Action';
 			self::$action = $action;
-			$className = self::getConfig()->getModule($module)->getControllerClass($controller);
-			//$className = 'App\\Controllers\\'.ucfirst($controller);
-			$class = new $className;
-			// we set as function parameters only the paramters starting from
-			// index 2. we already use the 'controller' and 'action' parameters
-			// so the other parameters are set as function calls
-			//$class->$action(self::getParams(2));
+			// get the controller classname (+path) from the currenly loaded extension
+			$controllerClassName = self::getConfig()->getModule($module)->getControllerClass($controller);
+			if (!class_exists($controllerClassName))
+				throw new Sys\Exception("The controller %s class you are trying to initialize does not exist", $controllerClassName);
+			// instantiate the extension's controller class
+			$class = new $controllerClassName;
+			// send all the GET/POST requests to the controller's action for
+			// further processing
+			if (!method_exists($class, $action))
+				throw new Sys\Exception("The called action %s does not exist on the current controller", $action);
 			$class->$action(self::getParams());
+			// and this is all there is to it. our app should be running now...
 		}
 
 		/**
@@ -316,6 +336,23 @@ namespace
 		}
 
 		/**
+		 * Returns the database connection specified by $connectionName in app/etc/local.xml
+		 *
+		 * @param <string> $connectionName Connection name to use
+		 */
+		public static function getDatabaseConnection($connectionName = 'default_setup')
+		{
+			// Store an array of connections, depending if it's a write/read adapter for example, or
+			// if we have more than one database connections.
+			// The default connection is specified in the "default_setup" adapter
+			if (!array_key_exists($connectionName, self::$connections))
+			{
+				self::$connections[$connectionName] = new \Sys\Database\Pdo($connectionName);
+			}
+			return self::$connections[$connectionName];
+		}
+
+		/**
 		 * Store a value in the registry
 		 *
 		 * @param <string> $name
@@ -377,7 +414,9 @@ namespace
 		 */
 		public static function getModel($name)
 		{
-			return self::getSingleton(self::$config->getModelClass($name));
+			//return self::getSingleton(self::$config->getModelClass($name));
+			$class = self::$config->getModelClass($name);
+			return new $class;
 		}
 
 		/**

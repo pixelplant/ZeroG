@@ -12,10 +12,23 @@ namespace Sys
 	{
 		public function __construct() {}
 
-		public function redirect($path)
+		/**
+		 * Redirect to another page 
+		 * @param <string> $path router/controller/action
+		 */
+		public function redirect($path, $code = 302)
 		{
-			$redirectTo = \Z::getConfig('config/global/default/base/url').$path;
-			header('Location: '.$redirectTo);
+			header('Location: '.$this->getUrl($path), TRUE, $code);
+		}
+
+		/**
+		 * Return the absolute url + the path appended to it
+		 * @param <string> $path
+		 * @return <string>
+		 */
+		public function getUrl($path)
+		{
+			return \Z::getHelper('Sys\Helper\Html')->url($path);
 		}
 	}
 }

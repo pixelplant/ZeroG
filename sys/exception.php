@@ -6,7 +6,7 @@ namespace Sys
 	{
 		//protected $params;
 
-		public function __construct($message = NULL)
+		public function __construct($message = NULL, $parameters = array())
 		{
 			parent::__construct($message);
 			//$this->message = Z::__($message, $params);
@@ -14,7 +14,9 @@ namespace Sys
 		
 		public function __toString()
 		{
-			return "<p style=\"color:red\">".__CLASS__ . ": [{$this->code}]: {$this->message} </p>";
+			return "<pre>".get_class($this) . " '{$this->message}' in {$this->file} (line: {$this->line})\n"
+                                . "{$this->getTraceAsString()}</pre>";
+			//return "<p style=\"color:red\">".__CLASS__ . ": [{$this->code}]: {$this->message} </p>";
 		}
 	}
 }

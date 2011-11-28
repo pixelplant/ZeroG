@@ -84,16 +84,47 @@ namespace Sys
 					// read the xml data for each module, and add it to the global config
 					$this->load('app/code/'.$modulePath.'/etc/');
 					// make an object out of each module, for easy handling
-					$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']['modules'][$moduleName]);
+					//$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']['modules'][$moduleName]);
 				}
+				// unset it if it is NOT ACTIVE
+				else
+					unset ($this->configData['config']['modules'][$moduleName]);
 			}
+			// AFTER we have merged all the xml data, we create the module references
+			// this way if we have any overwrites they will be taken into account
+			foreach ($this->configData['config']['modules'] as $moduleName => $moduleData)
+			{
+				$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']);
+			}
+
+			// Set blocks, layouts, models and other references
 			$this->setReferences();
-			
+
 			// load and execute the Router
 			$this->router = new Router($this);
 			// load all the frontend routes
 			$this->router->loadRules($this->configData['config']['frontend']['routers']);
 			$this->router->execute();
+		}
+
+		/**
+		 * Returns the current module which uses this router name
+		 * @param <string> $routerName
+		 * @return <string>  class name
+		 */
+		public function getCurrentModule($routerName)
+		{
+			$routerName = htmlspecialchars($routerName);
+			if (strpos($routerName, '_'))
+				return $routerName;
+			foreach ($this->configData['config']['frontend']['routers'] as $router)
+			{
+				if ($router['from'] == $routerName)
+				{
+					return $router['to']['module'];
+				}
+			}
+			throw new \Sys\Exception('There is no module mapped to this router name '.$routerName);
 		}
 
 		private function setReferences()
@@ -194,6 +225,9 @@ namespace Sys
 		{
 			if ($name == NULL)
 				return $this;
+			if (!isset($this->flatData[$name]))
+				return NULL;
+				//throw new \Sys\Exception("Config class: The configuration string <b>$name</b> is not set. Check your xml file or database config table for this value");
 			return $this->flatData[$name];
 		}
 

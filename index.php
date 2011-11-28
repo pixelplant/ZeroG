@@ -1,6 +1,6 @@
 <?php
 /**
-* Main entrance point to the zerog framework
+* Main entrance point to the ZeroG framework
  * 
 * @author Radu Mogos <radu.mogos@pixelplant.ro>
 * @copyright Radu Mogos, www.pixelplant.ro
@@ -54,8 +54,8 @@ namespace
 		// initialize and run the framework
 		\Z::run();
 		
-		$test = \Z::getModel('blog/post');
-		echo $test->getName();
+		//$test = \Z::getModel('blog/post');
+		//echo $test->getName();
 
 		// test start - remove these lines
 		/*$res = new Sys\Model\Resource("profiles/user");

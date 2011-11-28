@@ -47,31 +47,29 @@ namespace Sys\Config
 		 *
 		 * @var <string>
 		 */
-		protected $layout;
+		//protected $layout;
 
 		/**
 		 * The router name used for this module
 		 *
 		 * @var <string>
 		 */
-		protected $routerName;
+		//protected $routerName;
 
 		/**
 		 * Constructor
 		 *
 		 * @param <string> $name Module name
-		 * @param <array> $moduleData Module data
+		 * @param <array> $configData XML Module Config data
 		 */
-		public function __construct($name, $moduleData)
+		public function __construct($name, $configData)
 		{
 			$this->name = $name;
-			$this->codePool = $moduleData['codePool'];
-			$this->version = $moduleData['version'];
+			$this->codePool = $configData['modules'][$name]['codePool'];
+			$this->version = $configData['modules'][$name]['version'];
 			$modulePath = explode("_", $this->name);
 			$this->developer = $modulePath[0];
 			$this->extension = $modulePath[1];
-			$this->layout = 'blog.xml';
-			$this->routerName = 'blog';
 		}
 
 		/**
@@ -85,7 +83,7 @@ namespace Sys\Config
 					ucfirst($this->codePool),
 					$this->developer,
 					$this->extension,
-					$path);
+					htmlspecialchars($path));
 		}
 
 		/**
@@ -96,6 +94,7 @@ namespace Sys\Config
 		 */
 		public function getControllerClass($controller = 'index')
 		{
+			$controller = ucfirst($controller);
 			return $this->getClassName('Controllers\\'.$controller);
 		}
 
@@ -168,12 +167,12 @@ namespace Sys\Config
 		 *
 		 * @return <string>
 		 */
-		public function getLayout()
+		/*public function getLayout()
 		{
 			if ($this->layout)
 				return $this->layout;
 			return false;
-		}
+		}*/
 
 		/**
 		 * Gets the router name used by this module
@@ -182,9 +181,9 @@ namespace Sys\Config
 		 *
 		 * @return <string>
 		 */
-		public function getRouterName()
+		/*public function getRouterName()
 		{
 			return $this->routerName;
-		}
+		}*/
 	}
 }

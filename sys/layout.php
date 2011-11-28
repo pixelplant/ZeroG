@@ -39,11 +39,11 @@ namespace Sys
 			$this->file = 'page.xml';
 			$this->loadLayout();
 			// then load current module's xml file
-			if (\Z::registry('current_module')->getLayout())
+			/*if (\Z::registry('current_module')->getLayout())
 			{
 				$this->file = \Z::registry('current_module')->getLayout();
 				$this->loadLayout();
-			}
+			}*/
 		}
 
 		protected function getPath()
@@ -58,9 +58,9 @@ namespace Sys
 		 */
 		protected function loadLayout()
 		{
-			$custom_page = \Z::getContext();
-			$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('config/global/default/context/variable'));
-			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->file . $custom_page . $custom_context);
+			$custom_context = \Z::getContext();
+			//$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('config/global/default/context/variable'));
+			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->file . $custom_context);
 			$cacheXml = 'var/cache/serialized/xml_'.md5($hash).'.ser';
 			/*if (file_exists($cacheXml))
 			{
@@ -85,15 +85,8 @@ namespace Sys
 				// would have it's layout defined in "cms_index"
 				//$custom_page = \Z::getContext();
 				// if the tag is defined in the xml, process it, otherwise just use the default settings
-				if (isset($xml->$custom_page))
-					$this->processSection($xml->$custom_page);
-				// the third check is to see if we have a context
-				// for the context variable. if we do, we load this one too
-				// which would overwrite the default settings
-				// For more info about contexts, please read the documentation
-				//$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('context/variable'));
 				if (isset($xml->$custom_context))
-					$this->processSection($xml->$custom_context);
+					$this->processSection($xml->$custom_context);;
 
 				// cache everything...
 				file_put_contents($cacheXml, serialize($this->blocks));
@@ -197,7 +190,10 @@ namespace Sys
 			{
 				// if we have any new blocks added in the reference, process them
 				if ($reference->block)
-					$this->getBlocks($reference->block, (string)$reference["name"]);
+				foreach ($reference->block as $block)
+				{
+					$this->getBlocks($block, (string)$reference["name"]);
+				}
 				// if there are actions defined, process these too
 				$this->executeActions($reference);
 			}
