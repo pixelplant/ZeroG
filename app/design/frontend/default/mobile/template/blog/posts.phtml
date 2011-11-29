@@ -1,0 +1,6 @@
+<h3>List of blog posts</h3>
+<ul data-role="listview">
+<?php foreach ($this->getAllPosts() as $post): ?>
+<li><?php echo $post; ?></li>
+<?php endforeach; ?>
+</ul>

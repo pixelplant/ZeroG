@@ -1,0 +1,12 @@
+		<div data-role="header" data-position="inline">
+			<h1>Page title</h1>
+			<a href="index.html" data-icon="gear" class="ui-btn-right">Options</a>
+			<div data-role="navbar">
+				<ul>
+					<li><a data-icon="home" href="<?php echo $this->getUrl('page/view/index'); ?>" class="ui-btn-active"><?php echo $this->__('Home'); ?></a></li>
+					<li><a data-icon="star" href="<?php echo $this->getUrl('page/view/extensions'); ?>"><?php echo $this->__('Extensions'); ?></a></li>
+					<li><a data-icon="info" href="<?php echo $this->getUrl('page/view/documentation'); ?>"><?php echo $this->__('Documentation'); ?></a></li>
+					<li><a data-icon="arrow-d" href="<?php echo $this->getUrl('page/view/download'); ?>"><?php echo $this->__('Download'); ?></a></li>
+				</ul>
+			</div><!-- /navbar -->
+		</div><!-- /footer -->

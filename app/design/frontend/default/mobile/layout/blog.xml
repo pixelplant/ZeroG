@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : blog.xml
+    Created on : 6 martie 2011, 16:55
+    Author     : radu.mogos
+    Description:
+        The xml layout file for the Pixelplant_Blog extension
+-->
+
+<layout version="1.0">
+
+	<default>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns.phtml</template></action>
+		</reference>
+		<reference name="right">
+			<action method="setTemplate"><template>page/right.phtml</template></action>
+			<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
+		</reference>
+	</default>
+
+	<blog_index_ajax>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+			<block type="core/base" name="content" template="cms/content.phtml"/>
+		</reference>
+		<remove name="right"/>
+	</blog_index_ajax>
+
+</layout>
