@@ -21,6 +21,24 @@ namespace App\Code\Core\ZeroG\Page\Controllers
 			$this->loadLayout();
 			$this->renderLayout();
 		}
+
+		public function extensionsAction()
+		{
+			$this->loadLayout();
+			$this->renderLayout();
+		}
+
+		public function documentationAction()
+		{
+			$this->loadLayout();
+			$this->renderLayout();
+		}
+
+		public function downloadAction()
+		{
+			$this->loadLayout();
+			$this->renderLayout();
+		}
 	}
 }
 

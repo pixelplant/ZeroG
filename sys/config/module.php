@@ -98,6 +98,10 @@ namespace Sys\Config
 			return $this->getClassName('Controllers\\'.$controller);
 		}
 
+		public function getBlockClass()
+		{
+		}
+
 		/**
 		 * Return the path to a part of this module's location
 		 * @param <string> $additionalPath Add for example 'etc' to return the entire path to this extension's etc folder

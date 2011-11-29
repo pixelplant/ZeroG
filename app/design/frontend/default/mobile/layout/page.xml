@@ -13,6 +13,8 @@
 		<block type="page/html" name="root" template="page/1column.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/jquery.mobile-1.0.min.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/local.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/zerog-theme.min.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
 				<action method="addJs"><script>js/jquery.mobile-1.0.min.js</script></action>
 				<action method="setTitle"><title>Welcome to ZeroG Mobile v1</title></action>
@@ -20,13 +22,7 @@
 			<block type="core/base" name="header" template="page/html/header.phtml">
 				<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
 			</block>
-			<!--<block type="core/base" name="left">
-				<block type="core/base" name="ads" />
-				<block type="core/base" name="menu" template="page/left/menu.phtml">
-					<block type="core/base" name="left.mainmenu" template="page/left/menu/mainmenu.phtml"/>
-					<block type="core/base" name="left.submenu" />
-				</block>
-			</block>-->
+			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />
 			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
@@ -35,9 +31,27 @@
 
 	<page_view_index>
 		<reference name="content">
-			<block type="blog/posts" name="blog.posts" template="blog/posts.phtml"/>
+			<block type="core/base" template="page/content/home.phtml" />
+		</reference>
+		<reference name="messages">
+			<block type="core/base" name="dialog" template="page/content/dialog.phtml"/>
 		</reference>
 	</page_view_index>
+
+	<page_view_extensions>
+		<reference name="content">
+			<block type="core/base" template="page/content/extensions.phtml" />
+		</reference>
+	</page_view_extensions>
+
+	<page_view_documentation>
+		<reference name="content">
+			<block type="core/base" template="page/content/documentation.phtml" />
+		</reference>
+		<reference name="head">
+			<action method="setTitle"><title>ZeroG Documentation</title></action>
+		</reference>
+	</page_view_documentation>
 
 	<print>
 		<block type="page/html" name="root" template="page/print.phtml">

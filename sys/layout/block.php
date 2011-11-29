@@ -308,5 +308,16 @@ namespace Sys\Layout
 		{
 			return $this->helper('Sys\Helper\Html')->url($path);
 		}
+
+		/**
+		 * Returns the absolute path to a resource (image, file, etc)
+		 * located in the current package/theme/skin directory
+		 * @param <string> $resource
+		 * @return <string>
+		 */
+		public function getSkinUrl($resource)
+		{
+			return $this->helper('Sys\Helper\Html')->skinUrl($resource);
+		}
 	}
 }

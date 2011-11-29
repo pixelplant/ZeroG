@@ -44,6 +44,13 @@ namespace Sys\Helper
 				return sprintf('%sindex.php?path=%s', \Z::getConfig('config/global/default/base/url'), $path);
 		}
 
+		public function skinUrl($resource)
+		{
+			$resource = htmlspecialchars($resource);
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$resource;
+			return $skin;
+		}
+
 		/**
 		 * Generate an <a href> tag
 		 * @param <string> $path The url it links to

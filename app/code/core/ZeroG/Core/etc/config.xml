@@ -13,4 +13,16 @@
 			</core>
 		</blocks>
 	</global>
+
+	<frontend>
+        <translate>
+        	<modules>
+        		<ZeroG_Core>
+        			<files>
+        				<default>ZeroG_Core.csv</default>
+        			</files>
+        		</ZeroG_Core>
+        	</modules>
+        </translate>
+	</frontend>
 </config>

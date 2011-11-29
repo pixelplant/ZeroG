@@ -52,6 +52,12 @@ namespace Sys
 		private $helpers;
 
 		/**
+		 * Array holding all csv files used per module
+		 * @var <array>
+		 */
+		private $translations;
+
+		/**
 		 * The library router
 		 * @var <\Sys\Router>
 		 */
@@ -68,6 +74,7 @@ namespace Sys
 			$this->blocks = array();
 			$this->helpers = array();
 			$this->models = array();
+			$this->translations = array();
 
 			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
@@ -129,15 +136,18 @@ namespace Sys
 
 		private function setReferences()
 		{
-			$this->setBlocksAndHelpers($this->configData);
+			// Populates the block, model and translations data from all
+			// the xml configuration files
+			$this->setXmlConfigData($this->configData);
 		}
 
 		/**
-		 * Set the references from names to classnames for each block
+		 * Set the references from names to classnames for each block, model
+		 * translation, etc
 		 *
 		 * @param <array> $configData
 		 */
-		private function setBlocksAndHelpers($configData)
+		private function setXmlConfigData($configData)
 		{
 			if (isset($configData['config']['global']['blocks']))
 				foreach ($configData['config']['global']['blocks'] as $key => $block)
@@ -164,6 +174,16 @@ namespace Sys
 					foreach ($model as $class)
 					{
 					}*/
+				}
+			if (isset($configData['config']['frontend']['translate']['modules']))
+				foreach ($configData['config']['frontend']['translate']['modules'] as $key => $module)
+				{
+					$temp = array();
+					foreach ($module['files'] as $id => $file)
+					{
+						$temp[] = $file;
+					}
+					$this->translations[$key] = $temp;
 				}
 			//print_r($this->models);
 		}

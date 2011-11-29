@@ -6,16 +6,29 @@ namespace Sys\Database
 
 	class Pdo implements CrudInterface
 	{
-		// Database driver used
+		/**
+		 * Database driver used
+		 * @var <mixed>
+		 */
 		protected $driver = NULL;
 		
-		// An array holding a list of fields available for all used tables...
+		/**
+		 * An array holding a list of fields available for all used tables...
+		 * @var <array>
+		 */
 		protected $fields;
+
+		/**
+		 * Table prefix, if any
+		 * @var <string>
+		 */
+		protected $tablePrefix;
 
 		public function __construct($connectionName)
 		{
 			$configString = "config/global/resources/db/$connectionName/";
 			$adapter = \Z::getConfig($configString."adapter");
+			$this->tablePrefix = \Z::getConfig($configString."table_prefix");
 			if (!in_array($adapter, \PDO::getAvailableDrivers()))
 				throw new \Sys\Exception("The driver $connectionName does not seem to be installed on your system.");
 			try
@@ -49,27 +62,50 @@ namespace Sys\Database
 
 		//private function __clone() {}
 
+		/**
+		 * Execute the final query
+		 * @param <string> $query
+		 * @return <resource>
+		 */
 		public function query($query)
 		{
 			return $this->driver->query($query);
 		}
 
+		/**
+		 * Destroy the driver
+		 */
 		public function __destruct()
 		{
 			$this->driver = NULL;
 		}
 
+		/**
+		 * Returns the table name and the table prefix
+		 * @param <string> $table
+		 * @return <string>
+		 */
+		public function getTableName($table)
+		{
+			return $this->tablePrefix.htmlspecialchars($table);
+		}
+
 		public function getCachedFields($table)
 		{
-			return $this->fields[$table];
+			return $this->fields[$this->getTableName($table)];
 		}
-		
+
+		/**
+		 * Cache all table fields in an array
+		 * @param <string> $table
+		 * @return <mixed>
+		 */
 		public function cacheFields($table)
 		{
-			if (!isset($this->fields[$table]))
+			if (!isset($this->fields[$this->getTableName($table)]))
 			{
 				//$table = $this->driver->quote($table);
-				$table = htmlspecialchars($table);
+				$table = $this->getTableName($table);
 				$statement = $this->driver->prepare("select column_name from information_schema.columns where table_name = '$table'");
 				try
 				{
@@ -106,8 +142,7 @@ namespace Sys\Database
 		public function load($table, $id = 0)
 		{
 			$id = (int)$id;
-			//$table = $this->driver->quote($table);
-			$table = htmlspecialchars($table);
+			$table = $this->getTableName($table);
 			$statement = $this->driver->prepare("SELECT * FROM `$table` WHERE id = :id");
 			$statement->execute(array(':id' => $id));
 			$row = $statement->fetch(\PDO::FETCH_ASSOC);
@@ -132,8 +167,7 @@ namespace Sys\Database
 				$statementData[':'.$key] = $value;
 			}
 			$list = implode(",", $list);
-			//$table = $this->driver->quote($table);
-			$table = htmlspecialchars($table);
+			$table = $this->getTableName($table);
 			$statement = $this->driver->prepare("UPDATE `$table` SET $list WHERE id = :id");
 			$statement->execute($statementData);
 		}
@@ -156,10 +190,7 @@ namespace Sys\Database
 			}
 			$fields = implode(",", $fields);
 			$values = implode(",", $values);
-			//$table = $this->driver->quote($table);
-			$table = htmlspecialchars($table);
-			//var_dump($statementData);
-			//die("INSERT INTO `$table` ($fields) VALUES ($values)");
+			$table = $this->getTableName($table);
 			$statement = $this->driver->prepare("INSERT INTO `$table` ($fields) VALUES ($values)");
 			$statement->execute($statementData);
 		}
@@ -174,7 +205,7 @@ namespace Sys\Database
 		public function find($class, $criteria = array())
 		{
 			//$table = $this->driver->quote($criteria['from']);
-			$table = htmlspecialchars($criteria['from']);
+			$table = $this->getTableName($criteria['from']);
 			$query = sprintf("SELECT * FROM `%s` ", $table);
 			if (isset($criteria['where']))
 				$query .= sprintf(' WHERE %s ', $criteria['where']);

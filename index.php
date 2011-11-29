@@ -67,7 +67,7 @@ namespace
 		var_dump($res);*/
 		// test end
 
-		echo \Z::getProfiler();
+		//echo \Z::getProfiler();
 		
 	}
 	catch (\Sys\Exception $e)
