@@ -2,31 +2,33 @@
 
 namespace Sys
 {
-
+/**
+ * The abstract model class
+ */
 	abstract class Model
 	{
 		/**
 		 * @var <array> Data contained by the models. If a database is used, a direct mapping of the table fields is made
 		 */
-		protected $data = array();
+		protected $_data = array();
 
 		/**
 		 * @var <string> An internal cache of the class name, so we won't have to recall get_class everytime we need this info
 		 */
-		protected $className;
+		protected $_className;
 
 		/**
 		 * Is this a new model, or a loaded one?
 		 * @var <bool>
 		 */
-		protected $isNew;
+		protected $_isNew;
 
 		public function __construct()
 		{
 			//$this->resource = \Z::getResource($resourceName);
-			//$this->data = $this->resource->getFields();
-			$this->isNew = true;
-			$this->className = get_class($this);
+			//$this->_data = $this->resource->getFields();
+			$this->_isNew = true;
+			$this->_className = get_class($this);
 		}
 
 		/**
@@ -43,18 +45,51 @@ namespace Sys
 			$field = substr($name, 3);
 			switch ($type)
 			{
-				//case 'get': return $this->data[$field]->getValue(); break;
-				//case 'set': $this->data[$field]->setValue($arguments[0]); return; break;
+				//case 'get': return $this->_data[$field]->getValue(); break;
+				//case 'set': $this->_data[$field]->setValue($arguments[0]); return; break;
 				case 'get': 
-					if (!isset($this->data[$field]))
-						throw new \Sys\Exception("Property: $field not found in class: $this->className");
-					return $this->data[$field];
+					if (!isset($this->_data[$field]))
+						return FALSE;
+						//throw new \Sys\Exception("Property: $field not found in class: $this->_className");
+					return $this->_data[$field];
 					break;
 				case 'set':
-					$this->data[$field] = $arguments[0];
+					$this->_data[$field] = $arguments[0];
 					return $this;
 					break;
 			}
+		}
+
+		/**
+		 * Change all model data using an array
+		 * @param <array> $newData
+		 */
+		public function setData($newData)
+		{
+			if (!is_array($newData))
+				throw new Sys\Exception('The data you want to assign to the model using ->setData must be an array');
+			$this->_data = $newData;
+			return $this;
+		}
+
+		/**
+		 * Add new data to the model or overwrite existing data using an array
+		 * @param <array> $mergeData
+		 */
+		public function mergeData($mergeData)
+		{
+			if (is_array($mergeData))
+				$this->_data = array_merge($this->_data, $mergeData);
+			return $this;
+		}
+
+		/**
+		 * Return the data a model holds
+		 * @return <array>
+		 */
+		public function getData()
+		{
+			return $this->_data;
 		}
 
 		/**
@@ -62,7 +97,7 @@ namespace Sys
 		 */
 		public function getClassName()
 		{
-			return $this->className;
+			return $this->_className;
 		}
 
 	}

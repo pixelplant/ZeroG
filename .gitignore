@@ -1,4 +1,7 @@
 /var/cache/ajax/*
 /var/cache/locale/*
 /var/cache/css/*
+/var/session/*
+/var/cache/js/*
+/var/cache/serialized/*
 !.gitignore

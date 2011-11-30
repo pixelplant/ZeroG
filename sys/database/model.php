@@ -25,6 +25,8 @@ namespace Sys\Database
 		 */
 		protected $pdo = NULL;
 
+		protected $eventPrefix = 'sys_database_model';
+
 		public function __construct($resourceName)
 		{
 			parent::__construct();
@@ -76,6 +78,7 @@ namespace Sys\Database
 		 */
 		public function save()
 		{
+			$this->_beforeSave();
 			if ($this->isNew)
 			{
 				// if it's a new record, insert it
@@ -88,6 +91,44 @@ namespace Sys\Database
 			else
 				// if it's not new, just update it
 				$this->pdo->save($this->table, $this->getId(), $this->data);
+			$this->_afterSave();
+			return $this;
+		}
+
+		/**
+		 * Base event processing array for all models
+		 * @return <array>
+		 */
+		protected function _getEventData()
+		{
+			return array('object' => $this);
+		}
+
+		/**
+		 * Called before a model is saved
+		 */
+		protected function _beforeSave()
+		{
+			\Z::dispatchEvent('model_save_before', $this->_getEventData());
+			\Z::dispatchEvent($this->eventPrefix.'_save_before', $this->_getEventData());
+			return $this;
+		}
+
+		/**
+		 * Called after a model is saved
+		 */
+		protected function _afterSave()
+		{
+			\Z::dispatchEvent('model_save_before', $this->_getEventData());
+			\Z::dispatchEvent($this->eventPrefix.'_save_before', $this->_getEventData());
+			return $this;
+		}
+
+		/**
+		 * Called after data is commited to database
+		 */
+		protected function _afterSaveCommit()
+		{
 			return $this;
 		}
 

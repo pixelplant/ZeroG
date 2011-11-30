@@ -73,6 +73,17 @@ namespace Sys\Config
 		}
 
 		/**
+		 * Return just the code pool path of the module
+		 * @return <type>
+		 */
+		public function getCodePoolPath($path = '')
+		{
+			return sprintf('App\\Code\\%s\\%s',
+					ucfirst($this->codePool),
+					htmlspecialchars($path));
+		}
+
+		/**
 		 * Return a module's class path, for blocks, models, etc
 		 * @param <string> $path
 		 * @return <string>

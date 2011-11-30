@@ -24,11 +24,11 @@
 
 		<models>
 			<blog>
-				<class>Pixelplant\Blog\Model</class>
+				<class>Pixelplant\Blog\Models</class>
 				<resourceModel>blog_mysql</resourceModel>
 			</blog>
 			<blog_mysql>
-				<class>Pixelplant\Blog\Model\Resource</class>
+				<class>Pixelplant\Blog\Models\Resource</class>
 				<entities>
 					<post>
 						<table>blog_post</table>

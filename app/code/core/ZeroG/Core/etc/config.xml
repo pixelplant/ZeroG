@@ -9,9 +9,22 @@
 	<global>
 		<blocks>
 			<core>
-				<class>ZeroG\Core\Block</class>
+				<class>ZeroG\Core\Blocks</class>
 			</core>
 		</blocks>
+		<models>
+			<core>
+				<class>ZeroG\Core\Models</class>
+				<resourceModel>core_mysql</resourceModel>
+			</core>
+		</models>
+        <resources>
+            <core_setup>
+                <setup>
+                    <module>ZeroG_Core</module>
+                </setup>
+            </core_setup>
+        </resources>
 	</global>
 
 	<frontend>

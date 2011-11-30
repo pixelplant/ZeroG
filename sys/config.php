@@ -52,6 +52,12 @@ namespace Sys
 		private $helpers;
 
 		/**
+		 * Currently used only to run the install scripts of each extension
+		 * @var <array>
+		 */
+		private $resources;
+
+		/**
 		 * Array holding all csv files used per module
 		 * @var <array>
 		 */
@@ -75,6 +81,7 @@ namespace Sys
 			$this->helpers = array();
 			$this->models = array();
 			$this->translations = array();
+			$this->resources = array();
 
 			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
@@ -149,6 +156,7 @@ namespace Sys
 		 */
 		private function setXmlConfigData($configData)
 		{
+			// Set blocks data
 			if (isset($configData['config']['global']['blocks']))
 				foreach ($configData['config']['global']['blocks'] as $key => $block)
 				{
@@ -159,22 +167,25 @@ namespace Sys
 						$module = $parts[0].'_'.$parts[1];
 						// set the class name for these block types, adding the codepool
 						// and all the other info stored in the module
-						$this->blocks[$key] = $this->getModule($module)->getClassName('Blocks');
+						$this->blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
 						$this->helpers[$key] = $this->getModule($module)->getClassName('Helpers');
 					}
 				}
-				
+			// Set models data
 			if (isset($configData['config']['global']['models']))
 				foreach ($configData['config']['global']['models'] as $key => $model)
 				{
 					$parts = explode("\\", $model['class']);
 					$module = $parts[0].'_'.$parts[1];
-					$this->models[$key] = $this->getModule($module)->getClassName('Models');
-					/*print_r($model);
+					// TODO: add support for resource model
+					if (isset($model['resourceModel']))
+						$this->models[$key] = $this->getModule($module)->getCodePoolPath($model['class']);
+					/*
 					foreach ($model as $class)
 					{
 					}*/
 				}
+			// Set translation files data
 			if (isset($configData['config']['frontend']['translate']['modules']))
 				foreach ($configData['config']['frontend']['translate']['modules'] as $key => $module)
 				{
@@ -185,7 +196,65 @@ namespace Sys
 					}
 					$this->translations[$key] = $temp;
 				}
-			//print_r($this->models);
+			// Set resources data
+			if (isset($configData['config']['global']['resources']))
+				foreach ($configData['config']['global']['resources'] as $resourceName => $resource)
+				{
+					if (isset($resource['setup']))
+					{
+						foreach ($resource['setup'] as $key => $setup)
+						{
+							$this->resources[$resourceName][$key] = $setup;
+						}
+						$this->resources[$resourceName]['requiredVersion'] =
+								$this->getModule($this->resources[$resourceName]['module'])
+									->getVersion();
+					}
+				}
+		}
+
+		public function getInstaller()
+		{
+			$class = $this->getModelClass('core/installer');
+			return new $class;
+		}
+
+		public function runSetupScripts()
+		{
+			//$installed = \Z::getModel('core/resource')->loadAll();
+			foreach ($this->resources as $name => $resource)
+			{
+				$latestVersion = $resource['requiredVersion'];
+				//$installedVersion = $installed->getResource($name)->getVersion();
+				$installedVersion = '0.0.5';
+				$end = 'install-'.$latestVersion.'.php';
+				$start = 'install-'.$installedVersion.'.php';
+				if ($latestVersion != $installedVersion)
+				{
+					$installerFilesLocation = $this->getModule($resource['module'])->getPath('sql/'.$name.'/');
+					$handle = opendir($installerFilesLocation);
+					if ($handle)
+					{
+						while (FALSE !== ($file = readdir($handle)))
+						{
+							if (strpos($file, '.php') > 0)
+							{
+								if (($file > $start) && ($file <= $end))
+								{
+									//echo $installerFilesLocation.$file.'<br/>';
+									include $installerFilesLocation.$file;
+								}
+								// execute the install script for $file
+								// update the version in the table
+							}
+						}
+						closedir($handle);
+					}
+					else
+						throw new \Sys\Exception('Cannot open the location %s of the setup install scripts',
+							$installerFilesLocation);
+				}
+			}
 		}
 
 		/**
@@ -196,7 +265,8 @@ namespace Sys
 		 */
 		protected function load($path)
 		{
-			if ($handle = opendir($path))
+			$handle = opendir($path);
+			if ($handle)
 			{
 				while (FALSE !== ($file = readdir($handle)))
 				{

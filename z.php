@@ -2,7 +2,7 @@
 /**
  * Main class of the framework. Takes care of bootstraping, routing and models loading.
  * User: radu.mogos
- * Date: 24.10.2010
+ * Date: 30.11.2011
  * Time: 00:36:02
  */
 
@@ -110,6 +110,9 @@ namespace
 
 			// load config data + execute router
 			self::$config = self::getSingleton('Sys\\Config');
+			// TO BE REMOVED
+			//self::$config->runSetupScripts();
+			//self::getSingleton('App\\Code\\Core\\ZeroG\\Core\\Models\\Session')->init('frontend', 'frontend');
 
 			// get request parameters
 			self::$params = self::getConfig()->getRouter()->getParams();
@@ -165,6 +168,12 @@ namespace
 				throw new Sys\Exception("The called action %s does not exist on the current controller", $action);
 			$class->$action(self::getParams());
 			// and this is all there is to it. our app should be running now...
+		}
+
+		public function dispatchEvent($eventName, $eventParams = null)
+		{
+			// check if we have an observer and then execute it
+			// TO BE IMPLEMENTED
 		}
 
 		/**
@@ -251,26 +260,6 @@ namespace
 				self::$profiler = self::$singletons['Sys\\Profiler'];
 			}
 			return self::$profiler;
-		}
-
-		/**
-		 * Execute a controller. The first name is the controller, separated by a
-		 * slash, and then followed by the action name to perform.
-		 * Eg: callController('blog/list') would return the data for the blog
-		 * controller, and the list action.
-		 *
-		 * @static
-		 * @param <string> $controller Controller/Action name
-		 */
-		public static function callController($controller)
-		{
-			$parameters = explode('/', $controller);
-			$extension = $parameters[0];
-			$controller = $parameters[1];
-			$action = $parameters[2];
-			$className = ucfirst(self::getConfig('ext/dir')).'\\'.ucfirst($controller)."\\Controllers\\".ucfirst($controller);
-			$class = new $className;
-			$class->$action();
 		}
 
 		/**

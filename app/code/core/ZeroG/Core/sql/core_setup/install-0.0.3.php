@@ -3,7 +3,7 @@
  * Installer script for the tables in ZeroG_Core version 0.1.0
  */
 
-$installer = $this->getInstaller();
+$installer = \Z::getModel('core/installer');
 
 $installer->newTable('core_resource')
 		->addColumn('code', $installer::TYPE_TEXT, 50, array(
@@ -22,7 +22,7 @@ $installer->newTable('core_cache_option')
 			'nullable' => FALSE,
 			'primary' => TRUE,
 			),'')
-		->addColumn('value', $installer::TYPE_SMALLINT, 3, array())
+		->addColumn('value', $installer::TYPE_INTEGER, 3, array())
 		->setComment('List of objects for which caching is enabled');
 
 $installer->newTable('core_config_data')
@@ -32,36 +32,36 @@ $installer->newTable('core_config_data')
 			'nullable' => FALSE,
 			'identity' => TRUE,
 			),'Configuration string id')
-		->addColumn('path', $installer::TYPE_TEXT, 255, array(
+		->addColumn('path', $identity::TYPE_TEXT, 255, array(
 			'nullable' => FALSE,
 			'default' => ''
 			), 'Configuration path, separated by slashes')
-		->addColumn('website_id', $installer::TYPE_INTEGER, null, array(
+		->addColumn('website_id', $identity::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'default' => 0,
-		),'')
-		->addColumn('value', $installer::TYPE_TEXT, 255, array(
+		))
+		->addColumn('value', $identity::TYPE_TEXT, 255, array(
 			'nullable' => FALSE,
 			'default' => ''
-			),'')
+			))
 		->setComment('ZeroG specific configuration data');
 
 $installer->newTable('core_website')
-		->addColumn('website_id', $installer::TYPE_INTEGER, null, array(
+		->addColumn('website_id', $identity::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,
 			'identity' => TRUE,
 			'unsigned' => TRUE,
 			),'')
-		->addColumn('code', $installer::TYPE_TEXT, 40, array(
+		->addColumn('code', $identity::TYPE_TEXT, 40, array(
 			'default' => '',
 			'nullable' => FALSE,
 		),'')
-		->addColumn('name', $installer::TYPE_TEXT, 60, array(
+		->addColumn('name', $identity::TYPE_TEXT, 60, array(
 			'default' => '',
 			'nullable' => FALSE,
 			),'')
-		->addColumn('is_default', $installer::TYPE_SMALLINT, 1, array(
+		->addColumn('is_default', $identity::TYPE_SMALLINT, 1, array(
 			'nullable' => FALSE,
 			'default' => 0,
 		),'')
@@ -77,5 +77,5 @@ $installer->newTable('core_website')
 				'code' => 'base',
 				'name' => 'Main Website',
 				'is_default' => 1));
-// run the installer code
+
 $installer->run();

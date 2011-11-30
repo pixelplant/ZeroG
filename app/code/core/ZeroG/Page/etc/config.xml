@@ -9,7 +9,7 @@
 	<global>
 		<blocks>
 			<page>
-				<class>ZeroG\Page\Block</class>
+				<class>ZeroG\Page\Blocks</class>
 			</page>
 		</blocks>
 	</global>

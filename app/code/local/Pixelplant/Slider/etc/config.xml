@@ -18,17 +18,17 @@
 	<global>
 		<blocks>
 			<slider>
-				<class>Pixelplant\Slider\Block</class>
+				<class>Pixelplant\Slider\Blocks</class>
 			</slider>
 		</blocks>
 
 		<models>
 			<slider>
-				<class>Pixelplant\Slider\Model</class>
+				<class>Pixelplant\Slider\Models</class>
 				<resourceModel>slider_mysql</resourceModel>
 			</slider>
 			<slider_mysql>
-				<class>Pixelplant\Slider\Model\Resource</class>
+				<class>Pixelplant\Slider\Models\Resource</class>
 				<entities>
 					<record>
 						<table>slider_record</table>

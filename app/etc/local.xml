@@ -48,12 +48,17 @@
 			<url>
 				<rewrite>true</rewrite>
 			</url>
+			<session>
+				<path>var/session</path>
+				<method>files</method>
+				<!--<cache_limiter>nocache</cache_limiter>-->
+			</session>
 			<!-- default website locale -->
 			<locale>ro_RO</locale>
 			<!-- default module loaded when people go to the index page -->
 			<router>page</router>
 			<!-- default controller called for the above module -->
-			<controller>index</controller>
+			<controller>view</controller>
 			<!-- default action called in the above module -->
 			<action>index</action>
 			<!-- below you can find the template settings for your application

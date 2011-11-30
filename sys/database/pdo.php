@@ -30,12 +30,12 @@ namespace Sys\Database
 			$adapter = \Z::getConfig($configString."adapter");
 			$this->tablePrefix = \Z::getConfig($configString."table_prefix");
 			if (!in_array($adapter, \PDO::getAvailableDrivers()))
-				throw new \Sys\Exception("The driver $connectionName does not seem to be installed on your system.");
+				throw new \Sys\Exception("The driver %s does not seem to be installed on your system.", $connectionName);
 			try
 			{
 				if (\Z::getConfig($configString.'active') != 1)
 					throw new \Sys\Exception("If you want to use this database connection name
-							<b>$connectionName</b> then please make sure it is set to active in app/etc/local.xml");
+							<b>%s</b> then please make sure it is set to active in app/etc/local.xml", $connectionName);
 				if (\Z::getConfig($configString.'dsn'))
 					$dsn = \Z::getConfig($configString.'dsn');
 				else
@@ -130,6 +130,11 @@ namespace Sys\Database
 					return $e->getMessage(); //return exception
 				}
 			}
+		}
+
+		public function createTable($createQuery)
+		{
+			$this->driver->prepare($createQuery)->execute();
 		}
 
 		/**

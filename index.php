@@ -30,6 +30,8 @@ namespace
 	set_error_handler('error_handler');
 	register_shutdown_function('shutdown_function');
 
+	define('ROOT_DIRECTORY', realpath(dirname(__FILE__)));
+	set_include_path(get_include_path() . PATH_SEPARATOR . ROOT_DIRECTORY);
 	/*
 	* Autoload settings. By default every namespace/class path links directly
 	* to the folder/file path for each class. Which it should, like every other
