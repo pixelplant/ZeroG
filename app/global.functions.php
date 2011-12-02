@@ -44,6 +44,25 @@ function shutdown_function()
  */
 function linux_spl_autoload($class)
 {
+	if (strpos($class, 'App\\Code') !== FALSE)
+	{
+		$parts = explode('\\', $class);
+		$newClass = array();
+		$index = 0;
+		foreach ($parts as $part)
+		{
+			if ($index < 3 || $index > 4)
+				$newClass[] = strtolower($part);
+			else
+				$newClass[] = $part;
+			$index++;
+		}
+		$class = implode(DIRECTORY_SEPARATOR, $newClass);
+	}
+	else
+		$class = strtolower($class);
+	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
+	include ($class);
 	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
 	include ($class);
 }

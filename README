@@ -1,3 +1,14 @@
+Version 1.0.7 -- 02.12.2011@23:31
+Many new improvements:
+Wrote the basic session handling
+Enhanced the model class
+Added support for localization configuration in xml files
+Added support for event dispatching in extensions
+Included jQuery mobile (version 1.0 stable) and a mobile skin/template/layout
+Updated jQuery to the latest version
+Removed unused files
+Created an installer class to deal with "setup" resources
+
 Version 1.0.6 -- 16.02.2011@01:15
 Removed support for the old Views class. Only layout/blocks structures are used to
 decorate the design.
