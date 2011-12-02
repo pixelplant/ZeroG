@@ -12,7 +12,7 @@
 
 namespace App\Code\Core\ZeroG\Page\Controllers
 {
-	use \Sys\Template\Controller;
+	use \App\Code\Core\ZeroG\Core\Controllers\Front as Controller;
 	
 	class Index extends Controller
 	{

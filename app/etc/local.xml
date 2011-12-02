@@ -38,11 +38,11 @@
 		<default>
 			<!-- everybody knows what this is... -->
 			<base>
-				<url>http://local/zerog/</url>
+				<url>http://localhost/zerog/</url>
 			</base>
 			<!-- your media files (images,css,js) can be fetched from another url -->
 			<media>
-				<url>http://local/zerog/</url>
+				<url>http://localhost/zerog/</url>
 			</media>
 			<!-- do we need fancy urls? -->
 			<url>

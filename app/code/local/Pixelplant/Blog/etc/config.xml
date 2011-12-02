@@ -31,10 +31,10 @@
 				<class>Pixelplant\Blog\Models\Resource</class>
 				<entities>
 					<post>
-						<table>blog_post</table>
+						<table>pixelplant_blog_post</table>
 					</post>
 					<category>
-						<table>blog_category</table>
+						<table>pixelplant_blog_category</table>
 					</category>
 				</entities>
 			</blog_mysql>

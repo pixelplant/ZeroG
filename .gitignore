@@ -4,4 +4,5 @@
 /var/session/*
 /var/cache/js/*
 /var/cache/serialized/*
+/var/backups/*
 !.gitignore

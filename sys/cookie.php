@@ -6,7 +6,7 @@
  * @author radu.mogos
  */
 
-namespace App\Code\Core\ZeroG\Core\Models
+namespace Sys
 {
 	class Cookie extends \Sys\Model {
 		//put your code here

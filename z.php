@@ -170,7 +170,7 @@ namespace
 			// and this is all there is to it. our app should be running now...
 		}
 
-		public function dispatchEvent($eventName, $eventParams = null)
+		public static function dispatchEvent($eventName, $eventParams = null)
 		{
 			// check if we have an observer and then execute it
 			// TO BE IMPLEMENTED
@@ -286,19 +286,24 @@ namespace
 		public static function getSingleton($class, $classParams = '')
 		{
 			//static $singletons = array();
-			if (!array_key_exists($class, self::$singletons)) {
+			$identifier = $class;
+			// if it's a model we created in an extension, the identifier and
+			// class are different, so we need to load the proper class
+			if (strpos($class, '/') !== FALSE)
+				$class = self::$config->getModelClass($identifier);
+			if (!array_key_exists($identifier, self::$singletons)) {
 				//$serializedFile = 'var/cache/serialized/'.md5($class).'.ser';
 				self::getProfiler()->start($class);
 				//if (!file_exists($serializedFile))
 				//{
-					self::$singletons[$class] = new $class($classParams);
+					self::$singletons[$identifier] = new $class($classParams);
 				//	file_put_contents($serializedFile, serialize(self::$singletons[$class]));
 				//}
 				//else
 				//	self::$singletons[$class] = unserialize(file_get_contents($serializedFile));
 				self::getProfiler()->stop($class);
 			}
-			return self::$singletons[$class];
+			return self::$singletons[$identifier];
 		}
 
 		public static function getResource($resourceName)

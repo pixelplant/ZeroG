@@ -6,7 +6,7 @@
  * @author radu.mogos
  */
 
-namespace App\Code\Core\ZeroG\Core\Models
+namespace Sys
 {	
 	class Session extends \Sys\Model
 	{
@@ -32,6 +32,13 @@ namespace App\Code\Core\ZeroG\Core\Models
 
 			switch ($this->getSessionSaveMethod())
 			{
+				case 'memcache':
+					ini_set('session.save_handler', 'memcache');
+					session_save_path($this->getSessionSavePath());
+					break;
+				case 'eaccelerator':
+					ini_set('session.save_handler', 'eaccelerator');
+					break;
 				default:
 					session_module_name($this->getSessionSaveMethod());
 					if (is_writable($this->getSessionSavePath()))

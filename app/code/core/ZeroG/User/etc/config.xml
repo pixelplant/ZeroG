@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<ZeroG_User>
+			<version>0.1.0</version>
+		</ZeroG_User>
+	</modules>
+
+	<global>
+		<blocks>
+			<user>
+				<class>ZeroG\User\Blocks</class>
+			</user>
+		</blocks>
+		<models>
+			<user>
+				<class>ZeroG\User\Models</class>
+				<resourceModel>user_mysql</resourceModel>
+			</user>
+		</models>
+        <resources>
+            <user_setup>
+                <setup>
+                    <module>ZeroG_User</module>
+                </setup>
+            </user_setup>
+        </resources>
+	</global>
+
+	<frontend>
+        <translate>
+        	<modules>
+        		<ZeroG_User>
+        			<files>
+        				<default>ZeroG_User.csv</default>
+        			</files>
+        		</ZeroG_User>
+        	</modules>
+        </translate>
+	</frontend>
+</config>
