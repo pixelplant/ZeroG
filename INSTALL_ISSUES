@@ -1,0 +1,24 @@
+When you first install ZeroG:
+
+1) Rewrites
+----------
+If rewrites do not work, make sure the module mod_rewrite is installed and
+enabled for Apache.
+Create an empty php file, add these lines:
+<?php
+phpinfo();
+?>
+Run the file and search for the text 'mod_rewrite'
+If it's missing, mod_rewrite is not enabled.
+Enable it in httpd.conf by uncommenting the line '#LoadModule mod_rewrite'
+(if the line is present, of course)
+----------
+If the rewrite rules still do not work...
+The rewrite rules are defined in .htaccess (ZeroG\.htaccess)
+Make sure in httpd.conf or whatever your Apache's configuration file is called
+that for your directory where you run the project 'AllowOverride' is set to 'All'
+and not 'None'.
+----------
+The rewriting is enabled/disabled in app/etc/local.xml
+=> config/global/default/url/rewrite
+Set this XML node to FALSE if you do not want or cannot get rewrites to work.
