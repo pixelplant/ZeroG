@@ -18,17 +18,17 @@
 	<global>
 		<blocks>
 			<blog>
-				<class>Pixelplant\Blog\Blocks</class>
+				<class>Pixelplant\Blog\Block</class>
 			</blog>
 		</blocks>
 
 		<models>
 			<blog>
-				<class>Pixelplant\Blog\Models</class>
+				<class>Pixelplant\Blog\Model</class>
 				<resourceModel>blog_mysql</resourceModel>
 			</blog>
 			<blog_mysql>
-				<class>Pixelplant\Blog\Models\Resource</class>
+				<class>Pixelplant\Blog\Model\Resource</class>
 				<entities>
 					<post>
 						<table>pixelplant_blog_post</table>

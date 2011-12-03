@@ -7,7 +7,7 @@
 namespace Sys
 {
 	use \Sys\Config\Module;
-	use \Sys\Config\Router;
+	//use \Sys\Config\Router;
 
 	class Config
 	{
@@ -65,9 +65,9 @@ namespace Sys
 
 		/**
 		 * The library router
-		 * @var <\Sys\Router>
+		 * @var <\Sys\Config\Router>
 		 */
-		private $router;
+		//private $router;
 
 		/**
 		 * Constructor
@@ -115,10 +115,10 @@ namespace Sys
 			$this->setReferences();
 
 			// load and execute the Router
-			$this->router = new Router($this);
+			//$this->router = new Router($this);
 			// load all the frontend routes
-			$this->router->loadRules($this->configData['config']['frontend']['routers']);
-			$this->router->execute();
+			//$this->router->loadRules($this->configData['config']['frontend']['routers']);
+			//$this->router->execute();
 		}
 
 		/**
@@ -168,7 +168,7 @@ namespace Sys
 						// set the class name for these block types, adding the codepool
 						// and all the other info stored in the module
 						$this->blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
-						$this->helpers[$key] = $this->getModule($module)->getClassName('Helpers');
+						$this->helpers[$key] = $this->getModule($module)->getClassName('Helper');
 					}
 				}
 			// Set models data
@@ -288,12 +288,12 @@ namespace Sys
 		/**
 		 * Return the router instance
 		 * 
-		 * @return <type>
+		 * @return <\Sys\Config\Router>
 		 */
-		public function getRouter()
+		/*public function getRouter()
 		{
 			return $this->router;
-		}
+		}*/
 
 		/**
 		 * Return the array config data
@@ -303,6 +303,11 @@ namespace Sys
 		public function getData()
 		{
 			return $this->configData;
+		}
+
+		public function getRouterXmlData()
+		{
+			return $this->configData['config']['frontend']['routers'];
 		}
 
 		/**
@@ -337,8 +342,8 @@ namespace Sys
 
 		/**
 		 * Transform a block path into a block classname
-		 * @param <type> $name
-		 * @return <type>
+		 * @param <string> $name
+		 * @return <\Sys\Layout\Block>
 		 */
 		public function getBlockClass($name)
 		{
@@ -350,8 +355,8 @@ namespace Sys
 		
 		/**
 		 * Returns the classname of a model
-		 * @param <type> $name
-		 * @return <type>
+		 * @param <string> $name
+		 * @return <\Sys\Model>
 		 */
 		public function getModelClass($name)
 		{
@@ -376,7 +381,8 @@ namespace Sys
 
 		/**
 		 * Return the relative class name of a block/helper/model. Eg: page/test/user becomes Test\User
-		 * @param <type> $name
+		 * 
+		 * @param <string> $name
 		 * @return <array> Holds index and class name
 		 */
 		private function classAddition($name)

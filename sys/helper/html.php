@@ -21,7 +21,7 @@ namespace Sys\Helper
 		{
 			$path = htmlspecialchars($path);
 			// We generate the url, based on wether we want url rewrites or not
-			if (\Z::getConfig('config/global/default/url/rewrite') == 'true')
+			if (\Z::getConfig('config/global/default/url/rewrite') == 1)
 				return sprintf('<a href="%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url').$path, $attributes, $text);
 			else
 				return sprintf('<a href="%sindex.php?path=%s" %s>%s</a>', \Z::getConfig('config/global/default/base/url'), $path, $attributes, $text);
@@ -36,7 +36,7 @@ namespace Sys\Helper
 		{
 			$path = htmlspecialchars($path);
 			// We generate the url, based on wether we want url rewrites or not
-			if (\Z::getConfig('config/global/default/url/rewrite') == 'true')
+			if (\Z::getConfig('config/global/default/url/rewrite') == 1)
 			{
 				return \Z::getConfig('config/global/default/base/url').$path;
 			}
@@ -92,7 +92,7 @@ namespace Sys\Helper
 
 			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
 
-			if (\Z::getConfig('config/global/default/developer/mode') == 'true')
+			if (\Z::getConfig('config/global/default/developer/mode') == '1')
 			{
 				$string = '';
 				foreach ($jsFiles as $file)
@@ -149,7 +149,7 @@ namespace Sys\Helper
 
 			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
 
-			if (\Z::getConfig('config/global/default/developer/mode') == 'true')
+			if (\Z::getConfig('config/global/default/developer/mode') == '1')
 			{
 				$string = '';
 				/*for ($i = 0; $i < $cssFiles; $i++)

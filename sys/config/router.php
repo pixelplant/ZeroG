@@ -2,116 +2,108 @@
 
 namespace Sys\Config
 {
-	use \Sys\Config\Router\Route;
 
 	/**
 	 * Router class for ZeroG
-	 * Based mostly on Dan's router:
-	 * http://blog.sosedoff.com/2009/09/20/rails-like-php-url-router/
 	 */
 	class Router
 	{
+		const XML_REWRITE_ENABLED = 'config/global/default/url/rewrite';
+		const XML_DEFAULT_ROUTER = 'config/global/default/router';
+		const XML_DEFAULT_CONTROLLER = 'config/global/default/controller';
+		const XML_DEFAULT_ACTION = 'config/global/default/action';
 		/**
 		 * The request uri ($_GET['path'])
 		 * @var <string>
 		 */
-		protected $requestUri;
+		protected $_requestUri;
 
 		/**
-		 * An array of \Sys\Router\Route objects
-		 * @var <array>
-		 */
-		protected $routes;
-
-		/**
-		 * Thee controller of the executed route
+		 * The controller of the executed route
 		 * @var <string>
 		 */
-		protected $controller;
+		protected $_controller;
 
 		/**
 		 * Camelcase controller name
 		 * @var <string>
 		 */
-		protected $controllerName;
+		protected $_controllerName;
 
 		/**
 		 * The action of the executed route
 		 * @var <string>
 		 */
-		protected $action;
+		protected $_action;
 
 		/**
 		 * Parameters of the matched route
 		 * @var <array>
 		 */
-		protected $params;
+		protected $_params;
+
+		/**
+		 * Array holding all routes found in xml files
+		 *
+		 * @var <array>
+		 */
+		protected $_routes;
 
 		/**
 		 * Did we find a matching route or not?
 		 * @var <bool>
 		 */
-		protected $routeFound = false;
+		protected $_routeFound = false;
 
 		/**
 		 * Reference to the main config
 		 *
 		 * @var <\Sys\Config>
 		 */
-		private $config;
+		private $_config;
 
 		/**
 		 * Constructor
 		 */
-		public function __construct($config)
+		public function __construct()
 		{
-			$request = isset($_GET['path']) ? $_GET['path'] : '/';
+			//$request = isset($_GET['path']) ? $_GET['path'] : '/';
 
-			$this->config = $config;
-			$this->requestUri = $request;
-			$this->routes = array();
+			$this->_config = \Z::getConfig();
+			$this->_requestUri = $this->getRequestUri();
+			$this->_routes = array();
 		}
 
-		private function getPath()
+		public function getRequestUri()
 		{
-			return 'app'.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR;
+			$requestUri = FALSE;
+			if (isset($_SERVER['REQUEST_URI']))
+			{
+				$requestUri = $_SERVER['REQUEST_URI'];
+			}
+			elseif (isset($_SERVER['ORIG_PATH_INFO']))
+			{
+				$requestUri = $_SERVER['ORIG_PATH_INFO'];
+				if (!empty($_SERVER['QUERY_STRING']))
+				{
+					$requestUri .= '?'.$_SERVER['QUERY_STRING'];
+				}
+			}
+            else if (isset($_SERVER['HTTP_X_REWRITE_URL']))
+			{
+                $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+			}
+
+			$host = (empty($_SERVER['HTTP_HOST'])) ? $_SERVER['SERVER_NAME'] : $_SERVER['HTTP_HOST'];
+			$scriptFolder = substr($_SERVER['SCRIPT_NAME'], 0, strrpos($_SERVER['SCRIPT_NAME'], '/'));
+
+			$fullRequest = 'http://'.$host.$requestUri;
+			$baseUrl = 'http://'.$host.$scriptFolder.'/';
+
+			$requestUri = substr($fullRequest, strlen($baseUrl));
+
+			return $requestUri;
 		}
-
-		/**
-		 * Load the rules from routes.xml
-		 */
-		/*public function loadRules()
-		{
-			$xml = new \SimpleXMLElement($this->getPath().$this->file, NULL, TRUE);
-			if (!$xml)
-				throw new \Sys\Exception("Current router file ".$this->getPath().$this->file." does not exist or is not a valid xml");
-
-			foreach ($xml->route as $route)
-			{
-				$toArray = $route->to;
-				$routeTo = array();
-				foreach ($toArray[0] as $key => $value)
-				{
-					$routeTo[(string)$key] = (string)$value;
-				}
-
-				$fromArray = $route->from;
-				$routeFrom = array();
-				foreach ($fromArray as $from)
-				{
-					$this->map((string)$from, $routeTo);
-				}
-			}
-
-			// set the context variables, used for the URI prevariable data
-			foreach ($xml->context->children() as $key => $context)
-			{
-				foreach ($context->translate as $translate)
-				{
-					$this->params['context'][(string)$key][(string)$translate['from']] = (string)$translate['to'];
-				}
-			}
-		}*/
 
 		/**
 		 * Load all the routing rules specified in the xml files
@@ -123,112 +115,80 @@ namespace Sys\Config
 			// load the custom rules specified per module
 			foreach ($routes as $route)
 			{
-				$toArray = $route['to'];
-				$routeTo = array();
-				foreach ($toArray as $key => $value)
+				$currentRoute = (string)$route['from'];
+				foreach ($route['to'] as $key => $value)
 				{
-					$routeTo[(string)$key] = (string)$value;
+					$this->_routes[$currentRoute][(string)$key] = (string)$value;
 				}
-
-				//$fromArray = $route['from'];
-				$fromArray = array();
-				$fromArray[] = $route['from'];
-				$fromArray[] = $route['from'].'/:controller';
-				$fromArray[] = $route['from'].'/:controller/:action';
-				$routeFrom = array();
-				if (is_array($fromArray))
-					foreach ($fromArray as $from)
-					{
-						$this->map((string)$from, $routeTo);
-					}
-				else
-					$this->map((string)$fromArray, $routeTo);
 			}
-			// then load the default rules, which have the lowest priority
-			$this->defaultRoutes();
 		}
 
 		/**
-		 * Map the route to a target
-		 * @param <string> $rule
-		 * @param <array> $target
-		 * @param <array> $conditions
+		 * Setup router parameters
 		 */
-		public function map($rule, $target=array(), $conditions=array())
+		private function setRouterParams()
 		{
-			$this->routes[$rule] = new Route($rule, $this->requestUri, $target, $conditions);
-		}
+			if ($this->_config->getConfig(self::XML_REWRITE_ENABLED) == 1)
+			{
+				$regularUri = $this->_requestUri;
+				$queryPos = strpos($this->_requestUri, '?');
+				if ($queryPos !== FALSE)
+					$regularUri = substr($this->_requestUri, 0, $queryPos);
+				$parts = explode('/', $regularUri);
+				$params = array(
+					'router'      => !empty($parts[0]) ? $parts[0] : $this->_config->getConfig(self::XML_DEFAULT_ROUTER),
+					'controller'  => !empty($parts[1]) ? $parts[1] : $this->_config->getConfig(self::XML_DEFAULT_CONTROLLER),
+					'action'      => !empty($parts[2]) ? $parts[2] : $this->_config->getConfig(self::XML_DEFAULT_ACTION),
+					);
+				$params['module'] = $this->_config->getCurrentModule($params['router']);
+				if (sizeof($parts) > 3)
+					for ($i = 3; $i < sizeof($parts); $i+=2)
+					{
+						$key = $parts[$i];
+						if (isset($parts[$i + 1]))
+							$params[$key] = $parts[$i + 1];
+						else
+							$params[$key] = '';
+					}
+			}
 
-		/**
-		 * Set the default routes
-		 */
-		public function defaultRoutes()
-		{
-			$this->map('/');
-			$this->map(':router');
-			$this->map(':router/:controller');
-			$this->map(':router/:controller/:action');
-		}
-
-		/**
-		 * Setup a \Sys\Routes\Route
-		 * @param <\Sys\Routes\Route> $route
-		 */
-		private function setRoute($route)
-		{
-			$this->routeFound = true;
-			$params = $route->getParams();
-			if (empty($params['router']))
-				$params['router'] = $this->config->getConfig('config/global/default/router');
-			if (empty($params['module']))
-				$params['module'] = $this->config->getCurrentModule($params['router']);
-			if (empty($params['controller']))
-				$params['controller'] = $this->config->getConfig('config/global/default/controller');
-			$this->controller = $params['controller'];
-			if (empty($params['action']))
-				$params['action'] = $this->config->getConfig('config/global/default/action');
-			$this->action = $params['action'];
-			$this->params['request'] = array_merge($params, $_GET);
+			$this->_controller = $params['controller'];
+			$this->_action = $params['action'];
+			$this->_params['request'] = array_merge($params, $_GET);
 
 			// transforms a controller named "do_something_evil" into "doSomethingEvil"
 			// so we can easily call the action "doSomethingEvilAction"
-			$w = explode('_', $this->controller);
+			$w = explode('_', $this->_controller);
 			foreach($w as $k => $v)
 				$w[$k] = ucfirst($v);
-			$this->controllerName = implode('', $w);
+			$this->_controllerName = implode('', $w);
 		}
 
 		/**
-		 * Executes all routes until we find a match
+		 * Executes the found route
 		 */
 		public function execute()
 		{
-			foreach($this->routes as $route)
+			$this->loadRules($this->_config->getRouterXmlData());
+			$this->setRouterParams();
+			if (isset($this->_routes[$this->_params['request']['router']]))
 			{
-				// set the first route matched
-				if ($route->getIsMatched())
-				{
-					$this->setRoute($route);
-					break;
-				}
+				// load this router's settings, if any
+				$this->_params = array_merge($this->_params, $this->_routes[$this->_params['request']['router']]);
 			}
+			else
+				throw new \Sys\Exception('The called router => %s could not be found.
+					Either it is not defined or you mistyped it\'s name',
+						$this->_params['request']['router']);
 		}
 
 		/**
 		 * Return the route parameters
 		 * @return <array>
 		 */
-		public function getParams()
+		public function getParams($type = 'request')
 		{
-			return $this->params;
-		}
-
-		/**
-		 * To be defined
-		 */
-		public function getContextParams()
-		{
-			return array('locale' => array('fr_FR' => 'fr_FR', 'ro_RO' => 'ro'));
+			return $this->_params[$type];
 		}
 	}
 }

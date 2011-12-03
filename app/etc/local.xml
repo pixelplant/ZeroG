@@ -46,7 +46,7 @@
 			</media>
 			<!-- do we need fancy urls? -->
 			<url>
-				<rewrite>true</rewrite>
+				<rewrite>1</rewrite>
 			</url>
 			<session>
 				<path>var/session</path>
@@ -78,9 +78,9 @@
 			-->
 			<template>mobile</template>
 			<!-- developer settings
-			mode=TRUE disables all caching (Set to false when in production) -->
+			mode=1 disables all caching (Set to 0 when in production) -->
 			<developer>
-				<mode>true</mode>
+				<mode>1</mode>
 			</developer>
 			<!-- context sensitive data -->
 			<context>

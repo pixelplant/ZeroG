@@ -9,25 +9,25 @@
 namespace
 {
 
-	class Z
+	final class Z
 	{
 		/**
 		 * The current running ZeroG Instance
 		 * @var <\Sys\ZeroG>
 		 */
-		private static $instance = NULL;
+		private static $_instance = NULL;
 
 		/**
 		 * Holds an array of various singleton classes
 		 * @var <array>
 		 */
-		private static $singletons = array();
+		private static $_singletons = array();
 
 		/**
-		 * The GET and POST parameters combined
-		 * @var <array>
+		 * Request class
+		 * @var <Sys\Request>
 		 */
-		private static $params = array();
+		private static $_request;
 
 		/**
 		 * The current context ZeroG is running in. Eg: cms/index runs in cms_index
@@ -36,13 +36,13 @@ namespace
 		 * should be processed
 		 * @var <string>
 		 */
-		private static $context = '';
+		private static $_context = '';
 
 		/**
 		 * Reference to the Localization/Translation class
 		 * @var <\Sys\L10n\Locale>
 		 */
-		private static $locale = NULL;
+		private static $_locale = NULL;
 
 		/**
 		 * A shortcut to the Profiler class
@@ -68,26 +68,26 @@ namespace
 		 *
 		 * @var <string>
 		 */
-		private static $module = '';
+		private static $_module = '';
 
 		/**
 		 * An array of the current available db connections
 		 *
 		 * @var <array>
 		 */
-		private static $connections = array();
+		private static $_connections = array();
 
 		/**
 		 * Current running controller name
 		 * @var <string>
 		 */
-		private static $controller = '';
+		private static $_controller = '';
 
 		/**
 		 * Current running action name
 		 * @var <string>
 		 */
-		private static $action = '';
+		private static $_action = '';
 
 		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
@@ -96,11 +96,11 @@ namespace
 		 */
 		final public static function run()
 		{
-			if (self::$instance !== NULL)
+			if (self::$_instance !== NULL)
 				return;
 
 			// generate the singleton
-			self::$instance = self::getInstance();
+			self::$_instance = self::getInstance();
 
 			// initialize the registry
 			self::resetRegistry();
@@ -115,12 +115,13 @@ namespace
 			//self::getSingleton('App\\Code\\Core\\ZeroG\\Core\\Models\\Session')->init('frontend', 'frontend');
 
 			// get request parameters
-			self::$params = self::getConfig()->getRouter()->getParams();
-			if (self::$params === NULL)
+			self::getRequest();
+			//self::$params = self::getConfig()->getRouter()->getParams();
+			if (self::getRequest()->getParams() === NULL)
 				throw new \Sys\Exception('No map matched the current route');
 
 			// load locale settings and labels
-			self::$locale = self::getSingleton('Sys\\L10n\\Locale', self::getParam('locale', self::getConfig('config/global/default/locale')));
+			self::$_locale = self::getSingleton('Sys\\L10n\\Locale', self::getRequest()->getParam('locale', self::getConfig('config/global/default/locale')));
 
 			// run the application
 			self::bootstrap();
@@ -138,24 +139,24 @@ namespace
 		final public static function bootstrap()
 		{
 			// current frontend router
-			$router = self::getParam('router');
+			$router = self::getRequest()->getParam('router');
 			// current module (extension)
-			$module = self::getParam('module');
+			$module = self::getRequest()->getParam('module');
 			// current controller called in our extension
-			$controller = self::getParam('controller');
+			$controller = self::getRequest()->getParam('controller');
 			// current action called in our controller
-			$action = self::getParam('action');
+			$action = self::getRequest()->getParam('action');
 			// register also the module, so we can attach it to the modules config class
 			self::register('current_module', self::getConfig()->getModule($module));
 			// current context, used to fetch the current layout xml tag
-			self::$context = $router.'_'.$controller.'_'.$action;
+			self::$_context = $router.'_'.$controller.'_'.$action;
 			// store the current module, controller, and action
-			self::$module = $module;
+			self::$_module = $module;
 			// store the current controller
-			self::$controller = $controller;
+			self::$_controller = $controller;
 			// store the current action
 			$action .= 'Action';
-			self::$action = $action;
+			self::$_action = $action;
 			// get the controller classname (+path) from the currenly loaded extension
 			$controllerClassName = self::getConfig()->getModule($module)->getControllerClass($controller);
 			if (!class_exists($controllerClassName))
@@ -166,7 +167,7 @@ namespace
 			// further processing
 			if (!method_exists($class, $action))
 				throw new Sys\Exception("The called action %s does not exist on the current controller", $action);
-			$class->$action(self::getParams());
+			$class->$action();
 			// and this is all there is to it. our app should be running now...
 		}
 
@@ -177,54 +178,13 @@ namespace
 		}
 
 		/**
-		 * Returns a GET or POST request variable
-		 * 
-		 * @static
-		 * @param <string> $key name of the request variable (from the POST or GET array)
-		 * @param <bool> $clean wether we want a htmlspecialcharsed value or not
-		 * @return <string> the request variable specified by key, or NULL if it does not exist
+		 * Returns the request instance
 		 */
-		public static function getRequest($key, $clean = FALSE)
+		public static function getRequest()
 		{
-			if (array_key_exists($key, self::$params['request']))
-			{
-				if ($clean === TRUE)
-					return htmlspecialchars(self::$params['request'][$key]);
-				else
-					return self::$params['request'][$key];
-			}
-			else
-				return NULL;
-		}
-
-		/**
-		 * Returns the $params array, meaning all GET and POST variables
-		 * 
-		 * @param <integer> $index starting index of the array to return
-		 * @return <array> $_GET parameters, spliced or not
-		 */
-		public static function getParams($index = 0)
-		{
-			if ($index > 0)
-				return array_slice(self::$params['request'], $index);
-			return self::$params['request'];
-		}
-
-		/**
-		 * Returns a REQUEST parameter specified by Key
-		 *
-		 * @param <type> $key The parameter to return
-		 * @param <type> $defaultValue The default value to set if the REQUEST parameter has no value
-		 * @param <type> $clean Set to TRUE to XSS clean the returned value
-		 * @return <mixed> parameter[$key]
-		 */
-		public static function getParam($key, $defaultValue = '', $clean = FALSE)
-		{
-			$processedParam = self::getRequest($key, $clean);
-			if ($processedParam === NULL || $processedParam == '')
-				return $defaultValue;
-			else
-				return $processedParam;
+			if (empty(self::$_request))
+				self::$_request = new \Sys\Request();
+			return self::$_request;
 		}
 
 		/**
@@ -244,7 +204,7 @@ namespace
 		 */
 		public static function getContext()
 		{
-			return self::$context;
+			return self::$_context;
 		}
 
 		/**
@@ -254,10 +214,10 @@ namespace
 		 */
 		public static function getProfiler()
 		{
-			if (!array_key_exists('Sys\\Profiler', self::$singletons))
+			if (!array_key_exists('Sys\\Profiler', self::$_singletons))
 			{
-				self::$singletons['Sys\\Profiler'] = new \Sys\Profiler();
-				self::$profiler = self::$singletons['Sys\\Profiler'];
+				self::$_singletons['Sys\\Profiler'] = new \Sys\Profiler();
+				self::$profiler = self::$_singletons['Sys\\Profiler'];
 			}
 			return self::$profiler;
 		}
@@ -268,12 +228,12 @@ namespace
 		 */
 		final public static function getInstance()
 		{
-			if (self::$instance === NULL)
+			if (self::$_instance === NULL)
 			{
-				self::$instance = new Z();
+				self::$_instance = new Z();
 				//self::init();
 			}
-			return self::$instance;
+			return self::$_instance;
 		}
 
 		/**
@@ -285,25 +245,25 @@ namespace
 		 */
 		public static function getSingleton($class, $classParams = '')
 		{
-			//static $singletons = array();
+			//static $_singletons = array();
 			$identifier = $class;
 			// if it's a model we created in an extension, the identifier and
 			// class are different, so we need to load the proper class
 			if (strpos($class, '/') !== FALSE)
 				$class = self::$config->getModelClass($identifier);
-			if (!array_key_exists($identifier, self::$singletons)) {
+			if (!array_key_exists($identifier, self::$_singletons)) {
 				//$serializedFile = 'var/cache/serialized/'.md5($class).'.ser';
 				self::getProfiler()->start($class);
 				//if (!file_exists($serializedFile))
 				//{
-					self::$singletons[$identifier] = new $class($classParams);
-				//	file_put_contents($serializedFile, serialize(self::$singletons[$class]));
+					self::$_singletons[$identifier] = new $class($classParams);
+				//	file_put_contents($serializedFile, serialize(self::$_singletons[$class]));
 				//}
 				//else
-				//	self::$singletons[$class] = unserialize(file_get_contents($serializedFile));
+				//	self::$_singletons[$class] = unserialize(file_get_contents($serializedFile));
 				self::getProfiler()->stop($class);
 			}
-			return self::$singletons[$identifier];
+			return self::$_singletons[$identifier];
 		}
 
 		public static function getResource($resourceName)
@@ -317,7 +277,7 @@ namespace
 		 */
 		public static function getController()
 		{
-			return self::$controller;
+			return self::$_controller;
 		}
 
 		/**
@@ -326,7 +286,7 @@ namespace
 		 */
 		public static function getAction()
 		{
-			return self::$action;
+			return self::$_action;
 		}
 
 		/**
@@ -339,11 +299,11 @@ namespace
 			// Store an array of connections, depending if it's a write/read adapter for example, or
 			// if we have more than one database connections.
 			// The default connection is specified in the "default_setup" adapter
-			if (!array_key_exists($connectionName, self::$connections))
+			if (!array_key_exists($connectionName, self::$_connections))
 			{
-				self::$connections[$connectionName] = new \Sys\Database\Pdo($connectionName);
+				self::$_connections[$connectionName] = new \Sys\Database\Pdo($connectionName);
 			}
-			return self::$connections[$connectionName];
+			return self::$_connections[$connectionName];
 		}
 
 		/**
@@ -434,7 +394,7 @@ namespace
 		 */
 		public static function getLocale()
 		{
-			return self::$locale;
+			return self::$_locale;
 		}
 
 		/**
@@ -446,7 +406,7 @@ namespace
 		 */
 		public static function L()
 		{
-			return self::$locale;
+			return self::$_locale;
 		}
 
 		/**
@@ -458,7 +418,7 @@ namespace
 		 */
 		public static function __($label, $module = 'global')
 		{
-			return self::$locale->__($label, $module);
+			return self::$_locale->__($label, $module);
 		}
 
 	}

@@ -8,6 +8,7 @@ namespace Sys
 
 		public function __construct($message = NULL, $parameters = array())
 		{
+			$message = sprintf($message, $parameters);
 			parent::__construct($message);
 			//$this->message = Z::__($message, $params);
 		}

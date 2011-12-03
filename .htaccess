@@ -53,11 +53,11 @@
 	Options +FollowSymLinks
 	RewriteEngine on
 
-	### set the rewrite base, if necesary
-	#RewriteBase /
+	### set the rewrite base, if necesary (this is case sensitive)
+	#RewriteBase /zerog/
 
 	### allow fetching of public files
-	RewriteCond %{REQUEST_URI} !^/(public)/
+	RewriteCond %{REQUEST_URI} !^/(media|skin|js)/
 
 	### no rewrite for existing files/links/directories
 	RewriteCond %{REQUEST_FILENAME} !-f
@@ -67,7 +67,8 @@
 	### rewrite everything to index.php
 	### add a / (slash) before index.php if it does not work on Linux
 	### or uncomment the RewriteBase property
-	RewriteRule ^(.+)$ index.php?path=$1 [NC,L]
+	#RewriteRule ^(.+)$ index.php?path=$1 [NC,L]
+	RewriteRule .* index.php [L]
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -120,8 +121,8 @@
 	AddDefaultCharset UTF-8
 
 	### if you need to process access with a htpasswd file, uncomment the line below
-	#Order allow,deny
-	#Allow from all
+	Order allow,deny
+	Allow from all
 	#AuthType Basic
 	#AuthName "Access restricted"
 	#AuthUserFile /my/custom/path/to/.htpasswd

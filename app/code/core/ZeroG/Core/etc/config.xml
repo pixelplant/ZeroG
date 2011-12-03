@@ -9,14 +9,40 @@
 	<global>
 		<blocks>
 			<core>
-				<class>ZeroG\Core\Blocks</class>
+				<class>ZeroG\Core\Block</class>
 			</core>
 		</blocks>
 		<models>
 			<core>
-				<class>ZeroG\Core\Models</class>
-				<resourceModel>core_mysql</resourceModel>
+				<class>ZeroG\Core\Model</class>
+				<resourceModel>core_resource</resourceModel>
 			</core>
+			<core_resource>
+				<class>ZeroG\Core\Models\Resource</class>
+				<entities>
+					<website>
+						<table>core_website</table>
+					</website>
+					<website_group>
+						<table>core_website_group</table>
+					</website_group>
+					<website_view>
+						<table>core_website_view</table>
+					</website_view>
+					<email_template>
+						<table>core_email_template</table>
+					</email_template>
+					<session>
+						<table>core_session</table>
+					</session>
+					<config_data>
+						<table>core_config_data</table>
+					</config_data>
+					<url_rewrite>
+						<table>core_url_rewrite</table>
+					</url_rewrite>
+				</entities>
+			</core_resource>
 		</models>
         <resources>
             <core_setup>

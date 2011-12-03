@@ -106,11 +106,18 @@ namespace Sys\Config
 		public function getControllerClass($controller = 'index')
 		{
 			$controller = ucfirst($controller);
-			return $this->getClassName('Controllers\\'.$controller);
+			return $this->getClassName('Controller\\'.$controller);
 		}
 
-		public function getBlockClass()
+		/**
+		 * Returns the classpath of a required block
+		 * @param <string> $block
+		 * @return <string>
+		 */
+		public function getBlockClass($block)
 		{
+			$controller = ucfirst($block);
+			return $this->getClassName('Block\\'.$block);
 		}
 
 		/**
