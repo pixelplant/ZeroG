@@ -135,7 +135,7 @@ $installer->newTable($installer->getResourceTable('core_resource/website_view'))
 		));
 
 // core_email_template - holds a list of all email templates you could use in your app
-$installer->newTable($installer->getResourceTable('core_email_template'))
+$installer->newTable($installer->getResourceTable('core_resource/email_template'))
 		->addColumn('template_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,
@@ -165,7 +165,7 @@ $installer->newTable($installer->getResourceTable('core_resource/session'))
 			'nullable' => FALSE,
 			'unsigned' => TRUE
 			),'Timestamp when session expires')
-		->addColumn('session_data', $installer::TYPE_BLOG, null, array(
+		->addColumn('session_data', $installer::TYPE_BLOB, null, array(
 			'nullable' => FALSE
 			),'Session data');
 

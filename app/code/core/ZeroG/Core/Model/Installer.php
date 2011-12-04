@@ -16,6 +16,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		const TYPE_TIMESTAMP = 'timestamp';
 		const TYPE_VARCHAR = 'varchar';
 		const TYPE_TEXT = 'text';
+		const TYPE_BLOB = 'blob';
 
 		const OP_INSERT = 'create';
 		const OP_UPDATE = 'alter';
@@ -129,8 +130,10 @@ namespace App\Code\Core\ZeroG\Core\Model
 			$column = \Z::getModel('core/column');
 			$column->setName($name);
 			// This needs to be rewritten in the future to support other PDO's than MySQL
-			if ($type == self::TYPE_TEXT && $length <= 255)
+			if ($type == self::TYPE_TEXT && $length <= 255 && $length !== null)
 				$type = self::TYPE_VARCHAR;
+			if ($type == self::TYPE_INTEGER && $length === null)
+				$length = 11;
 			if (($type == self::TYPE_INTEGER || $type == self::TYPE_SMALLINT) && $length <= 1)
 				$type = self::TYPE_TINYINT;
 			$column->setType($type)
@@ -164,6 +167,17 @@ namespace App\Code\Core\ZeroG\Core\Model
 		{
 			$this->tables[$this->currentTable][$this->operation]['comment'] = $comment;
 			return $this;
+		}
+
+		/**
+		 * Returns the table referenced by this resource
+		 *
+		 * @param <string> $resourceName
+		 * @return <string>
+		 */
+		public function getResourceTable($resourceName)
+		{
+			return \Z::getConfig()->getResourceTable($resourceName);
 		}
 
 		/**
@@ -223,6 +237,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 									// Add the string separator for strings
 									foreach ($row as $key => $value)
 									{
+										//$value = $this->pdo->quote($value);
 										if (gettype($value) == 'string')
 										{
 											$row[$key] = "'$value'";
@@ -262,7 +277,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 			}
 			else
 				throw new \Sys\Exception("The query in the installer %s is empty.",
-						get_class($this));
+						$this->getClassName());
 		}
 	}
 }

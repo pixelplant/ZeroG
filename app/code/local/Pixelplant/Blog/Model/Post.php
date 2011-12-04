@@ -4,10 +4,10 @@ namespace App\Code\Local\Pixelplant\Blog\Model
 {
 	class Post extends \Sys\Database\Model
 	{
-		public function __construct()
+		protected function _construct()
 		{
-			//parent::__construct('resource/post');
-			parent::__construct('blog_record');
+			parent::_construct();
+			$this->_init('blog/post', 'post_id');
 			//$this->data['name'] = new \Sys\Model\Resource\Field\Varchar('name');
 			//$this->data['name']->setValue('JOONAH');
 		}

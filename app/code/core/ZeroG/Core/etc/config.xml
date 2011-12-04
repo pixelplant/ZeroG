@@ -18,8 +18,14 @@
 				<resourceModel>core_resource</resourceModel>
 			</core>
 			<core_resource>
-				<class>ZeroG\Core\Models\Resource</class>
+				<class>ZeroG\Core\Model\Resource</class>
 				<entities>
+					<resource>
+						<table>core_resource</table>
+					</resource>
+					<cache_option>
+						<table>core_cache_option</table>
+					</cache_option>
 					<website>
 						<table>core_website</table>
 					</website>

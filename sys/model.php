@@ -25,10 +25,13 @@ namespace Sys
 
 		public function __construct()
 		{
-			//$this->resource = \Z::getResource($resourceName);
-			//$this->_data = $this->resource->getFields();
-			$this->_isNew = true;
+			$this->_construct();
+		}
+
+		protected function _construct()
+		{
 			$this->_className = get_class($this);
+			$this->_isNew = true;
 		}
 
 		/**
@@ -40,9 +43,10 @@ namespace Sys
 		 */
 		public function __call($name, $arguments)
 		{
-			$name = strtolower($name);
-			$type = substr($name, 0, 3);
+			$type = strtolower(substr($name, 0, 3));
 			$field = substr($name, 3);
+			// camelcase to underscore
+			$field = strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $field));
 			switch ($type)
 			{
 				//case 'get': return $this->_data[$field]->getValue(); break;
@@ -64,12 +68,13 @@ namespace Sys
 		 * Change all model data using an array
 		 * @param <array> $newData
 		 */
-		public function setData($newData)
+		public function setData($field, $value)
 		{
-			if (!is_array($newData))
+			$this->_data[$field] = $value;
+			/*if (!is_array($newData))
 				throw new Sys\Exception('The data you want to assign to the model using ->setData must be an array');
 			$this->_data = $newData;
-			return $this;
+			return $this;*/
 		}
 
 		/**
@@ -87,9 +92,12 @@ namespace Sys
 		 * Return the data a model holds
 		 * @return <array>
 		 */
-		public function getData()
+		public function getData($field = '')
 		{
-			return $this->_data;
+			if ($field == '')
+				return $this->_data;
+			else
+				return $this->_data[$field];
 		}
 
 		/**

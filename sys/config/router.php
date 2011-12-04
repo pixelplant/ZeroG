@@ -154,7 +154,8 @@ namespace Sys\Config
 
 			$this->_controller = $params['controller'];
 			$this->_action = $params['action'];
-			$this->_params['request'] = array_merge($params, $_GET);
+			// merge the GET and POST variables
+			$this->_params['request'] = array_merge($params, $_GET, $_POST);
 
 			// transforms a controller named "do_something_evil" into "doSomethingEvil"
 			// so we can easily call the action "doSomethingEvilAction"

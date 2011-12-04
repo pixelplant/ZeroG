@@ -16,52 +16,52 @@ namespace Sys
 		 *
 		 * @var <array>
 		 */
-		protected $configData;
+		protected $_configData;
 
 		/**
 		 * Array containing all config data in a flattened array
 		 *
 		 * @var <array>
 		 */
-		protected $flatData;
+		protected $_flatData;
 
 		/**
 		 * Array holding the module names
 		 *
 		 * @var <array>
 		 */
-		private $modules;
+		private $_modules;
 		
 		/**
 		 * Array holding all the models that can be accesed in the framework
 		 *
 		 * @var <array>
 		 */
-		private $models;
+		private $_models;
 
 		/**
 		 * Array holding all blocks defined in the xml files
 		 * @var <array>
 		 */
-		private $blocks;
+		private $_blocks;
 
 		/**
 		 * Array holding all helpers defined in the xml files
 		 * @var <array>
 		 */
-		private $helpers;
+		private $_helpers;
 
 		/**
 		 * Currently used only to run the install scripts of each extension
 		 * @var <array>
 		 */
-		private $resources;
+		private $_resources;
 
 		/**
 		 * Array holding all csv files used per module
 		 * @var <array>
 		 */
-		private $translations;
+		private $_translations;
 
 		/**
 		 * The library router
@@ -74,21 +74,21 @@ namespace Sys
 		 */
 		public function __construct()
 		{
-			$this->configData = array();
-			$this->flatData = array();
-			$this->modules = array();
-			$this->blocks = array();
-			$this->helpers = array();
-			$this->models = array();
-			$this->translations = array();
-			$this->resources = array();
+			$this->_configData = array();
+			$this->_flatData = array();
+			$this->_modules = array();
+			$this->_blocks = array();
+			$this->_helpers = array();
+			$this->_models = array();
+			$this->_translations = array();
+			$this->_resources = array();
 
 			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
 			// then we read the system config in app/etc/local.xml
 			$this->load('app/etc/');
 			// and then each module's specific xml file
-			foreach ($this->configData['config']['modules'] as $moduleName => $moduleData)
+			foreach ($this->_configData['config']['modules'] as $moduleName => $moduleData)
 			{
 				// there's no use in reading inactive module's data...
 				if ($moduleData['active'] == 'true')
@@ -98,27 +98,21 @@ namespace Sys
 					// read the xml data for each module, and add it to the global config
 					$this->load('app/code/'.$modulePath.'/etc/');
 					// make an object out of each module, for easy handling
-					//$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']['modules'][$moduleName]);
+					//$this->_modules[$moduleName] = new Module($moduleName, $this->_configData['config']['modules'][$moduleName]);
 				}
 				// unset it if it is NOT ACTIVE
 				else
-					unset ($this->configData['config']['modules'][$moduleName]);
+					unset ($this->_configData['config']['modules'][$moduleName]);
 			}
 			// AFTER we have merged all the xml data, we create the module references
 			// this way if we have any overwrites they will be taken into account
-			foreach ($this->configData['config']['modules'] as $moduleName => $moduleData)
+			foreach ($this->_configData['config']['modules'] as $moduleName => $moduleData)
 			{
-				$this->modules[$moduleName] = new Module($moduleName, $this->configData['config']);
+				$this->_modules[$moduleName] = new Module($moduleName, $this->_configData['config']);
 			}
 
 			// Set blocks, layouts, models and other references
 			$this->setReferences();
-
-			// load and execute the Router
-			//$this->router = new Router($this);
-			// load all the frontend routes
-			//$this->router->loadRules($this->configData['config']['frontend']['routers']);
-			//$this->router->execute();
 		}
 
 		/**
@@ -131,7 +125,7 @@ namespace Sys
 			$routerName = htmlspecialchars($routerName);
 			if (strpos($routerName, '_'))
 				return $routerName;
-			foreach ($this->configData['config']['frontend']['routers'] as $router)
+			foreach ($this->_configData['config']['frontend']['routers'] as $router)
 			{
 				if ($router['from'] == $routerName)
 				{
@@ -145,7 +139,7 @@ namespace Sys
 		{
 			// Populates the block, model and translations data from all
 			// the xml configuration files
-			$this->setXmlConfigData($this->configData);
+			$this->setXmlConfigData($this->_configData);
 		}
 
 		/**
@@ -167,8 +161,8 @@ namespace Sys
 						$module = $parts[0].'_'.$parts[1];
 						// set the class name for these block types, adding the codepool
 						// and all the other info stored in the module
-						$this->blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
-						$this->helpers[$key] = $this->getModule($module)->getClassName('Helper');
+						$this->_blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
+						$this->_helpers[$key] = $this->getModule($module)->getClassName('Helper');
 					}
 				}
 			// Set models data
@@ -177,13 +171,11 @@ namespace Sys
 				{
 					$parts = explode("\\", $model['class']);
 					$module = $parts[0].'_'.$parts[1];
-					// TODO: add support for resource model
-					if (isset($model['resourceModel']))
-						$this->models[$key] = $this->getModule($module)->getCodePoolPath($model['class']);
-					/*
-					foreach ($model as $class)
-					{
-					}*/
+					//$this->_models[$key] = $this->getModule($module)->getCodePoolPath($model);
+					// Load the model data
+					$this->_models[$key] = $model;
+					// Then set the actual path to the model depending on the extension and code pool
+					$this->_models[$key]['class'] = $this->getModule($module)->getCodePoolPath($model['class']);
 				}
 			// Set translation files data
 			if (isset($configData['config']['frontend']['translate']['modules']))
@@ -194,7 +186,7 @@ namespace Sys
 					{
 						$temp[] = $file;
 					}
-					$this->translations[$key] = $temp;
+					$this->_translations[$key] = $temp;
 				}
 			// Set resources data
 			if (isset($configData['config']['global']['resources']))
@@ -204,25 +196,33 @@ namespace Sys
 					{
 						foreach ($resource['setup'] as $key => $setup)
 						{
-							$this->resources[$resourceName][$key] = $setup;
+							$this->_resources[$resourceName][$key] = $setup;
 						}
-						$this->resources[$resourceName]['requiredVersion'] =
-								$this->getModule($this->resources[$resourceName]['module'])
+						$this->_resources[$resourceName]['requiredVersion'] =
+								$this->getModule($this->_resources[$resourceName]['module'])
 									->getVersion();
 					}
 				}
 		}
 
+		/**
+		 * Starts the installer
+		 * 
+		 * @return core/installer
+		 */
 		public function getInstaller()
 		{
 			$class = $this->getModelClass('core/installer');
 			return new $class;
 		}
 
+		/**
+		 * Executes all the setup scripts that have not been run yet
+		 */
 		public function runSetupScripts()
 		{
 			//$installed = \Z::getModel('core/resource')->loadAll();
-			foreach ($this->resources as $name => $resource)
+			foreach ($this->_resources as $name => $resource)
 			{
 				$latestVersion = $resource['requiredVersion'];
 				//$installedVersion = $installed->getResource($name)->getVersion();
@@ -251,7 +251,7 @@ namespace Sys
 						closedir($handle);
 					}
 					else
-						throw new \Sys\Exception('Cannot open the location %s of the setup install scripts',
+						throw new \Sys\Exception('Cannot open the location => %s of the setup install scripts',
 							$installerFilesLocation);
 				}
 			}
@@ -275,8 +275,8 @@ namespace Sys
 						$moduleConfig = new \Sys\Helper\XmlToArray($path.$file);
 						$moduleArray = $moduleConfig->createArray();
 						$flattenArray = $moduleConfig->getFlatData();
-						$this->configData = array_replace_recursive($this->configData, $moduleArray);
-						$this->flatData = array_replace_recursive($this->flatData, $flattenArray);
+						$this->_configData = array_replace_recursive($this->_configData, $moduleArray);
+						$this->_flatData = array_replace_recursive($this->_flatData, $flattenArray);
 					}
 				}
 				closedir($handle);
@@ -302,12 +302,12 @@ namespace Sys
 		 */
 		public function getData()
 		{
-			return $this->configData;
+			return $this->_configData;
 		}
 
 		public function getRouterXmlData()
 		{
-			return $this->configData['config']['frontend']['routers'];
+			return $this->_configData['config']['frontend']['routers'];
 		}
 
 		/**
@@ -320,10 +320,10 @@ namespace Sys
 		{
 			if ($name == NULL)
 				return $this;
-			if (!isset($this->flatData[$name]))
+			if (!isset($this->_flatData[$name]))
 				return NULL;
 				//throw new \Sys\Exception("Config class: The configuration string <b>$name</b> is not set. Check your xml file or database config table for this value");
-			return $this->flatData[$name];
+			return $this->_flatData[$name];
 		}
 
 		/**
@@ -334,10 +334,10 @@ namespace Sys
 		 */
 		public function getModule($name)
 		{
-			if (isset($this->modules[$name]))
-				return $this->modules[$name];
+			if (isset($this->_modules[$name]))
+				return $this->_modules[$name];
 			throw
-				new \Sys\Exception("Config class: Could not find module name $name in the loaded modules list");
+				new \Sys\Exception('Config class: Could not find module name => %s in the loaded modules list', $name);
 		}
 
 		/**
@@ -348,9 +348,11 @@ namespace Sys
 		public function getBlockClass($name)
 		{
 			$data = $this->classAddition($name);
-			if (!isset($this->blocks[$data['index']]))
-				throw new \Sys\Exception('The block type '.$data['index'].' is not a registered block');
-			return $this->blocks[$data['index']].$data['class'];
+			$index = $data['index'];
+			$class = $data['class'];
+			if (!isset($this->_blocks[$index]))
+				throw new \Sys\Exception('The block type => %s is not a registered block', $index);
+			return $this->_blocks[$index].$class;
 		}
 		
 		/**
@@ -361,9 +363,36 @@ namespace Sys
 		public function getModelClass($name)
 		{
 			$data = $this->classAddition($name);
-			if (!isset($this->models[$data['index']]))
-				throw new \Sys\Exception('The model name '.$data['index'].' is not a registered model');
-			return $this->models[$data['index']].$data['class'];
+			$index = $data['index'];
+			$subclass = $data['class'];
+			if (!isset($this->_models[$index]['class']))
+				throw new \Sys\Exception('The model name => %s is not a registered model', $index);
+			return $this->_models[$index]['class'].$subclass;
+		}
+
+		public function getResourceClass($name)
+		{
+			$parts  = explode('/', $name);
+			$model  = $this->_models[$parts[0]]['resourceModel'];
+			$name   = $model.'/'.$parts[1];
+			return  $this->getModelClass($name);
+		}
+
+		/**
+		 * Returns the table referenced by a resource entity
+		 *
+		 * @param <string> $resourceName
+		 * @return <string>
+		 */
+		public function getResourceTable($resourceName)
+		{
+			$parts  = explode('/', $resourceName);
+			$model  = $this->_models[$parts[0]]['resourceModel'];
+			$entity = $parts[1];
+			if (isset($this->_models[$model]['entities'][$entity]['table']))
+				return $this->_models[$model]['entities'][$entity]['table'];
+			throw new \Sys\Exception('The required resource name => %s is not defined in your xml files',
+					$resourceName);
 		}
 
 		/**
@@ -374,9 +403,11 @@ namespace Sys
 		public function getHelperClass($name)
 		{
 			$data = $this->classAddition($name);
-			if (!isset($this->helpers[$data['index']]))
-				throw new \Sys\Exception('The helper type '.$data['index'].' is not a registered helper');
-			return $this->helpers[$data['index']].$data['class'];
+			$index = $data['index'];
+			$class = $data['class'];
+			if (!isset($this->_helpers[$index]))
+				throw new \Sys\Exception('The helper type => %s is not a registered helper'. $index);
+			return $this->_helpers[$index].$class;
 		}
 
 		/**

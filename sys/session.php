@@ -18,9 +18,9 @@ namespace Sys
 
 		protected $_namespace;
 		
-		public function __construct()
+		protected function _construct()
 		{
-			parent::__construct();
+			//parent::_construct();
 		}
 
 		public function start($sessionName = null)

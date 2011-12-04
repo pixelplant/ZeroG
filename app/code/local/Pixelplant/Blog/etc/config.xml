@@ -25,20 +25,27 @@
 		<models>
 			<blog>
 				<class>Pixelplant\Blog\Model</class>
-				<resourceModel>blog_mysql</resourceModel>
+				<resourceModel>blog_resource</resourceModel>
 			</blog>
-			<blog_mysql>
+			<blog_resource>
 				<class>Pixelplant\Blog\Model\Resource</class>
 				<entities>
 					<post>
-						<table>pixelplant_blog_post</table>
+						<table>pixeplant_blog_post</table>
 					</post>
 					<category>
 						<table>pixelplant_blog_category</table>
 					</category>
 				</entities>
-			</blog_mysql>
+			</blog_resource>
 		</models>
+        <resources>
+            <blog_setup>
+                <setup>
+                    <module>Pixelplant_Blog</module>
+                </setup>
+            </blog_setup>
+        </resources>
 
 		<helpers>
 			<blog>

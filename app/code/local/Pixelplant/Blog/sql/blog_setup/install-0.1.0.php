@@ -6,14 +6,16 @@
 $installer = $this->getInstaller();
 
 // Blog posts table
-$installer->newTable('pixelplant_blog_post')
-		->addColumn('post_id', $installer::TYPE_INTEGER, 11, array(
-			'nullable' => FALSE,
-			'identity' => TRUE,
+$installer->newTable($installer->getResourceTable('blog_resource/post'))
+		->addColumn('post_id', $installer::TYPE_INTEGER, null, array(
+			'unsigned' => TRUE,
 			'primary' => TRUE,
-			),'Stores each blog post id')
-		->addColumn('cat_id', $installer::TYPE_INTEGER, 11, array(
 			'nullable' => FALSE,
+			'identity' => TRUE
+			),'Stores each blog post id')
+		->addColumn('cat_id', $installer::TYPE_INTEGER, null, array(
+			'nullable' => FALSE,
+			'unsigned' => TRUE,
 			'default' => 0,
 			),'The category id this post is linked to')
 		->addColumn('title', $installer::TYPE_TEXT, 255, array(
@@ -24,12 +26,12 @@ $installer->newTable('pixelplant_blog_post')
 			'nullable' => FALSE,
 		))
 		->addColumn('created_time', $installer::TYPE_TIMESTAMP, null, array(
-			'default' => NULL
+			//'default' => NULL
 			))
 		->addColumn('updated_time', $installer::TYPE_TIMESTAMP, null, array(
-			'default' => NULL
+			//'default' => NULL
 			))
-		->addColumn('meta_keywords', $installer::TYPE_TEXT, null, array(
+		->addColumn('meta_keywords', $installer::TYPE_TEXT, 200, array(
 			'nullable' => FALSE
 			))
 		->addColumn('meta_description', $installer::TYPE_TEXT, null, array(
@@ -44,13 +46,14 @@ $installer->newTable('pixelplant_blog_post')
 					'meta_description' => 'Descrierea meta pentru această postare'));
 
 // Blog categories table
-$installer->newTable('pixelplant_blog_category')
-		->addColumn('cat_id', $installer::TYPE_INTEGER, 11, array(
+$installer->newTable($installer->getResourceTable('blog_resource/category'))
+		->addColumn('cat_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
-			'identity' => TRUE,
 			'primary' => TRUE,
+			'unsigned' => TRUE,
+			'identity' => TRUE,
 			),'Stores each blog category id')
-		->addColumn('title', $installer::TYPE_TEXT, null, array(
+		->addColumn('title', $installer::TYPE_TEXT, 150, array(
 			'nullable' => FALSE,
 			'default' => '',
 		))

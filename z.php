@@ -112,7 +112,6 @@ namespace
 			self::$config = self::getSingleton('Sys\\Config');
 			// TO BE REMOVED
 			//self::$config->runSetupScripts();
-			//self::getSingleton('App\\Code\\Core\\ZeroG\\Core\\Models\\Session')->init('frontend', 'frontend');
 
 			// get request parameters
 			self::getRequest();
@@ -266,11 +265,6 @@ namespace
 			return self::$_singletons[$identifier];
 		}
 
-		public static function getResource($resourceName)
-		{
-			return self::getSingleton($resourceName);
-		}
-
 		/**
 		 * Get the current controller name
 		 * @return <string>
@@ -371,6 +365,23 @@ namespace
 			//return self::getSingleton(self::$config->getModelClass($name));
 			$class = self::$config->getModelClass($name);
 			return new $class;
+		}
+
+		/**
+		 * Returns a resource model
+		 *
+		 * @param <string> $name
+		 * @return <mixed>
+		 */
+		public static function getResource($name)
+		{
+			$resourceIdentifier = 'resource_'.$name;
+			if (!array_key_exists($resourceIdentifier, self::$_singletons))
+			{
+				$class = self::$config->getResourceClass($name);
+				self::$_singletons[$resourceIdentifier] = new $class;
+			}
+			return self::$_singletons[$resourceIdentifier];
 		}
 
 		/**

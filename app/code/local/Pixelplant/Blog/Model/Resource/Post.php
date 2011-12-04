@@ -2,11 +2,11 @@
 
 namespace App\Code\Local\Pixelplant\Blog\Model\Resource
 {
-	class Post extends \Sys\Model\Resource
+	class Post extends \Sys\Database\Resource
 	{
-		public function __construct()
+		protected function _construct()
 		{
-			parent::__construct('post');
+			$this->_init('blog/post', 'post_id');
 		}
 	}
 }

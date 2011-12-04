@@ -21,6 +21,11 @@ namespace App\Code\Core\ZeroG\Page\Controller
 			//$user = \Z::getSingleton('user/session');
 			//var_dump($user);die();
 			$this->loadLayout();
+			$blog = \Z::getModel('blog/post');
+			$blog->setPostContent('hahaha');
+			$blog->setMetaDescription('The rain in spain falls nearly on my brain');
+			var_dump($blog);
+			die();
 			$this->renderLayout();
 		}
 

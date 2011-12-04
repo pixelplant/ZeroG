@@ -5,36 +5,46 @@ namespace Sys\Database
 	class Model extends \Sys\Model
 	{
 		/**
-		 * @var string The table name this models links to (since it's a Database Model
-		 */
-		protected $table = NULL;
-
-		/**
+		 * Resource object
 		 *
 		 * @var <\Sys\Model\Resource>
 		 */
-		protected $resource = NULL;
+		protected $_resource = NULL;
 
 		/**
-		 * We do not declare it as static cause in the future the same pdo connection
-		 * might link to different PDO drivers or to multiple PDO connections using
-		 * the same driver (eg: connecting to 3 different mysql databases at a time)
-		 * In the future I also plan to add 2 different adapters per model for writing and reading data
+		 * Name of resource used by this model
 		 * 
-		 * @var <\Sys\Database\Pdo> A reference to the db connection
+		 * @var <string>
 		 */
-		protected $pdo = NULL;
+		protected $_resourceName;
 
-		protected $eventPrefix = 'sys_database_model';
+		/**
+		 * Event prefix for dispatching events
+		 * 
+		 * @var <string>
+		 */
+		protected $_eventPrefix = 'sys_database_model';
 
-		public function __construct($resourceName)
+		/**
+		 * Name of the field used as identifier
+		 * 
+		 * @var <string>
+		 */
+		protected $_idField;
+
+		protected function _construct()
 		{
-			parent::__construct();
-			$this->pdo = \Z::getDatabaseConnection('default_setup');
-			$this->table = $resourceName;
-			$this->pdo->cacheFields($this->table);
-			//$this->resource = $this->pdo->cacheFields($resourceName);
-			//parent::__construct($resourceName);
+			parent::_construct();
+			//$this->_pdo->cacheFields($this->_table);
+		}
+
+		protected function _init($resource, $idField = null)
+		{
+			if ($idField === null)
+				$idField = 'id';
+			$this->idField = $idField;
+			$this->_resourceName = $resource;
+			$this->_resource = \Z::getResource($this->_resourceName);
 		}
 
 		/*public function getCollection()
@@ -52,9 +62,9 @@ namespace Sys\Database
 		public function load($id = 0)
 		{
 			// load model data
-			$this->data = $this->pdo->load($this->table, $id);
+			$this->_data = $this->_pdo->load($this->_table, $id);
 			// if we load the model data then this is not a new model
-			$this->isNew = false;
+			$this->_isNew = false;
 			return $this;
 		}
 
@@ -66,8 +76,8 @@ namespace Sys\Database
 		 */
 		public function find($criteria = array())
 		{
-			$criteria['from'] = $this->table;
-			$collection = $this->pdo->find($this->className, $criteria);
+			$criteria['from'] = $this->_table;
+			$collection = $this->_pdo->find($this->_className, $criteria);
 			return $collection;
 		}
 
@@ -79,18 +89,18 @@ namespace Sys\Database
 		public function save()
 		{
 			$this->_beforeSave();
-			if ($this->isNew)
+			if ($this->_isNew)
 			{
 				// if it's a new record, insert it
-				$this->pdo->add($this->table, $this->data);
+				$this->_pdo->add($this->_table, $this->_data);
 				// store the last inserted id
-				$this->setId($this->pdo->lastInsertId());
+				$this->setId($this->_pdo->lastInsertId());
 				// and make sure next time we save this object, we only update it's data
-				$this->isNew = false;
+				$this->_isNew = false;
 			}
 			else
 				// if it's not new, just update it
-				$this->pdo->save($this->table, $this->getId(), $this->data);
+				$this->_pdo->save($this->_table, $this->getId(), $this->_data);
 			$this->_afterSave();
 			return $this;
 		}
@@ -129,6 +139,48 @@ namespace Sys\Database
 		 */
 		protected function _afterSaveCommit()
 		{
+			return $this;
+		}
+
+		protected function _getResource()
+		{
+			if (empty($this->_resourceName))
+				throw new \Sys\Exception('The resource name => %s is not set', $this->_resourceName);
+			return \Z::getSingleton($this->_resourceName);
+		}
+
+		public function getResource()
+		{
+			return $this->_getResource();
+		}
+
+		public function getIdField()
+		{
+			if ($this->_idField == '')
+			{
+				$this->_idField = $this->_getResource()->getIdField();
+			}
+			return $this->_idField;
+		}
+
+		public function getId()
+		{
+			if ($this->_idField != '')
+			{
+				return $this->getData($this->_idField);
+			}
+			else
+				return $this->getData('id');
+		}
+
+		public function setId($id)
+		{
+			if ($this->_idField != '')
+			{
+				$this->setData($this->_idField, $id);
+			}
+			else
+				$this->setData('id', $id);
 			return $this;
 		}
 

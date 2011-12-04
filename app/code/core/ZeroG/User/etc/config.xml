@@ -15,7 +15,7 @@
 		<models>
 			<user>
 				<class>ZeroG\User\Models</class>
-				<resourceModel>user_mysql</resourceModel>
+				<resourceModel>user_resource</resourceModel>
 			</user>
 		</models>
         <resources>

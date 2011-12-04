@@ -10,32 +10,32 @@ namespace Sys\Database
 		 * Database driver used
 		 * @var <mixed>
 		 */
-		protected $driver = NULL;
+		protected $_driver = NULL;
 		
 		/**
 		 * An array holding a list of fields available for all used tables...
 		 * @var <array>
 		 */
-		protected $fields;
+		protected $_fields = array();
 
 		/**
 		 * Table prefix, if any
 		 * @var <string>
 		 */
-		protected $tablePrefix;
+		protected $_tablePrefix;
 
 		public function __construct($connectionName)
 		{
 			$configString = "config/global/resources/db/$connectionName/";
 			$adapter = \Z::getConfig($configString."adapter");
-			$this->tablePrefix = \Z::getConfig($configString."table_prefix");
+			$this->_tablePrefix = \Z::getConfig($configString."table_prefix");
 			if (!in_array($adapter, \PDO::getAvailableDrivers()))
-				throw new \Sys\Exception("The driver %s does not seem to be installed on your system.", $connectionName);
+				throw new \Sys\Exception("The driver => %s does not seem to be installed on your system.", $connectionName);
 			try
 			{
 				if (\Z::getConfig($configString.'active') != 1)
 					throw new \Sys\Exception("If you want to use this database connection name
-							<b>%s</b> then please make sure it is set to active in app/etc/local.xml", $connectionName);
+							=> %s then please make sure it is set to active in app/etc/local.xml", $connectionName);
 				if (\Z::getConfig($configString.'dsn'))
 					$dsn = \Z::getConfig($configString.'dsn');
 				else
@@ -47,7 +47,7 @@ namespace Sys\Database
 						';host='.
 						\Z::getConfig($configString.'host');
 				}
-				$this->driver = 
+				$this->_driver =
 					new \PDO(
 							$dsn,
 							\Z::getConfig($configString.'username'),
@@ -69,7 +69,13 @@ namespace Sys\Database
 		 */
 		public function query($query)
 		{
-			return $this->driver->query($query);
+			//$query = $this->_driver->quote($query);
+			return $this->_driver->query($query);
+		}
+
+		public function quote($query)
+		{
+			return $this->_driver->quote($query);
 		}
 
 		/**
@@ -77,7 +83,7 @@ namespace Sys\Database
 		 */
 		public function __destruct()
 		{
-			$this->driver = NULL;
+			$this->_driver = NULL;
 		}
 
 		/**
@@ -87,12 +93,12 @@ namespace Sys\Database
 		 */
 		public function getTableName($table)
 		{
-			return $this->tablePrefix.htmlspecialchars($table);
+			return $this->_tablePrefix.htmlspecialchars($table);
 		}
 
 		public function getCachedFields($table)
 		{
-			return $this->fields[$this->getTableName($table)];
+			return $this->_fields[$this->getTableName($table)];
 		}
 
 		/**
@@ -102,24 +108,25 @@ namespace Sys\Database
 		 */
 		public function cacheFields($table)
 		{
-			if (!isset($this->fields[$this->getTableName($table)]))
+			$table = $this->getTableName($table);
+			if (empty($this->_fields[$table]))
 			{
-				//$table = $this->driver->quote($table);
+				//$table = $this->_driver->quote($table);
 				$table = $this->getTableName($table);
-				$statement = $this->driver->prepare("select column_name from information_schema.columns where table_name = '$table'");
+				$statement = $this->_driver->prepare("select DISTINCT column_name from information_schema.columns where table_name = '$table'");
 				try
 				{
-					if($statement->execute())
+					if ($statement->execute())
 					{
 						$raw_column_data = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-						foreach($raw_column_data as $outer_key => $array)
+						foreach ($raw_column_data as $outer_key => $array)
 						{
-							foreach($array as $inner_key => $value)
+							foreach ($array as $inner_key => $value)
 							{
 								if (!(int)$inner_key)
 								{
-									$this->fields[$table][] = $value;
+									$this->_fields[$table][] = $value;
 								}
 							}
 						}
@@ -134,7 +141,7 @@ namespace Sys\Database
 
 		public function createTable($createQuery)
 		{
-			$this->driver->prepare($createQuery)->execute();
+			$this->_driver->prepare($createQuery)->execute();
 		}
 
 		/**
@@ -148,7 +155,7 @@ namespace Sys\Database
 		{
 			$id = (int)$id;
 			$table = $this->getTableName($table);
-			$statement = $this->driver->prepare("SELECT * FROM `$table` WHERE id = :id");
+			$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE id = :id");
 			$statement->execute(array(':id' => $id));
 			$row = $statement->fetch(\PDO::FETCH_ASSOC);
 			//var_dump($row);
@@ -168,12 +175,12 @@ namespace Sys\Database
 			foreach ($data as $key => $value)
 			{
 				$list[]= $key.' = :'.$key;
-				//$statementData[':'.$key] = $this->driver->quote($value);
+				//$statementData[':'.$key] = $this->_driver->quote($value);
 				$statementData[':'.$key] = $value;
 			}
 			$list = implode(",", $list);
 			$table = $this->getTableName($table);
-			$statement = $this->driver->prepare("UPDATE `$table` SET $list WHERE id = :id");
+			$statement = $this->_driver->prepare("UPDATE `$table` SET $list WHERE id = :id");
 			$statement->execute($statementData);
 		}
 
@@ -191,12 +198,12 @@ namespace Sys\Database
 			{
 				$fields[]= $key;
 				$values[] = ':'.$key;
-				$statementData[':'.$key] = $this->driver->quote($value);
+				$statementData[':'.$key] = $this->_driver->quote($value);
 			}
 			$fields = implode(",", $fields);
 			$values = implode(",", $values);
 			$table = $this->getTableName($table);
-			$statement = $this->driver->prepare("INSERT INTO `$table` ($fields) VALUES ($values)");
+			$statement = $this->_driver->prepare("INSERT INTO `$table` ($fields) VALUES ($values)");
 			$statement->execute($statementData);
 		}
 
@@ -209,7 +216,7 @@ namespace Sys\Database
 		 */
 		public function find($class, $criteria = array())
 		{
-			//$table = $this->driver->quote($criteria['from']);
+			//$table = $this->_driver->quote($criteria['from']);
 			$table = $this->getTableName($criteria['from']);
 			$query = sprintf("SELECT * FROM `%s` ", $table);
 			if (isset($criteria['where']))
@@ -232,7 +239,7 @@ namespace Sys\Database
 		 */
 		public function lastInsertId()
 		{
-			return (int)$this->driver->lastInsertId();
+			return (int)$this->_driver->lastInsertId();
 		}
 	}
 }

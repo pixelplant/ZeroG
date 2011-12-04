@@ -2,25 +2,28 @@
 
 namespace Sys\Model
 {
-	class Resource
+	abstract class Resource
 	{
 		/**
 		 * Array of Sys\Model\Resource\Field elements
 		 * @var <array>
 		 */
-		protected $fields = array();
+		//protected $fields = array();
 
 		/**
 		 * The name of the xml resource that holds the fields definition
 		 * @var <string>
 		 */
-		protected $resourceName = '';
+		//protected $resourceName = '';
 
-		public function __construct($resourceName)
+		public function __construct()
 		{
-			$this->resourceName = $resourceName;
-			$this->loadResource($resourceName.'.xml');
+			$this->_construct();
 		}
+
+		abstract protected function _construct();
+		abstract protected function _getReadAdapter();
+		abstract protected function _getWriteAdapter();
 
 		private function loadResource($descriptionFile)
 		{
