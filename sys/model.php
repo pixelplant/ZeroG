@@ -17,12 +17,6 @@ namespace Sys
 		 */
 		protected $_className;
 
-		/**
-		 * Is this a new model, or a loaded one?
-		 * @var <bool>
-		 */
-		protected $_isNew;
-
 		public function __construct()
 		{
 			$this->_construct();
@@ -31,7 +25,6 @@ namespace Sys
 		protected function _construct()
 		{
 			$this->_className = get_class($this);
-			$this->_isNew = true;
 		}
 
 		/**
@@ -68,9 +61,12 @@ namespace Sys
 		 * Change all model data using an array
 		 * @param <array> $newData
 		 */
-		public function setData($field, $value)
+		public function setData($field, $value = null)
 		{
-			$this->_data[$field] = $value;
+			if (!is_string($field))
+				$this->_data = $field;
+			else
+				$this->_data[$field] = $value;
 			/*if (!is_array($newData))
 				throw new Sys\Exception('The data you want to assign to the model using ->setData must be an array');
 			$this->_data = $newData;
@@ -97,7 +93,10 @@ namespace Sys
 			if ($field == '')
 				return $this->_data;
 			else
-				return $this->_data[$field];
+				if (isset($this->_data[$field]))
+					return $this->_data[$field];
+				else
+					return FALSE;
 		}
 
 		/**

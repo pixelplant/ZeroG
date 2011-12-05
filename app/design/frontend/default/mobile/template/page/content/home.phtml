@@ -34,3 +34,9 @@
    <h3>jQuery + jQuery mobile support built in</h3>
    <p>I'm the collapsible content with a themed content block set to "A".</p>
 </div>
+<?php foreach ($this->getBlogCollection() as $post): ?>
+	<div data-role="collapsible">
+		<h3><?php echo $post->getTitle(); ?></h3>
+		<p><?php echo $post->getPostContent(); ?></p>
+	</div>
+<?php endforeach; ?>

@@ -2,44 +2,74 @@
 
 namespace Sys\Database\Model
 {
-	class Collection
+/**
+ * Description of Collection
+ *
+ * @author radu.mogos
+ */
+	class Collection extends \Sys\Model\Collection
 	{
-		/**
-		 * @var DatabaseModel The model it is linked to
-		 */
-		protected $model;
+		protected $_resource;
 
-		/**
-		 * @var array The list of items this collection has (an array of $model objects)
-		 */
-		protected $items = array();
+		protected $_resourceName;
 
-		public function __construct(\Sys\Database\Model $model)
+		protected $_pdo;
+
+		public function load()
 		{
-			$this->model = $model;
+			if ($this->isLoaded())
+				return;
+			$this->_isCollectionLoaded = true;
+			parent::load();
+			$data = $this->_getReadAdapter()->query('SELECT * FROM '.$this->_getResource()->getTable().' WHERE 1');
+			foreach ($data as $row)
+			{
+				$record = \Z::getModel($this->_itemObjectClass);
+				$record->setData($row);
+				$this->_items[] = $record;
+			}
+			return $this;
+		}
+		
+		protected function _getReadAdapter()
+		{
+			return $this->_pdo;
+		}
+		protected function _getWriteAdapter()
+		{
+			return $this->_pdo;
+		}
+
+		protected function _getResource()
+		{
+			return $this->_resource;
+		}
+
+		protected function _construct()
+		{
+			parent::_construct();
+		}
+
+		protected function _init($resourceName)
+		{
+			$this->_pdo = \Z::getDatabaseConnection('default_setup');
+			$this->_itemObjectClass = $resourceName;
+			$this->_resourceName = $resourceName;
+			$this->_resource = \Z::getResource($resourceName);
 		}
 
 		/**
-		 * @return Returns a list of DatabaseModel objects, based on the supplied criteria
+		 * Adds a field to the WHERE query
+		 *
+		 * @param <string> $field
+		 * @param <mixed> $condition
 		 */
-		public function getAll()
+		public function addFieldToFilter($field, $condition=null)
 		{
-			$stmt = Pdo::query('SELECT * FROM '.$this->model->getTable());
-			//$objects = $stmt->fetchAll(\PDO::FETCH_CLASS, $this->model->getClassName(), array($this->model->getTable()));
-			$results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-			$objects = array();
-			foreach ($results as $result)
-			{
-				$class = $this->model->getClassName();
-				$temp = new $class($this->model->getTable());
-				foreach ($result as $key => $value)
-				{
-					$property = 'set'.ucfirst($key);
-					$temp->$property($value);
-				}
-				$objects[] = $temp;
-			}
-			return $objects;
+			if ($this->_getResource()->hasTableField($field))
+				$field = $this->_getResource()->getTableField($field);
+			else
+				throw new \Sys\Exception('The field => %s is not defined in the collection resource', $field);
 		}
 	}
 }

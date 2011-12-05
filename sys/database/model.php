@@ -19,6 +19,13 @@ namespace Sys\Database
 		protected $_resourceName;
 
 		/**
+		 * Name of the collection resource
+		 *
+		 * @var <string>
+		 */
+		protected $_resourceCollectionName;
+
+		/**
 		 * Event prefix for dispatching events
 		 * 
 		 * @var <string>
@@ -42,16 +49,18 @@ namespace Sys\Database
 		{
 			if ($idField === null)
 				$idField = 'id';
-			$this->idField = $idField;
-			$this->_resourceName = $resource;
+			$this->_idField = $idField;
+			$this->_setResourceModel($resource);
 			$this->_resource = \Z::getResource($this->_resourceName);
 		}
 
-		/*public function getCollection()
+		public function getCollection()
 		{
-			$collection = new Collection($this);
-			return $collection->getAll();
-		}*/
+			if (empty($this->_resourceCollectionName))
+				throw new \Sys\Exception('The collection resource name was not set for this class => %s',
+					$this->getClassName());
+			return \Z::getResource($this->_resourceCollectionName);
+		}
 
 		/**
 		 * Loads a record of this model by id
@@ -61,10 +70,9 @@ namespace Sys\Database
 		 */
 		public function load($id = 0)
 		{
-			// load model data
-			$this->_data = $this->_pdo->load($this->_table, $id);
-			// if we load the model data then this is not a new model
-			$this->_isNew = false;
+			$this->_beforeLoad();
+			$this->_getResource()->load($this, $id);
+			$this->_afterLoad();
 			return $this;
 		}
 
@@ -89,18 +97,8 @@ namespace Sys\Database
 		public function save()
 		{
 			$this->_beforeSave();
-			if ($this->_isNew)
-			{
-				// if it's a new record, insert it
-				$this->_pdo->add($this->_table, $this->_data);
-				// store the last inserted id
-				$this->setId($this->_pdo->lastInsertId());
-				// and make sure next time we save this object, we only update it's data
-				$this->_isNew = false;
-			}
-			else
-				// if it's not new, just update it
-				$this->_pdo->save($this->_table, $this->getId(), $this->_data);
+			$id = $this->_getResource()->save($this);
+			$this->setId($id);
 			$this->_afterSave();
 			return $this;
 		}
@@ -114,13 +112,27 @@ namespace Sys\Database
 			return array('object' => $this);
 		}
 
+		protected function _beforeLoad()
+		{
+			\Z::dispatchEvent('model_load_before', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_load_before', $this->_getEventData());
+			return $this;
+		}
+
+		protected function _afterLoad()
+		{
+			\Z::dispatchEvent('model_load_after', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_load_after', $this->_getEventData());
+			return $this;
+		}
+
 		/**
 		 * Called before a model is saved
 		 */
 		protected function _beforeSave()
 		{
 			\Z::dispatchEvent('model_save_before', $this->_getEventData());
-			\Z::dispatchEvent($this->eventPrefix.'_save_before', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_save_before', $this->_getEventData());
 			return $this;
 		}
 
@@ -130,7 +142,7 @@ namespace Sys\Database
 		protected function _afterSave()
 		{
 			\Z::dispatchEvent('model_save_before', $this->_getEventData());
-			\Z::dispatchEvent($this->eventPrefix.'_save_before', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_save_before', $this->_getEventData());
 			return $this;
 		}
 
@@ -142,11 +154,21 @@ namespace Sys\Database
 			return $this;
 		}
 
+		protected function _setResourceModel($resourceName, $resourceCollectionName = null)
+		{
+			$this->_resourceName = $resourceName;
+			if ($resourceCollectionName === null)
+			{
+				$resourceCollectionName = $resourceName.'/collection';
+			}
+			$this->_resourceCollectionName = $resourceCollectionName;
+		}
+
 		protected function _getResource()
 		{
 			if (empty($this->_resourceName))
 				throw new \Sys\Exception('The resource name => %s is not set', $this->_resourceName);
-			return \Z::getSingleton($this->_resourceName);
+			return \Z::getResource($this->_resourceName);
 		}
 
 		public function getResource()

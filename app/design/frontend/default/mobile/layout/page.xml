@@ -31,7 +31,7 @@
 
 	<page_view_index>
 		<reference name="content">
-			<block type="core/base" template="page/content/home.phtml" />
+			<block type="page/home" template="page/content/home.phtml" />
 		</reference>
 		<reference name="messages">
 			<block type="core/base" name="dialog" template="page/content/dialog.phtml"/>

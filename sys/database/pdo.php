@@ -147,16 +147,17 @@ namespace Sys\Database
 		/**
 		 * Loads the row with a specified id from the table
 		 *
-		 * @param <string> $table
-		 * @param <int> $id
+		 * @param <string> $table Name of the table to load data from
+		 * @param <string> $field Name of the id column in the table
+		 * @param <int> $id Value of the id column to load
 		 * @return <array> Associated array containing the table row data
 		 */
-		public function load($table, $id = 0)
+		public function load($table, $field, $value = 0)
 		{
-			$id = (int)$id;
+			//$id = (int)$id;
 			$table = $this->getTableName($table);
-			$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE id = :id");
-			$statement->execute(array(':id' => $id));
+			$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE $field = :value");
+			$statement->execute(array(':value' => $value));
 			$row = $statement->fetch(\PDO::FETCH_ASSOC);
 			//var_dump($row);
 			return $row;
@@ -168,7 +169,7 @@ namespace Sys\Database
 		 * @param <int> $id
 		 * @param <array> $data
 		 */
-		public function save($table, $id, $data = array())
+		public function save($table, $idField, $id, $data = array())
 		{
 			$list = array();
 			$statementData[':id'] = (int)$id;
@@ -180,7 +181,7 @@ namespace Sys\Database
 			}
 			$list = implode(",", $list);
 			$table = $this->getTableName($table);
-			$statement = $this->_driver->prepare("UPDATE `$table` SET $list WHERE id = :id");
+			$statement = $this->_driver->prepare("UPDATE `$table` SET $list WHERE $idField = :id");
 			$statement->execute($statementData);
 		}
 
@@ -198,7 +199,7 @@ namespace Sys\Database
 			{
 				$fields[]= $key;
 				$values[] = ':'.$key;
-				$statementData[':'.$key] = $this->_driver->quote($value);
+				$statementData[':'.$key] = $this->quote($value);
 			}
 			$fields = implode(",", $fields);
 			$values = implode(",", $values);

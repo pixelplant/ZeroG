@@ -374,7 +374,7 @@ namespace Sys
 		{
 			$parts  = explode('/', $name);
 			$model  = $this->_models[$parts[0]]['resourceModel'];
-			$name   = $model.'/'.$parts[1];
+			$name   = $model.'/'.substr($name, strpos($name, $parts[1]));
 			return  $this->getModelClass($name);
 		}
 

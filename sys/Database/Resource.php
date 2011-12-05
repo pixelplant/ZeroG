@@ -51,7 +51,87 @@ namespace Sys\Database
 		}
 
 		protected function _construct() {}
-		protected function _getReadAdapter() {}
-		protected function _getWriteAdapter() {}
+		protected function _getReadAdapter()
+		{
+			return $this->_pdo;
+		}
+		protected function _getWriteAdapter()
+		{
+			return $this->_pdo;
+		}
+
+		protected function _afterLoad(\Sys\Model $model)
+		{
+			return $this;
+			//\Z::dispatchEvent('resource_after_load');
+		}
+
+		protected function _beforeSave(\Sys\Model $model)
+		{
+			return $this;
+		}
+
+		protected function _afterSave(\Sys\Model $model)
+		{
+			return $this;
+		}
+
+		public function getIdField()
+		{
+			return $this->_idField;
+		}
+
+		public function load(\Sys\Model $model, $value)
+		{
+			$field = $this->getIdField();
+			if ($this->_getReadAdapter() && !is_null($value))
+			{
+				$data = $this->_getReadAdapter()->load($this->_table, $field, $value);
+				if ($data && is_array($data))
+					$model->setData($data);
+			}
+			$this->_afterLoad($model);
+
+			return $this;
+		}
+
+		public function save(\Sys\Model $model)
+		{
+			$id = null;
+			$this->_beforeSave($model);
+			if ($model->getId())
+			{
+				$this->_getWriteAdapter()->save($this->_table, $this->getIdField(), $model->getId(), $model->getData());
+				$id = $model->getId();
+			}
+			else
+			{
+				$this->_getWriteAdapter()->add($this->_table, $model->getData());
+				$id = $this->_getWriteAdapter()->lastInsertId();
+			}
+			$this->_afterSave($model);
+			return $id;
+		}
+
+		/**
+		 * Check if a field exists in our current table
+		 *
+		 * @param <string> $name
+		 * @return <bool>
+		 */
+		public function hasTableField($name)
+		{
+			return in_array($name, $this->_tableFields);
+		}
+
+		/**
+		 * Return the resource's table
+		 *
+		 * @return <string>
+		 */
+		public function getTable()
+		{
+			return $this->_table;
+		}
 	}
 }

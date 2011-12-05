@@ -25,7 +25,7 @@ namespace Sys\Model
 		abstract protected function _getReadAdapter();
 		abstract protected function _getWriteAdapter();
 
-		private function loadResource($descriptionFile)
+		/*private function loadResource($descriptionFile)
 		{
 			$xml = new \SimpleXMLElement($descriptionFile, NULL, TRUE);
 
@@ -43,10 +43,6 @@ namespace Sys\Model
 			}
 		}
 
-		/**
-		 * Validate all fields from this resource
-		 * @return <bool> returns if fields are valid or not
-		 */
 		public function validateFields()
 		{
 			$hasErrors = 0;
@@ -58,24 +54,14 @@ namespace Sys\Model
 			return (bool)!$hasErrors;
 		}
 
-		/**
-		 * Return a field data by its name
-		 * @param <string> $fieldName The name of the field to retrieve
-		 * @return <mixed> returns an instance of the field type (varchar, int, etc)
-		 */
 		public function getField($fieldName)
 		{
 			return $this->fields[$fieldName];
 		}
 
-		/**
-		 * Return all the fields for this resource
-		 *
-		 * @return <array>
-		 */
 		public function getFields()
 		{
 			return $this->fields;
-		}
+		}*/
 	}
 }
