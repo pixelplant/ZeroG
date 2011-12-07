@@ -10,7 +10,7 @@ namespace App\Code\Core\ZeroG\Core\Block
 		{
 			// render all children of this block
 			$content = '';
-			foreach ($this->children as $child)
+			foreach ($this->_children as $child)
 			{
 				$content .= $child->render();
 			}

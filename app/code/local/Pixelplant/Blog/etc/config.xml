@@ -9,6 +9,7 @@
 -->
 
 <config>
+
 	<modules>
 		<Pixelplant_Blog>
 			<version>0.1.0</version>
@@ -16,6 +17,7 @@
 	</modules>
 
 	<global>
+
 		<blocks>
 			<blog>
 				<class>Pixelplant\Blog\Block</class>
@@ -39,6 +41,7 @@
 				</entities>
 			</blog_resource>
 		</models>
+
         <resources>
             <blog_setup>
                 <setup>
@@ -52,9 +55,21 @@
 				<class>Pixelplant\Blog\Helper</class>
 			</blog>
 		</helpers>
+
+		<events>
+			<blog_post_load_after>
+				<blog_observer>
+					<type>singleton</type>
+					<class>blog/observer</class>
+					<method>testObserver</method>
+				</blog_observer>
+			</blog_post_load_after>
+		</events>
+
 	</global>
 
 	<frontend>
+
 		<routers>
 			<blog>
 				<from>blog</from>
@@ -63,6 +78,7 @@
 				</to>
 			</blog>
 		</routers>
+
 		<layout>
 			<updates>
 				<blog>
@@ -70,6 +86,7 @@
 				</blog>
 			</updates>
 		</layout>
+
 	</frontend>
 
 </config>

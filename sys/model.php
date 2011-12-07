@@ -3,9 +3,9 @@
 namespace Sys
 {
 /**
- * The abstract model class
+ * The basic model class
  */
-	abstract class Model
+	class Model
 	{
 		/**
 		 * @var <array> Data contained by the models. If a database is used, a direct mapping of the table fields is made

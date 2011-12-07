@@ -2,7 +2,7 @@
 
 <!--
     Document   : page.xml
-    Created on : 12 februarie 2011, 23:53
+    Created on : 06 decembrie 2011, 19:00
     Author     : radu.mogos
     Description:
         The base xml layout specifying the structure of the page
@@ -19,18 +19,21 @@
 			<block type="core/base" name="header" template="page/html/header.phtml">
 				<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
 			</block>
-			<block type="core/base" name="left">
-				<block type="core/base" name="ads" />
-				<block type="core/base" name="menu" template="page/left/menu.phtml">
-					<block type="core/base" name="left.mainmenu" template="page/left/menu/mainmenu.phtml"/>
-					<block type="core/base" name="left.submenu" />
-				</block>
-			</block>
-			<block type="core/base" name="right" />
-			<block type="core/base" name="content" template="page/html/content/test.phtml"/>
-			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
+			<block type="core/text" name="messages" />
+			<block type="core/text" name="right" />
+			<block type="core/text" name="content" />
+			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
 		</block>
 	</default>
+
+	<page_view_index>
+		<reference name="content">
+			<block type="page/home" template="page/content/home.phtml" />
+		</reference>
+		<reference name="messages">
+			<block type="core/base" name="dialog" template="page/content/dialog.phtml"/>
+		</reference>
+	</page_view_index>
 
 	<print>
 		<block type="page/html" name="root" template="page/print.phtml">

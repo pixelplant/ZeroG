@@ -68,19 +68,20 @@
 			images,css,js and other stuff are located
 			Links to skin/frontend/PACKAGE/BELOW_NAME
 			-->
-			<skin>mobile</skin>
+			<skin>default</skin>
 			<!-- Which layout xml files do we use?
 			Located in app/design/frontend/PACKAGE/BELOW_NAME/layout
 			-->
-			<layout>mobile</layout>
+			<layout>default</layout>
 			<!-- This is where all our block .phtml files are located
 			Links to app/design/frontend/PACKAGE/BELOW_NAME/template
 			-->
-			<template>mobile</template>
+			<template>default</template>
 			<!-- developer settings
 			mode=1 disables all caching (Set to 0 when in production) -->
 			<developer>
 				<mode>1</mode>
+				<block_hints>0</block_hints>
 			</developer>
 			<!-- context sensitive data -->
 			<context>

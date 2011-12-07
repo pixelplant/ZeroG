@@ -64,6 +64,12 @@ namespace Sys
 		private $_translations;
 
 		/**
+		 * Array holding all the events we can run
+		 * @var <type>
+		 */
+		private $_events;
+
+		/**
 		 * The library router
 		 * @var <\Sys\Config\Router>
 		 */
@@ -82,6 +88,7 @@ namespace Sys
 			$this->_models = array();
 			$this->_translations = array();
 			$this->_resources = array();
+			$this->_events = array();
 
 			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
@@ -203,6 +210,13 @@ namespace Sys
 									->getVersion();
 					}
 				}
+			// set events
+			$this->_events = $configData['config']['global']['events'];
+			/*if (isset($configData['config']['global']['events']))
+				foreach ($configData['config']['global']['events'] as $eventName => $event)
+				{
+					$this->_events[$eventName] = $event['class'];
+				}*/
 		}
 
 		/**
@@ -408,6 +422,16 @@ namespace Sys
 			if (!isset($this->_helpers[$index]))
 				throw new \Sys\Exception('The helper type => %s is not a registered helper'. $index);
 			return $this->_helpers[$index].$class;
+		}
+
+		public function getEventObserver($eventName)
+		{
+			if (isset($this->_events[$eventName]))
+			{
+				$event = $this->_events[$eventName];
+				return $event;
+			}
+			return FALSE;
 		}
 
 		/**

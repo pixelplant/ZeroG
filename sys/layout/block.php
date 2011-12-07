@@ -12,47 +12,60 @@ namespace Sys\Layout
 	{
 		/**
 		 * Holds an array of \Sys\Block chidren
+		 * 
 		 * @var <array> 
 		 */
-		protected $children = array();
+		protected $_children = array();
 
 		/**
 		 * The parent name this block belongs to
+		 *
 		 * @var <string>
 		 */
-		protected $parent;
+		protected $_parent;
 
 		/**
 		 * The block's name
+		 *
 		 * @var <string>
 		 */
-		protected $name;
+		protected $_name;
 
 		/**
 		 * The template name used by the block for content rendering, if required
+		 *
 		 * @var <string>
 		 */
-		protected $template;
+		protected $_template;
 		
 		/**
 		 * The actual template resource (php code for the view)
+		 *
 		 * @var <string>
 		 */
-		protected $templateResource;
+		protected $_templateResource;
 
 		/**
 		 * The PHP/HTML code loaded from the block's template
+		 *
 		 * @var <string>
 		 */
-		protected $code;
+		protected $_code;
+
+		/**
+		 * Event prefix used when loading blocks
+		 * 
+		 * @var <type>
+		 */
+		protected $_eventPrefix = 'block';
 
 		public function __construct($name, \SimpleXMLElement $xml)
 		{
-			$this->children = array();
-			$this->parent = '';
-			$this->name = $name;
-			$this->templateResource = NULL;
-			$this->code = NULL;
+			$this->_children = array();
+			$this->_parent = '';
+			$this->_name = $name;
+			$this->_templateResource = NULL;
+			$this->_code = NULL;
 			$this->setTemplate((string)$xml["template"]);
 		}
 
@@ -62,7 +75,7 @@ namespace Sys\Layout
 		 */
 		public function addChild(\Sys\Layout\Block $value)
 		{
-			$this->children[$value->getName()] = $value;
+			$this->_children[$value->getName()] = $value;
 		}
 
 		// processing
@@ -74,7 +87,7 @@ namespace Sys\Layout
 		 */
 		protected function getPath()
 		{
-			return sprintf('app/design/frontend/%s/%s/template/',
+			return sprintf('app/design/adminhtml/%s/%s/template/',
 					\Z::getConfig('config/global/default/package'),
 					\Z::getConfig('config/global/default/template'));
 		}
@@ -86,14 +99,14 @@ namespace Sys\Layout
 		public function loadTemplate($template = '')
 		{
 			if ($template != '')
-				$this->template = $this->getPath().$template;
+				$this->_template = $this->getPath().$template;
 			// old code, where we first loaded the php/html code
 			/*if ($template != '')
 			{
-				$this->template = $this->getPath().$template;
-				$filesize = filesize($this->template);
-				$file = fopen($this->template, 'r');
-				$this->code = fread($file, $filesize);
+				$this->_template = $this->getPath().$template;
+				$filesize = filesize($this->_template);
+				$file = fopen($this->_template, 'r');
+				$this->_code = fread($file, $filesize);
 				fclose($file);
 			}*/
 			//else
@@ -107,17 +120,24 @@ namespace Sys\Layout
 		 */
 		public function render()
 		{
-			if ($this->template != '')
+			if ($this->_template != '')
 			{
 				ob_start();
-				/*eval("?>".$this->code);*/
-				if ($this->code == NULL)
-					include $this->template;
+				/*eval("?>".$this->_code);*/
+				if ($this->_code == NULL)
+				{
+					include $this->_template;
+					//\Z::dispatchEvent($this->_eventPrefix.'_block_rendered', array('object' => $this));
+				}
 				else
-					eval("?>".$this->code);
+					eval("?>".$this->_code);
 				//$renderedCode = ob_get_contents();
 				//ob_end_clean();
 				$renderedCode = ob_get_clean();
+				if ($this->getShowTemplateHints())
+				{
+					$renderedCode = $this->wrapTemplateHints($renderedCode);
+				}
 				return $renderedCode;
 			}
 			else
@@ -131,12 +151,12 @@ namespace Sys\Layout
 		 */
 		public function getChildHtml($childName)
 		{
-			if (!array_key_exists($childName, $this->children))
+			if (!array_key_exists($childName, $this->_children))
 			{
-				//throw new \Sys\Exception("Error in: $this->template. Make sure the child block '$childName' with parent block '$this->name' is defined in the xml file.");
+				//throw new \Sys\Exception("Error in: $this->_template. Make sure the child block '$childName' with parent block '$this->_name' is defined in the xml file.");
 				return;
 			}
-			$child = $this->children[$childName];
+			$child = $this->_children[$childName];
 			$html = '';
 			/*if ($child->getChildrenCount() > 0)
 			{
@@ -159,9 +179,9 @@ namespace Sys\Layout
 		{
 			if ($childName != '')
 			{
-				return count($this->children[$childName]->getChildren());
+				return count($this->_children[$childName]->getChildren());
 			}
-			return count($this->children);
+			return count($this->_children);
 		}
 
 		/**
@@ -171,7 +191,7 @@ namespace Sys\Layout
 		 */
 		public function getChild($name)
 		{
-			return $this->children[$name];
+			return $this->_children[$name];
 		}
 
 		/**
@@ -180,7 +200,7 @@ namespace Sys\Layout
 		 */
 		public function unsetChild($name)
 		{
-			unset($this->children[$name]);
+			unset($this->_children[$name]);
 		}
 
 		// getters, setters
@@ -191,7 +211,7 @@ namespace Sys\Layout
 		 */
 		public function getChildren()
 		{
-			return $this->children;
+			return $this->_children;
 		}
 
 		/**
@@ -200,7 +220,7 @@ namespace Sys\Layout
 		 */
 		public function setChildren($value)
 		{
-			$this->children = $value;
+			$this->_children = $value;
 		}
 
 		/**
@@ -209,7 +229,7 @@ namespace Sys\Layout
 		 */
 		public function setName($value)
 		{
-			$this->name = $value;
+			$this->_name = $value;
 		}
 
 		/**
@@ -218,7 +238,7 @@ namespace Sys\Layout
 		 */
 		public function getName()
 		{
-			return $this->name;
+			return $this->_name;
 		}
 
 		/**
@@ -236,7 +256,7 @@ namespace Sys\Layout
 		 */
 		public function getTemplate()
 		{
-			return $this->template;
+			return $this->_template;
 		}
 
 		/**
@@ -245,7 +265,7 @@ namespace Sys\Layout
 		 */
 		public function getCode()
 		{
-			return $this->code;
+			return $this->_code;
 		}
 
 		/**
@@ -254,7 +274,7 @@ namespace Sys\Layout
 		 */
 		public function setCode($value)
 		{
-			$this->code = $value;
+			$this->_code = $value;
 		}
 
 		/**
@@ -263,7 +283,7 @@ namespace Sys\Layout
 		 */
 		public function getParent()
 		{
-			return $this->parent;
+			return $this->_parent;
 		}
 
 		/**
@@ -272,7 +292,7 @@ namespace Sys\Layout
 		 */
 		public function setParent($value)
 		{
-			$this->parent = $value;
+			$this->_parent = $value;
 		}
 
 		// shortcuts to be used in every block phtml file
@@ -318,6 +338,25 @@ namespace Sys\Layout
 		public function getSkinUrl($resource)
 		{
 			return $this->helper('Sys\Helper\Html')->skinUrl($resource);
+		}
+
+		/**
+		 * Are path hints enabled? If so, then write the block data too...
+		 * 
+		 * @return <bool>
+		 */
+		private function getShowTemplateHints()
+		{
+			return \Z::getConfig('config/global/default/developer/block_hints');
+		}
+
+		private function wrapTemplateHints($code)
+		{
+			$code = sprintf('<div style="border: 1px solid red; margin: 1px"><div style="padding: 3px; background: red !important; color: white !important; font-size: 12px; font-weight: normal; text-shadow: none"><span style="float:left">%s</span> <span style="float:right">%s</span><p style="clear:both"></p></div> %s</div>',
+					get_class($this),
+					$this->_template,
+					$code);
+			return $code;
 		}
 	}
 }

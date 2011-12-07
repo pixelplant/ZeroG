@@ -4,6 +4,8 @@ namespace App\Code\Local\Pixelplant\Blog\Model
 {
 	class Post extends \Sys\Database\Model
 	{
+		protected $_eventPrefix = 'blog_post';
+
 		protected function _construct()
 		{
 			parent::_construct();

@@ -172,6 +172,19 @@ namespace
 
 		public static function dispatchEvent($eventName, $eventParams = null)
 		{
+			// There can be more than 1 observer for an event
+			$observersForThisEvent = self::$config->getEventObserver($eventName);
+			if ($observersForThisEvent !== FALSE)
+			{
+				$eventData = new \Sys\Model();
+				$eventData->setData($eventParams);
+				foreach ($observersForThisEvent as $event)
+				{
+					$class = self::getSingleton($event['class']);
+					$action = $event['method'];
+					$class->$action($eventData);
+				}
+			}
 			// check if we have an observer and then execute it
 			// TO BE IMPLEMENTED
 		}
@@ -364,7 +377,10 @@ namespace
 		{
 			//return self::getSingleton(self::$config->getModelClass($name));
 			$class = self::$config->getModelClass($name);
-			return new $class;
+			self::getProfiler()->start($class);
+			$instance = new $class;
+			self::getProfiler()->stop($class);
+			return $instance;
 		}
 
 		/**

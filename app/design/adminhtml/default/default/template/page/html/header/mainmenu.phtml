@@ -1,0 +1,22 @@
+<div id="navigation" class="navigation">
+	<ul class="top-level">
+		<li class="has-no-menu dashboard"><a href="<?php echo $this->getUrl('page/view/index'); ?>"><span><?php echo $this->__('Home'); ?></span></a></li>
+		<li class="has-menu inventory active"><a href="<?php echo $this->getUrl('page/view/extensions'); ?>"><span><?php echo $this->__('Extensions'); ?></span></a>
+			<div class="menu" id="inventory-navigation-menu">
+				<ul class="main">
+					<li class="submenu submenu-open" id="menu-option-device-groups">
+						<a href="/inventory">Devices</a>
+						<a class="loader" href=""></a>
+						<div class="submenu">
+							<ul class="submenu">
+								<li><a href="">Cannot get game to start</a></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</li>
+		<li class="has-no-menu"><a href="<?php echo $this->getUrl('page/view/documentation'); ?>"><?php echo $this->__('Documentation'); ?></a></li>
+		<li class="has-no-menu"><a href="<?php echo $this->getUrl('page/view/download'); ?>"><?php echo $this->__('Download'); ?></a></li>
+	</ul>
+</div><!-- /navbar -->

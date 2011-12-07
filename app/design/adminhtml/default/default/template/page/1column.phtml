@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<?php echo $this->getChildHtml('head'); ?>
+	</head>
+	<body>
+		<div id="container" class="container">
+			<div id="header" class="header">
+				<?php echo $this->getChildHtml('header'); ?>
+			</div>
+			<div id="content_wrapper">
+				<div id="content">
+					<?php echo $this->getChildHtml('content'); ?>
+				</div>
+			</div>
+			<div id="footer">
+				<?php echo $this->getChildHtml('footer'); ?>
+			</div>
+		</div>
+
+		<div data-role="page" id="messages" data-theme="a">
+			<?php echo $this->getChildHtml('messages'); ?>
+		</div>
+	</body>
+</html>
