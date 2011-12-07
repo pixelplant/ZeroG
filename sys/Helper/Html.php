@@ -47,7 +47,7 @@ namespace Sys\Helper
 		public function skinUrl($resource)
 		{
 			$resource = htmlspecialchars($resource);
-			$skin = \Z::getConfig('config/global/default/base/url').'skin/adminhtml/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$resource;
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$resource;
 			return $skin;
 		}
 
@@ -90,7 +90,7 @@ namespace Sys\Helper
 			$filename = md5(implode("", $jsFiles));
 			$file = "var/cache/js/js_".$filename.".js";
 
-			$skin = \Z::getConfig('config/global/default/base/url').'skin/adminhtml/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
 
 			if (\Z::getConfig('config/global/default/developer/mode') == '1')
 			{
@@ -109,7 +109,7 @@ namespace Sys\Helper
 					$code = '';
 					foreach ($jsFiles as $jsFile)
 					{
-						$jsFile = 'skin/adminhtml/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$jsFile;
+						$jsFile = 'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$jsFile;
 						$codeOriginal = file_get_contents($jsFile);
 						// remove ALL whitespaces from string. Not ok since we also remove spaces
 						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);
@@ -147,7 +147,7 @@ namespace Sys\Helper
 			$filename = md5(implode("", $cssFiles));
 			$file = "var/cache/css/css_".$filename.".css";
 
-			$skin = \Z::getConfig('config/global/default/base/url').'skin/adminhtml/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
+			$skin = \Z::getConfig('config/global/default/base/url').'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/';
 
 			if (\Z::getConfig('config/global/default/developer/mode') == '1')
 			{
@@ -170,7 +170,7 @@ namespace Sys\Helper
 					$cssCode = '';
 					foreach ($cssFiles as $cssFile)
 					{
-						$cssFile = 'skin/adminhtml/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$cssFile;
+						$cssFile = 'skin/frontend/'.\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/skin').'/'.$cssFile;
 						$cssOriginal = file_get_contents($cssFile);
 						// remove ALL whitespaces from string. Not ok since we also remove spaces
 						//$cssCode .= preg_replace('/\s+/', '', $cssOriginal);

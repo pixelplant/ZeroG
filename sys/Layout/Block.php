@@ -87,7 +87,7 @@ namespace Sys\Layout
 		 */
 		protected function getPath()
 		{
-			return sprintf('app/design/adminhtml/%s/%s/template/',
+			return sprintf('app/design/frontend/%s/%s/template/',
 					\Z::getConfig('config/global/default/package'),
 					\Z::getConfig('config/global/default/template'));
 		}
