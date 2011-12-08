@@ -158,15 +158,24 @@ namespace
 			self::$_action = $action;
 			// get the controller classname (+path) from the currenly loaded extension
 			$controllerClassName = self::getConfig()->getModule($module)->getControllerClass($controller);
-			if (!class_exists($controllerClassName))
-				throw new Sys\Exception("The controller %s class you are trying to initialize does not exist", $controllerClassName);
+			//if (!class_exists($controllerClassName))
+			//	throw new Sys\Exception("The controller %s class you are trying to initialize does not exist", $controllerClassName);
 			// instantiate the extension's controller class
-			$class = new $controllerClassName;
+			try
+			{
+				if (class_exists($controllerClassName))
+					$class = new $controllerClassName;
+			}
+			catch (LogicException $e)
+			{
+				die('TODO: Fa un redirect la pagina 404');
+				//$this->redirect('page/view/error');
+			}
 			// send all the GET/POST requests to the controller's action for
 			// further processing
-			if (!method_exists($class, $action))
-				throw new Sys\Exception("The called action %s does not exist on the current controller", $action);
-			$class->$action();
+			//if (!method_exists($class, $action))
+			//	throw new Sys\Exception("The called action %s does not exist on the current controller", $action);
+			$class->dispatch();
 			// and this is all there is to it. our app should be running now...
 		}
 

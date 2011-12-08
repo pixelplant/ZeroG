@@ -120,7 +120,7 @@ namespace Sys\Layout
 		 */
 		public function render()
 		{
-			if ($this->_template != '')
+			if ($this->_template != NULL || $this->_code != NULL)
 			{
 				ob_start();
 				/*eval("?>".$this->_code);*/
@@ -130,7 +130,8 @@ namespace Sys\Layout
 					//\Z::dispatchEvent($this->_eventPrefix.'_block_rendered', array('object' => $this));
 				}
 				else
-					eval("?>".$this->_code);
+					echo $this->_code;
+				/*	eval("?>".$this->_code); */
 				//$renderedCode = ob_get_contents();
 				//ob_end_clean();
 				$renderedCode = ob_get_clean();
@@ -263,7 +264,7 @@ namespace Sys\Layout
 		 * Return the PHP/Html code for this block
 		 * @return <string>
 		 */
-		public function getCode()
+		public function getHtml()
 		{
 			return $this->_code;
 		}
@@ -272,7 +273,7 @@ namespace Sys\Layout
 		 * Set the PHP/Html code for this block
 		 * @param <string> $value
 		 */
-		public function setCode($value)
+		public function setHtml($value)
 		{
 			$this->_code = $value;
 		}

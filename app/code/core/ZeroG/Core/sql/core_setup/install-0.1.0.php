@@ -105,7 +105,12 @@ $installer->newTable($installer->getResourceTable('core_resource/website_group')
 		->addColumn('default_website_view_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'unsigned' => TRUE
-		),'Default website id of this group');
+		),'Default website id of this group')
+		->insertData(
+			array('group_id' => 0,
+				'website_id' => 0,
+				'name' => 'Default',
+				'default_website_view_id' => 0));
 
 // core_website_view - Each view belongs to a website_group. You usually use views
 // to define languages for your website
@@ -132,7 +137,14 @@ $installer->newTable($installer->getResourceTable('core_resource/website_view'))
 			'unsigned' => TRUE,
 			'nullable' => FALSE,
 			'default' => 0,
-		));
+		))
+		->insertData(
+			array('website_view_id' => 0,
+				'code' => 'admin',
+				'website_group_id' => 0,
+				'website_id' => 0,
+				'name' => 'Admin',
+				'is_active' => 1));
 
 // core_email_template - holds a list of all email templates you could use in your app
 $installer->newTable($installer->getResourceTable('core_resource/email_template'))

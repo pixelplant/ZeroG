@@ -29,11 +29,6 @@ namespace App\Code\Core\ZeroG\Core\Controller
 		{
 			return \Z::getSingleton('core/session/frontend');
 		}
-
-		public function getRequest($key)
-		{
-			return \Z::getRequest()->getParam($key);
-		}
 	}
 }
 

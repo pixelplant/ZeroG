@@ -442,6 +442,7 @@ namespace Sys
 		 */
 		private function classAddition($name)
 		{
+			$name = str_replace('_', '/', $name);
 			$parts = explode("/", $name);
 			$index = $parts[0];
 			$class = '';

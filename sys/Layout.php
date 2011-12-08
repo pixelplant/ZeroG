@@ -16,19 +16,19 @@ namespace Sys
 		 * The name of the xml layout file. The default xml file is page.xml
 		 * @var <string>
 		 */
-		protected $file;
+		protected $_file;
 
 		/**
 		 * A layout consists of an array of blocks
 		 * @var <array>
 		 */
-		protected $blocks = array();
+		protected $_blocks = array();
 
 		/**
 		 * The layout version number
 		 * @var <string>
 		 */
-		protected $version;
+		protected $_version;
 
 		/**
 		* Constructor
@@ -36,19 +36,20 @@ namespace Sys
 		public function __construct($file)
 		{
 			// always load page xml first
-			$this->file = 'page.xml';
-			$this->loadLayout();
+			$this->_file = 'page.xml';
+			$this->_loadLayout();
 			// then load current module's xml file
 			/*if (\Z::registry('current_module')->getLayout())
 			{
-				$this->file = \Z::registry('current_module')->getLayout();
+				$this->_file = \Z::registry('current_module')->getLayout();
 				$this->loadLayout();
 			}*/
 		}
 
-		protected function getPath()
+		protected function getPath($context = 'frontend')
 		{
-			return sprintf('app/design/frontend/%s/%s/layout/',
+			return sprintf('app/design/%s/%s/%s/layout/',
+					$context,
 					\Z::getConfig('config/global/default/package'),
 					\Z::getConfig('config/global/default/layout'));
 		}
@@ -56,40 +57,40 @@ namespace Sys
 		/**
 		 * Read the layout from the XML file
 		 */
-		protected function loadLayout()
+		protected function _loadLayout()
 		{
 			$custom_context = \Z::getContext();
 			//$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('config/global/default/context/variable'));
-			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->file . $custom_context);
+			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->_file . $custom_context);
 			$cacheXml = 'var/cache/serialized/xml_'.md5($hash).'.ser';
 			/*if (file_exists($cacheXml))
 			{
-				$this->blocks = unserialize(file_get_contents($cacheXml));
+				$this->_blocks = unserialize(file_get_contents($cacheXml));
 			}
 			else*/
 			{
-				$xml = new \SimpleXMLElement($this->getPath().$this->file, NULL, TRUE);
+				$xml = new \SimpleXMLElement($this->getPath().$this->_file, NULL, TRUE);
 				// make sure the xml layout file exists and is valid
 				if (!$xml)
-					throw new \Sys\Exception("Current layout ".$this->getPath().$this->file." file does not exist or is not a valid xml");
+					throw new \Sys\Exception("Current layout ".$this->getPath().$this->_file." file does not exist or is not a valid xml");
 
 				// get the version number and store it as a float
 				// this way we can do version requirement checks in the future
-				$this->version = (float)$xml["version"];
+				$this->_version = (float)$xml["version"];
 				// first we read the "default" block in the xml which holds the settings
 				// for all the actions of this page
 
 				if (isset($xml->default))
-					$this->processSection($xml->default);
+					$this->_processSection($xml->default);
 				// then we apply the custom action layout. for example, the page /cms/index
 				// would have it's layout defined in "cms_index"
 				//$custom_page = \Z::getContext();
 				// if the tag is defined in the xml, process it, otherwise just use the default settings
 				if (isset($xml->$custom_context))
-					$this->processSection($xml->$custom_context);;
+					$this->_processSection($xml->$custom_context);;
 
 				// cache everything...
-				file_put_contents($cacheXml, serialize($this->blocks));
+				file_put_contents($cacheXml, serialize($this->_blocks));
 			}
 		}
 
@@ -99,18 +100,18 @@ namespace Sys
 		 *
 		 * @param <\SimpleXMLElement> $section
 		 */
-		protected function processSection(\SimpleXMLElement $section)
+		protected function _processSection(\SimpleXMLElement $section)
 		{
 			if ($section->block)
-				$this->getBlocks($section->block);
+				$this->_getBlocks($section->block);
 			// thankfully references are not recursive
 			if ($section->reference)
-				$this->getReferences($section->reference);
+				$this->_getReferences($section->reference);
 			if ($section->remove)
 			{
 				$this->removeBlocks($section->remove);
 			}
-			//print_r($this->blocks);
+			//print_r($this->_blocks);
 		}
 
 		/**
@@ -118,7 +119,7 @@ namespace Sys
 		*
 		* @param <\SimpleXMLElement> $xml
 		*/
-		private function createBlock($xml)
+		private function _createBlock($xml)
 		{
 			$name = (string)$xml["name"];
 			$type = (string)$xml["type"];
@@ -137,44 +138,44 @@ namespace Sys
 		 *
 		 * @param <\SimpleXMLElement> $xml
 		 */
-		protected function getBlocks(\SimpleXMLElement $xml, $parent = '')
+		protected function _getBlocks(\SimpleXMLElement $xml, $parent = '')
 		{
 			// first we process and add the nodes that have children
 			if (count($xml->block) > 0)
 			{
 				$temp = $parent;
 				$name = (string)$xml["name"];
-				$this->blocks[$name] = $this->createBlock($xml);
+				$this->_blocks[$name] = $this->_createBlock($xml);
 				// if it has a parent, add this block as a child
 				//$lastParent = substr($name, 0, strrpos($name, "."));
 				//if (strlen($lastParent) > 0)
-				//	$this->blocks[$lastParent]->addChildren($this->blocks[$name]);
+				//	$this->_blocks[$lastParent]->addChildren($this->_blocks[$name]);
 				if (strlen($temp) > 0)
 				{
-					$this->blocks[$name]->setParent($parent);
-					$this->blocks[$temp]->addChild($this->blocks[$name]);
+					$this->_blocks[$name]->setParent($parent);
+					$this->_blocks[$temp]->addChild($this->_blocks[$name]);
 				}
 				foreach ($xml->block as $block)
 				{
 					$parent = $name;
-					$this->getBlocks($block, $parent);
+					$this->_getBlocks($block, $parent);
 				}
-				$this->executeActions($xml);
+				$this->_executeActions($xml);
 			}
 			// then we add the leaf nodes
 			else
 			{
 				$name = (string)$xml["name"];
-				$this->blocks[$name] = $this->createBlock($xml);
-				//$this->blocks[$name] = new \Sys\Layout\Block($name, $xml);
+				$this->_blocks[$name] = $this->_createBlock($xml);
+				//$this->_blocks[$name] = new \Sys\Layout\Block($name, $xml);
 				// if it has a parent, add this block as a child
 				//$lastParent = substr($name, 0, strrpos($name, "."));
 				if (strlen($parent) > 0)
 				{
-					$this->blocks[$name]->setParent($parent);
-					$this->blocks[$parent]->addChild($this->blocks[$name]);
+					$this->_blocks[$name]->setParent($parent);
+					$this->_blocks[$parent]->addChild($this->_blocks[$name]);
 				}
-				$this->executeActions($xml);
+				$this->_executeActions($xml);
 			}
 			// Pfew: I spent 4 hours writing this function. Recursion is a bitch
 		}
@@ -184,7 +185,7 @@ namespace Sys
 		 *
 		 * @param <\SimpleXMLElement> $references
 		 */
-		protected function getReferences(\SimpleXMLElement $references)
+		protected function _getReferences(\SimpleXMLElement $references)
 		{
 			foreach ($references as $reference)
 			{
@@ -192,10 +193,10 @@ namespace Sys
 				if ($reference->block)
 				foreach ($reference->block as $block)
 				{
-					$this->getBlocks($block, (string)$reference["name"]);
+					$this->_getBlocks($block, (string)$reference["name"]);
 				}
 				// if there are actions defined, process these too
-				$this->executeActions($reference);
+				$this->_executeActions($reference);
 			}
 		}
 
@@ -205,13 +206,13 @@ namespace Sys
 		 * 
 		 * @param \SimpleXmlElement $blocks
 		 */
-		protected function removeBlocks(\SimpleXmlElement $blocks)
+		protected function _removeBlocks(\SimpleXmlElement $blocks)
 		{
 			// process all <remove> tags found
 			foreach ($blocks as $block)
 			{
 				$name = (string)$block["name"];
-				$this->removeBlock($name);
+				$this->_removeBlock($name);
 			}
 		}
 
@@ -221,7 +222,7 @@ namespace Sys
 		 *
 		 * @param <mixed> $reference The xml tag containing the actions
 		 */
-		private function executeActions($reference)
+		private function _executeActions($reference)
 		{
 			if ($reference->action)
 			{
@@ -244,7 +245,7 @@ namespace Sys
 		 */
 		public function render()
 		{
-			return $this->blocks['root']->render();
+			return $this->_blocks['root']->render();
 		}
 
 		/**
@@ -255,8 +256,8 @@ namespace Sys
 		 */
 		public function getBlock($name)
 		{
-			if (isset($this->blocks[$name]))
-				return $this->blocks[$name];
+			if (isset($this->_blocks[$name]))
+				return $this->_blocks[$name];
 			throw
 				new \Sys\Exception("The block with the name '$name' was not found");
 			//return NULL;
@@ -270,10 +271,10 @@ namespace Sys
 		public function removeBlock($name)
 		{
 			// remove it from the parent's list
-			if (isset($this->blocks[$name]))
+			if (isset($this->_blocks[$name]))
 			{
-				$this->getBlock($this->blocks[$name]->getParent())->unsetChild($name);
-				unset($this->blocks[$name]);
+				$this->getBlock($this->_blocks[$name]->getParent())->unsetChild($name);
+				unset($this->_blocks[$name]);
 			}
 		}
 	}

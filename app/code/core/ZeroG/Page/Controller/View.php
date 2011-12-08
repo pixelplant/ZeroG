@@ -1,7 +1,6 @@
 <?php
 /* 
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Page_View controller
  */
 
 /**
@@ -44,11 +43,19 @@ namespace App\Code\Core\ZeroG\Page\Controller
 
 		public function cmsAction()
 		{
+			$view = \Z::getModel('core/website/view')->load(0);
+			$view->getWebsiteGroup();
+			$view->getWebsite();
+			var_dump($view);
+		}
+
+		public function noRouteAction()
+		{
 			$this->loadLayout();
-			//die($this->getRequest('id'));
+			$this->getLayout()->getBlock('content')->setTemplate(null);
+			$this->getLayout()->getBlock('content')->setHtml('<h1>Page not found</h1>');
 			$this->renderLayout();
 		}
+
 	}
 }
-
-
