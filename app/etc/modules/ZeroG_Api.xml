@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * @category   ZeroG
+ * @package    ZeroG_Core
+ * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
+ * @license    M.O.K.A.
+ */
+ -->
+<config>
+	<modules>
+		<ZeroG_Api>
+			<active>true</active>
+			<codePool>core</codePool>
+		</ZeroG_Api>
+	</modules>
+</config>
