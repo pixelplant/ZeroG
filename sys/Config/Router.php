@@ -115,8 +115,8 @@ namespace Sys\Config
 			// load the custom rules specified per module
 			foreach ($routes as $route)
 			{
-				$currentRoute = (string)$route['from'];
-				foreach ($route['to'] as $key => $value)
+				$currentRoute = (string)$route['use'];
+				foreach ($route['args'] as $key => $value)
 				{
 					$this->_routes[$currentRoute][(string)$key] = (string)$value;
 				}
@@ -172,15 +172,16 @@ namespace Sys\Config
 		{
 			$this->loadRules($this->_config->getRouterXmlData());
 			$this->setRouterParams();
-			if (isset($this->_routes[$this->_params['request']['router']]))
+			$router = $this->_params['request']['router'];
+			if (isset($this->_routes[$router]))
 			{
 				// load this router's settings, if any
-				$this->_params = array_merge($this->_params, $this->_routes[$this->_params['request']['router']]);
+				$this->_params['request'] = array_merge($this->_params['request'], $this->_routes[$router]);
 			}
 			else
 				throw new \Sys\Exception('The called router => %s could not be found.
 					Either it is not defined or you mistyped it\'s name',
-						$this->_params['request']['router']);
+						$router);
 		}
 
 		/**

@@ -16,9 +16,14 @@ namespace App\Code\Core\ZeroG\Core\Controller
 		{
 			// first initialize the session for the frontend
 			//\Z::getSingleton('core/session/frontend');
-			$this->getSession();
+			
 			// then process the template controller
 			parent::__construct();
+		}
+
+		public function preDispatch()
+		{
+			$this->getSession();
 		}
 
 		/**

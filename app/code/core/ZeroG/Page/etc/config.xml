@@ -17,10 +17,10 @@
 	<frontend>
 		<routers>
 			<page>
-				<from>page</from>
-				<to>
+				<use>page</use>
+				<args>
 					<module>ZeroG_Page</module>
-				</to>
+				</args>
 			</page>
 		</routers>
         <translate>

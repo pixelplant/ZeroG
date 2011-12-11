@@ -67,11 +67,12 @@ namespace Sys\Helper
 			 * context of ro_RO is set to "ro", then "ro/" will be prepended to
 			 * any generated url
 			 */
-			foreach (\Z::getContextParams() as $from => $to)
+			// Not used anymore!
+			/*foreach (\Z::getContextParams() as $from => $to)
 			{
 				if (array_key_exists(\Z::getParam($from), $to))
 					$path = $to[\Z::getParam($from)].'/'.$path;
-			}
+			}*/
 			return $this->directLink($path, $text, $attributes);
 		}
 

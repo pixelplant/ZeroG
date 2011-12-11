@@ -11,7 +11,7 @@ namespace App\Code\Local\Pixelplant\Blog\Model\Resource\Post
 	{
 		protected function _construct()
 		{
-			$this->_init('blog/post');
+			$this->_init('blog/post', 'post_id');
 		}
 	}
 }

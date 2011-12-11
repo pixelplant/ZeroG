@@ -134,9 +134,9 @@ namespace Sys
 				return $routerName;
 			foreach ($this->_configData['config']['frontend']['routers'] as $router)
 			{
-				if ($router['from'] == $routerName)
+				if ($router['use'] == $routerName)
 				{
-					return $router['to']['module'];
+					return $router['args']['module'];
 				}
 			}
 			throw new \Sys\Exception('There is no module mapped to this router name '.$routerName);

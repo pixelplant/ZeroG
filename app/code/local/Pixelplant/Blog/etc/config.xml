@@ -72,10 +72,10 @@
 
 		<routers>
 			<blog>
-				<from>blog</from>
-				<to>
+				<use>blog</use>
+				<args>
 					<module>Pixelplant_Blog</module>
-				</to>
+				</args>
 			</blog>
 		</routers>
 

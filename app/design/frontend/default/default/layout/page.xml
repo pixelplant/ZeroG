@@ -12,9 +12,11 @@
 	<default>
 		<block type="page/html" name="root" template="page/1column.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
-				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/reset.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/style.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/theme-cool.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
-				<action method="setTitle"><title>ZeroG Admin</title></action>
+				<action method="setTitle"><title>ZeroG Default theme</title></action>
 			</block>
 			<block type="core/base" name="header" template="page/html/header.phtml">
 				<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
@@ -27,7 +29,7 @@
 				</block>
 			</block>
 			<block type="core/base" name="right" />
-			<block type="core/base" name="content" template="page/html/content/test.phtml"/>
+			<block type="core/base" name="content"/>
 			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
 		</block>
 	</default>
@@ -37,5 +39,14 @@
 			<action method="addCss"><stylesheet>css/print.css</stylesheet><params>media="print"</params></action>
 		</block>
 	</print>
+
+	<blog_index_index>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns.phtml</template></action>
+		</reference>
+		<reference name="right">
+			<action method="setTemplate"><template>page/right.phtml</template></action>
+		</reference>
+	</blog_index_index>
 
 </layout>

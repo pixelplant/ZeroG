@@ -213,10 +213,10 @@ namespace
 		 *
 		 * @return <array>
 		 */
-		public static function getContextParams()
+		/*public static function getContextParams()
 		{
 			return self::$config->getRouter()->getContextParams();
-		}
+		}*/
 
 		/**
 		 * Return the cached context name

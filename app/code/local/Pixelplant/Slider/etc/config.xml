@@ -47,10 +47,10 @@
 	<frontend>
 		<routers>
 			<slider>
-				<from>slider</from>
-				<to>
+				<use>slider</use>
+				<args>
 					<module>Pixelplant_Slider</module>
-				</to>
+				</args>
 			</slider>
 		</routers>
 	</frontend>
