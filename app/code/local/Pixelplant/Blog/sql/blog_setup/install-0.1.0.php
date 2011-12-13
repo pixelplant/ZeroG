@@ -6,7 +6,7 @@
 $installer = $this->getInstaller();
 
 // Blog posts table
-$installer->newTable($installer->getResourceTable('blog_resource/post'))
+$installer->newTable($installer->getResourceTable('blog/post'))
 		->addColumn('post_id', $installer::TYPE_INTEGER, null, array(
 			'unsigned' => TRUE,
 			'primary' => TRUE,
@@ -46,7 +46,7 @@ $installer->newTable($installer->getResourceTable('blog_resource/post'))
 					'meta_description' => 'Descrierea meta pentru această postare'));
 
 // Blog categories table
-$installer->newTable($installer->getResourceTable('blog_resource/category'))
+$installer->newTable($installer->getResourceTable('blog/category'))
 		->addColumn('cat_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,

@@ -20,9 +20,9 @@
 			<core_resource>
 				<class>ZeroG\Core\Model\Resource</class>
 				<entities>
-					<resource>
-						<table>core_resource</table>
-					</resource>
+					<extension>
+						<table>core_extension</table>
+					</extension>
 					<cache_option>
 						<table>core_cache_option</table>
 					</cache_option>

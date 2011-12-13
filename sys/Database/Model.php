@@ -52,6 +52,7 @@ namespace Sys\Database
 			$this->_idField = $idField;
 			$this->_setResourceModel($resource);
 			$this->_resource = \Z::getResource($this->_resourceName);
+			$this->setId(FALSE);
 		}
 
 		public function getCollection()

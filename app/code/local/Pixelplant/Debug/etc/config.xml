@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Document   : config.xml
+	Created on : 12 decembrie 2011, 17:00
+	Author     : radu.mogos
+	Description:
+		Config file for the Pixelplant_Debug extension
+-->
+
+<config>
+
+	<modules>
+		<Pixelplant_Debug>
+			<version>0.1.0</version>
+		</Pixelplant_Debug>
+	</modules>
+
+	<global>
+
+		<blocks>
+			<debug>
+				<class>Pixelplant\Debug\Block</class>
+			</debug>
+		</blocks>
+
+		<models>
+			<debug>
+				<class>Pixelplant\Debug\Model</class>
+			</debug>
+		</models>
+
+		<events>
+			<model_load_after>
+				<debug_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>modelLoadAfter</method>
+				</debug_observer>
+			</model_load_after>
+			<layout_render_before>
+				<debug_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>layoutRenderBefore</method>
+				</debug_observer>
+			</layout_render_before>
+		</events>
+
+	</global>
+
+</config>

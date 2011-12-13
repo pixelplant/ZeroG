@@ -11,7 +11,9 @@ $installer = $this->getInstaller();
  */
 
 // stores a list of all the installed extensions(resources) and their version
-$installer->newTable($installer->getResourceTable('core_resource/resource'))
+// THE CREATION OF THIS TABLE WAS MOVED TO App\Code\Core\ZeroG\Install\Model\Setup
+/*
+$installer->newTable($installer->getResourceTable('core/extension'))
 		->addColumn('code', $installer::TYPE_TEXT, 50, array(
 			'nullable' => FALSE,
 			'default' => '',
@@ -22,8 +24,9 @@ $installer->newTable($installer->getResourceTable('core_resource/resource'))
 			'default' => '',
 			),'The currently installed version of this extension')
 		->setComment('List of ZeroG installed extensions and their version number');
+*/
 
-$installer->newTable($installer->getResourceTable('core_resource/cache_option'))
+$installer->newTable($installer->getResourceTable('core/cache_option'))
 		->addColumn('code', $installer::TYPE_TEXT, 50, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,
@@ -32,7 +35,7 @@ $installer->newTable($installer->getResourceTable('core_resource/cache_option'))
 		->setComment('List of objects for which caching is enabled');
 
 // config data stored in database, which overwrites config data in xml files
-$installer->newTable($installer->getResourceTable('core_resource/config_data'))
+$installer->newTable($installer->getResourceTable('core/config_data'))
 		->addColumn('config_id', $installer::TYPE_INTEGER, null, array(
 			'unsigned' => TRUE,
 			'primary' => TRUE,
@@ -54,7 +57,7 @@ $installer->newTable($installer->getResourceTable('core_resource/config_data'))
 		->setComment('ZeroG specific configuration data');
 
 // core website - stores all this installation's websites
-$installer->newTable($installer->getResourceTable('core_resource/website'))
+$installer->newTable($installer->getResourceTable('core/website'))
 		->addColumn('website_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,
@@ -87,7 +90,7 @@ $installer->newTable($installer->getResourceTable('core_resource/website'))
 				'is_default' => 1));
 
 // core_website_group - you can group multiple website_views together in one group
-$installer->newTable($installer->getResourceTable('core_resource/website_group'))
+$installer->newTable($installer->getResourceTable('core/website_group'))
 		->addColumn('group_id', $installer::TYPE_INTEGER, null, array(
 			'unsigned' => TRUE,
 			'identity' => TRUE,
@@ -114,7 +117,7 @@ $installer->newTable($installer->getResourceTable('core_resource/website_group')
 
 // core_website_view - Each view belongs to a website_group. You usually use views
 // to define languages for your website
-$installer->newTable($installer->getResourceTable('core_resource/website_view'))
+$installer->newTable($installer->getResourceTable('core/website_view'))
 		->addColumn('website_view_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'identity' => TRUE,
@@ -147,7 +150,7 @@ $installer->newTable($installer->getResourceTable('core_resource/website_view'))
 				'is_active' => 1));
 
 // core_email_template - holds a list of all email templates you could use in your app
-$installer->newTable($installer->getResourceTable('core_resource/email_template'))
+$installer->newTable($installer->getResourceTable('core/email_template'))
 		->addColumn('template_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'primary' => TRUE,
@@ -168,7 +171,7 @@ $installer->newTable($installer->getResourceTable('core_resource/email_template'
 		->addColumn('template_sender_email', $installer::TYPE_TEXT, 200, array());
 
 // session data, if you want to store it in the database, in this table
-$installer->newTable($installer->getResourceTable('core_resource/session'))
+$installer->newTable($installer->getResourceTable('core/session'))
 		->addColumn('session_id', $installer::TYPE_TEXT, 255, array(
 			'nullable' => FALSE,
 			'primary' => TRUE
@@ -182,7 +185,7 @@ $installer->newTable($installer->getResourceTable('core_resource/session'))
 			),'Session data');
 
 // url rewrites
-$installer->newTable($installer->getResourceTable('core_resource/url_rewrite'))
+$installer->newTable($installer->getResourceTable('core/url_rewrite'))
 		->addColumn('url_rewrite_id', $installer::TYPE_INTEGER, null, array(
 			'unsigned' => TRUE,
 			'primary' => TRUE,

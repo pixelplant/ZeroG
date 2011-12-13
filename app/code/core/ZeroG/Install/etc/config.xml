@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<ZeroG_Install>
+			<version>0.1.0</version>
+		</ZeroG_Install>
+	</modules>
+
+	<global>
+		<blocks>
+			<install>
+				<class>ZeroG\Install\Block</class>
+			</install>
+		</blocks>
+		<models>
+			<install>
+				<class>ZeroG\Install\Model</class>
+				<resourceModel>install_resource</resourceModel>
+			</install>
+			<install_resource>
+				<class>ZeroG\Install\Model\Resource</class>
+			</install_resource>
+		</models>
+	</global>
+
+	<frontend>
+        <translate>
+        	<modules>
+        		<ZeroG_Install>
+        			<files>
+        				<default>ZeroG_Install.csv</default>
+        			</files>
+        		</ZeroG_Install>
+        	</modules>
+        </translate>
+
+        <layout>
+            <updates>
+                <install>
+                    <file>main.xml</file>
+                </install>
+            </updates>
+        </layout>
+
+        <routers>
+            <install>
+                <use>install</use>
+                <args>
+                    <module>ZeroG_Install</module>
+					<controller>index</controller>
+                </args>
+            </install>
+        </routers>
+
+	</frontend>
+</config>

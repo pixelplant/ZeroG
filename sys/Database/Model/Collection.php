@@ -20,14 +20,15 @@ namespace Sys\Database\Model
 			if ($this->isLoaded())
 				return;
 			$this->_isCollectionLoaded = true;
-			parent::load();
+			//parent::load();
 			$data = $this->_getReadAdapter()->query('SELECT * FROM '.$this->_getResource()->getTable().' WHERE 1');
-			foreach ($data as $row)
-			{
-				$record = \Z::getModel($this->_itemObjectClass);
-				$record->setData($row);
-				$this->_items[] = $record;
-			}
+			if ($data)
+				foreach ($data as $row)
+				{
+					$record = \Z::getModel($this->_itemObjectClass);
+					$record->setData($row);
+					$this->_items[] = $record;
+				}
 			return $this;
 		}
 		

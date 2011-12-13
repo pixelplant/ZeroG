@@ -15,10 +15,11 @@ namespace App\Code\Core\ZeroG\Core\Block
 			if ($this->_code != null)
 				return $this->_code;
 			// otherwise we go through all its children
-			foreach ($this->_children as $child)
-			{
-				$content .= $child->render();
-			}
+			if ($this->_children)
+				foreach ($this->_children as $child)
+				{
+					$content .= $child->render();
+				}
 			return $content;
 		}
 	}

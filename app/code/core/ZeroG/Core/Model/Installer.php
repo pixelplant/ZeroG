@@ -9,14 +9,16 @@
 
 namespace App\Code\Core\ZeroG\Core\Model
 {
-	class Installer extends \Sys\Database\Model {
-		const TYPE_INTEGER = 'int';
-		const TYPE_SMALLINT = 'smallint';
-		const TYPE_TINYINT = 'tinyint';
+	class Installer extends \Sys\Model {
+		const TYPE_INTEGER   = 'int';
+		const TYPE_SMALLINT  = 'smallint';
+		const TYPE_TINYINT   = 'tinyint';
 		const TYPE_TIMESTAMP = 'timestamp';
-		const TYPE_VARCHAR = 'varchar';
-		const TYPE_TEXT = 'text';
-		const TYPE_BLOB = 'blob';
+		const TYPE_DATETIME  = 'datetime';
+		const TYPE_VARCHAR   = 'varchar';
+		const TYPE_TEXT      = 'text';
+		const TYPE_BLOB      = 'blob';
+		const TYPE_ENUM      = 'enum';
 
 		const OP_INSERT = 'create';
 		const OP_UPDATE = 'alter';
@@ -26,23 +28,25 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 * List of table data
 		 * @var <array>
 		 */
-		protected $tables;
+		protected $_tables;
 
 		/**
 		 * What operation do we execute on the table?
 		 * @var <string>
 		 */
-		protected $operation = '';
+		protected $_operation = '';
 
 		/**
 		 * Current table on which we add/remove columns and/or execute queries
 		 * @var <string>
 		 */
-		protected $currentTable = null;
+		protected $_currentTable = null;
 
-		public function __construct()
+		protected $_pdo;
+
+		protected function _construct()
 		{
-			parent::__construct('core_resource');
+			$this->_pdo = \Z::getDatabaseConnection();
 			$this->startSetup();
 		}
 
@@ -53,7 +57,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		protected function startSetup()
 		{
-			$this->pdo->query("SET SQL_MODE='';
+			$this->_pdo->query("SET SQL_MODE='';
 				SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 				SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 				");
@@ -68,7 +72,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		protected function endSetup()
 		{
-			$this->pdo->query("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
+			$this->_pdo->query("SET SQL_MODE=IFNULL(@OLD_SQL_MODE,'');
 				SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS=0, 0, 1);
 				");
 			return $this;
@@ -82,8 +86,8 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function newTable($table)
 		{
-			$this->operation = self::OP_INSERT;
-			$this->currentTable = $this->pdo->getTableName($table);
+			$this->_operation = self::OP_INSERT;
+			$this->_currentTable = $this->_pdo->getTableName($table);
 			return $this;
 		}
 
@@ -95,8 +99,8 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function updateTable($table)
 		{
-			$this->operation = self::OP_UPDATE;
-			$this->currentTable = $this->pdo->getTableName($table);
+			$this->_operation = self::OP_UPDATE;
+			$this->_currentTable = $this->_pdo->getTableName($table);
 			return $this;
 		}
 
@@ -108,8 +112,8 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function deleteTable($table)
 		{
-			$this->operation = self::OP_DELETE;
-			$this->currentTable = $this->pdo->getTableName($table);
+			$this->_operation = self::OP_DELETE;
+			$this->_currentTable = $this->_pdo->getTableName($table);
 			return $this;
 		}
 
@@ -125,7 +129,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function addColumn($name, $type, $length, $additionalData, $comment = '')
 		{
-			if ($this->currentTable == null)
+			if ($this->_currentTable == null)
 				throw new Sys\Exception('addColumn must be called before a table is selected in the install script');
 			$column = \Z::getModel('core/column');
 			$column->setName($name);
@@ -136,12 +140,14 @@ namespace App\Code\Core\ZeroG\Core\Model
 				$length = 11;
 			if (($type == self::TYPE_INTEGER || $type == self::TYPE_SMALLINT) && $length <= 1)
 				$type = self::TYPE_TINYINT;
+			if ($type == self::TYPE_ENUM)
+				$type = self::TYPE_ENUM.'('.implode(',', $additionalData['values']).')';
 			$column->setType($type)
 					->setLength($length)
 					->setComment($comment)
 					->mergeData($additionalData);
 			// Push the column in the table/operation list
-			$this->tables[$this->currentTable][$this->operation]['columns'][] = $column;
+			$this->_tables[$this->_currentTable][$this->_operation]['columns'][] = $column;
 			return $this;
 		}
 
@@ -153,7 +159,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function insertData($data)
 		{
-			$this->tables[$this->currentTable][$this->operation]['data'][] = $data;
+			$this->_tables[$this->_currentTable][$this->_operation]['data'][] = $data;
 			return $this;
 		}
 
@@ -165,7 +171,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		 */
 		public function setComment($comment = '')
 		{
-			$this->tables[$this->currentTable][$this->operation]['comment'] = $comment;
+			$this->_tables[$this->_currentTable][$this->_operation]['comment'] = $comment;
 			return $this;
 		}
 
@@ -189,7 +195,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 		private function generateQueries()
 		{
 			$query = '';
-			foreach ($this->tables as $table => $operations)
+			foreach ($this->_tables as $table => $operations)
 			{
 				foreach ($operations as $operation => $data)
 				{
@@ -237,7 +243,7 @@ namespace App\Code\Core\ZeroG\Core\Model
 									// Add the string separator for strings
 									foreach ($row as $key => $value)
 									{
-										//$value = $this->pdo->quote($value);
+										//$value = $this->_pdo->quote($value);
 										if (gettype($value) == 'string')
 										{
 											$row[$key] = "'$value'";
@@ -272,11 +278,13 @@ namespace App\Code\Core\ZeroG\Core\Model
 			$query = $this->generateQueries();
 			if ($query != '')
 			{
-				$this->pdo->query($query);
+			echo $query;
+				if ($this->_pdo->query($query) === FALSE)
+					throw new \Sys\Exception('The installer query is invalid');
 				$this->endSetup();
 			}
 			else
-				throw new \Sys\Exception("The query in the installer %s is empty.",
+				throw new \Sys\Exception('The query in the installer %s is empty.',
 						$this->getClassName());
 		}
 	}

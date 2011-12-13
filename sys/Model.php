@@ -17,14 +17,42 @@ namespace Sys
 		 */
 		protected $_className;
 
+		/**
+		 * New object or loaded one?
+		 *
+		 * @var <bool>
+		 */
+		protected $_isNew;
+
 		public function __construct()
 		{
+			$this->_isNew = true;
 			$this->_construct();
 		}
 
 		protected function _construct()
 		{
 			$this->_className = get_class($this);
+		}
+
+		/**
+		 * New or loaded object?
+		 *
+		 * @return <bool>
+		 */
+		public function isNew()
+		{
+			return $this->_isNew;
+		}
+
+		/**
+		 * Reset the state of an object
+		 *
+		 * @param <bool> $value
+		 */
+		public function setIsNew($value)
+		{
+			$this->_isNew = $value;
 		}
 
 		/**

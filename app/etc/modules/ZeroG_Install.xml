@@ -2,16 +2,19 @@
 <!--
 /**
  * @category   ZeroG
- * @package    ZeroG_Core
+ * @package    ZeroG_Install
  * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
  * @license    M.O.K.A.
  */
  -->
 <config>
 	<modules>
-		<ZeroG_Core>
+		<ZeroG_Install>
 			<active>true</active>
 			<codePool>core</codePool>
-		</ZeroG_Core>
+			<depends>
+				<ZeroG_Core />
+			</depends>
+		</ZeroG_Install>
 	</modules>
 </config>

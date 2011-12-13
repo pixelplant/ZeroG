@@ -42,7 +42,7 @@ namespace Sys\Database
 		
 		protected function _init($table, $idField = null)
 		{
-			$this->_pdo = \Z::getDatabaseConnection('default_setup');
+			$this->_pdo = \Z::getDatabaseConnection();
 			if ($idField === null)
 				$idField = 'id';
 			$this->_idField = $idField;
@@ -88,7 +88,10 @@ namespace Sys\Database
 			{
 				$data = $this->_getReadAdapter()->load($this->_table, $field, $value);
 				if ($data && is_array($data))
+				{
 					$model->setData($data);
+					$model->setIsNew(FALSE);
+				}
 			}
 			$this->_afterLoad($model);
 
@@ -99,15 +102,16 @@ namespace Sys\Database
 		{
 			$id = null;
 			$this->_beforeSave($model);
-			if ($model->getId())
-			{
-				$this->_getWriteAdapter()->save($this->_table, $this->getIdField(), $model->getId(), $model->getData());
-				$id = $model->getId();
-			}
-			else
+			if ($model->isNew())
 			{
 				$this->_getWriteAdapter()->add($this->_table, $model->getData());
 				$id = $this->_getWriteAdapter()->lastInsertId();
+				$model->setIsNew(FALSE);
+			}
+			else
+			{
+				$this->_getWriteAdapter()->save($this->_table, $this->getIdField(), $model->getId(), $model->getData());
+				$id = $model->getId();
 			}
 			$this->_afterSave($model);
 			return $id;

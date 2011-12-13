@@ -72,11 +72,12 @@ namespace Sys
 				$xml = new \SimpleXMLElement($this->getPath().$this->_file, NULL, TRUE);
 				// make sure the xml layout file exists and is valid
 				if (!$xml)
-					throw new \Sys\Exception("Current layout ".$this->getPath().$this->_file." file does not exist or is not a valid xml");
+					throw new \Sys\Exception('Current layout => %s file does not exist or is not a valid xml',
+						$this->getPath().$this->_file);
 
 				// get the version number and store it as a float
 				// this way we can do version requirement checks in the future
-				$this->_version = (float)$xml["version"];
+				$this->_version = (float)$xml['version'];
 				// first we read the "default" block in the xml which holds the settings
 				// for all the actions of this page
 
@@ -121,8 +122,8 @@ namespace Sys
 		*/
 		private function _createBlock($xml)
 		{
-			$name = (string)$xml["name"];
-			$type = (string)$xml["type"];
+			$name = (string)$xml['name'];
+			$type = (string)$xml['type'];
 			/*$typeParts = explode("/", $type);
 			foreach ($typeParts as $key => $value)
 			{
@@ -130,7 +131,7 @@ namespace Sys
 			}*/
 			$class = \Z::getConfig()->getBlockClass($type);
 			//$type = "App\\Models\\Blocks\\".implode("\\", $typeParts);
-			return new $class($name, $xml);
+			return new $class($name, $xml['template']);
 		}
 
 		/**
@@ -144,7 +145,7 @@ namespace Sys
 			if (count($xml->block) > 0)
 			{
 				$temp = $parent;
-				$name = (string)$xml["name"];
+				$name = (string)$xml['name'];
 				$this->_blocks[$name] = $this->_createBlock($xml);
 				// if it has a parent, add this block as a child
 				//$lastParent = substr($name, 0, strrpos($name, "."));
@@ -165,7 +166,7 @@ namespace Sys
 			// then we add the leaf nodes
 			else
 			{
-				$name = (string)$xml["name"];
+				$name = (string)$xml['name'];
 				$this->_blocks[$name] = $this->_createBlock($xml);
 				//$this->_blocks[$name] = new \Sys\Layout\Block($name, $xml);
 				// if it has a parent, add this block as a child
@@ -193,7 +194,7 @@ namespace Sys
 				if ($reference->block)
 				foreach ($reference->block as $block)
 				{
-					$this->_getBlocks($block, (string)$reference["name"]);
+					$this->_getBlocks($block, (string)$reference['name']);
 				}
 				// if there are actions defined, process these too
 				$this->_executeActions($reference);
@@ -211,7 +212,7 @@ namespace Sys
 			// process all <remove> tags found
 			foreach ($blocks as $block)
 			{
-				$name = (string)$block["name"];
+				$name = (string)$block['name'];
 				$this->_removeBlock($name);
 			}
 		}
@@ -228,14 +229,14 @@ namespace Sys
 			{
 				foreach ($reference->action as $action)
 				{
-					$method = (string)$action["method"];
+					$method = (string)$action['method'];
 					$params = array();
 					foreach ($action as $key => $value)
 					{
 						//$params[$key] = $value;
 						$params[] = (string)$value;
 					}
-					call_user_func_array(array($this->getBlock((string)$reference["name"]), $method), $params);
+					call_user_func_array(array($this->getBlock((string)$reference['name']), $method), $params);
 				}
 			}
 		}
@@ -245,7 +246,9 @@ namespace Sys
 		 */
 		public function render()
 		{
+			\Z::dispatchEvent('layout_render_before', array('object' => $this));
 			return $this->_blocks['root']->render();
+			\Z::dispatchEvent('layout_render_after', array('object' => $this));
 		}
 
 		/**
@@ -259,7 +262,7 @@ namespace Sys
 			if (isset($this->_blocks[$name]))
 				return $this->_blocks[$name];
 			throw
-				new \Sys\Exception("The block with the name '$name' was not found");
+				new \Sys\Exception('The block with the name => %s was not found', $name);
 			//return NULL;
 		}
 

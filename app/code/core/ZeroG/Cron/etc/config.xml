@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<ZeroG_Cron>
+			<version>0.1.0</version>
+		</ZeroG_Cron>
+	</modules>
+
+	<global>
+		<models>
+			<cron>
+				<class>ZeroG\Cron\Model</class>
+				<resourceModel>cron_resource</resourceModel>
+			</cron>
+			<cron_resource>
+				<class>ZeroG\Cron\Model\Resource</class>
+				<entities>
+					<schedule>
+						<table>cron_schedule</table>
+					</schedule>
+				</entities>
+			</cron_resource>
+		</models>
+		<resources>
+			<cron_setup>
+				<setup>
+					<module>ZeroG_Cron</module>
+				</setup>
+			</cron_setup>
+		</resources>
+	</global>
+
+	<default>
+		<system>
+			<cron>
+				<schedule_generate_every>15</schedule_generate_every>
+				<schedule_ahead_for>20</schedule_ahead_for>
+				<schedule_lifetime>15</schedule_lifetime>
+				<history_cleanup_every>10</history_cleanup_every>
+				<history_success_lifetime>60</history_success_lifetime>
+				<history_failure_lifetime>600</history_failure_lifetime>
+			</cron>
+		</system>
+	</default>
+
+	<crontab>
+		<events>
+			<default>
+				<observers>
+					<cron_observer>
+						<class>cron/observer</class>
+						<method>dispatch</method>
+					</cron_observer>
+				</observers>
+			</default>
+		</events>
+	</crontab>
+
+</config>

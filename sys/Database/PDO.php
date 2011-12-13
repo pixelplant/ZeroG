@@ -137,6 +137,7 @@ namespace Sys\Database
 					return $e->getMessage(); //return exception
 				}
 			}
+			return $this->_fields[$table];
 		}
 
 		public function createTable($createQuery)
@@ -199,13 +200,15 @@ namespace Sys\Database
 			{
 				$fields[]= $key;
 				$values[] = ':'.$key;
-				$statementData[':'.$key] = $this->quote($value);
+				//$statementData[':'.$key] = $this->quote($value);
+				$statementData[':'.$key] = $value;
 			}
 			$fields = implode(",", $fields);
 			$values = implode(",", $values);
 			$table = $this->getTableName($table);
 			$statement = $this->_driver->prepare("INSERT INTO `$table` ($fields) VALUES ($values)");
-			$statement->execute($statementData);
+			if ($statement->execute($statementData) === FALSE)
+				throw new \Sys\Exception('Cannot execute prepared statement for table => %s', $table);
 		}
 
 		/**

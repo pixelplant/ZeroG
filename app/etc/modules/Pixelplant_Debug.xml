@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * @category   ZeroG
- * @package    ZeroG_Core
+ * @category   Pixelplant
+ * @package    Pixelplant_Debug
  * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
  * @license    M.O.K.A.
  */
  -->
 <config>
 	<modules>
-		<ZeroG_Core>
+		<Pixelplant_Debug>
 			<active>true</active>
-			<codePool>core</codePool>
-		</ZeroG_Core>
+			<codePool>local</codePool>
+			<depends>
+				<ZeroG_Core />
+			</depends>
+		</Pixelplant_Debug>
 	</modules>
 </config>

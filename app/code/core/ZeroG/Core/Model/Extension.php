@@ -7,12 +7,12 @@
  */
 namespace App\Code\Core\ZeroG\Core\Model
 {
-	class Resource extends \Sys\Database\Model
+	class Extension extends \Sys\Database\Model
 	{
 		protected function _construct()
 		{
 			parent::_construct();
-			$this->_init('core/resource', 'code');
+			$this->_init('core/extension', 'code');
 		}
 	}
 }

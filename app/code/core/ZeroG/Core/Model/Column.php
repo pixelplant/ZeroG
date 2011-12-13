@@ -10,9 +10,14 @@ namespace App\Code\Core\ZeroG\Core\Model
 {
 	class Column extends \Sys\Model {
 		
-		public function __construct()
+		public function getDefault()
 		{
-			parent::__construct();
+			$value = $this->getData('default');
+			if ($value == '')
+				return '';
+			if (is_string($value) && $value[0] != "'")
+				$this->setData('default', "'".$value."'");
+			return $this->getData('default');
 		}
 	}
 }

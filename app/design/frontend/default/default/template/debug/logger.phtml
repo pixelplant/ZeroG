@@ -1,0 +1,12 @@
+<ul>
+<?php foreach ($this->getLoggerData() as $type => $data): ?>
+	<li>
+		<?php echo $this->__($type); ?>
+		<ul>
+			<?php foreach ($data as $item): ?>
+				<li><?php echo $item;?></li>
+			<?php endforeach; ?>
+		</ul>
+	</li>
+<?php endforeach; ?>
+</ul>

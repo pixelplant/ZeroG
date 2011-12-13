@@ -28,9 +28,9 @@
 					<block type="core/base" name="left.submenu" />
 				</block>
 			</block>
-			<block type="core/base" name="right" />
-			<block type="core/base" name="content"/>
-			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
+			<block type="core/text" name="right" />
+			<block type="core/text" name="content" />
+			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
 		</block>
 	</default>
 

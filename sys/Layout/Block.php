@@ -59,14 +59,14 @@ namespace Sys\Layout
 		 */
 		protected $_eventPrefix = 'block';
 
-		public function __construct($name, \SimpleXMLElement $xml)
+		public function __construct($name, $template = '')
 		{
 			$this->_children = array();
 			$this->_parent = '';
 			$this->_name = $name;
 			$this->_templateResource = NULL;
 			$this->_code = NULL;
-			$this->setTemplate((string)$xml["template"]);
+			$this->setTemplate($template);
 		}
 
 		/**
@@ -231,6 +231,7 @@ namespace Sys\Layout
 		public function setName($value)
 		{
 			$this->_name = $value;
+			return $this;
 		}
 
 		/**
@@ -249,6 +250,7 @@ namespace Sys\Layout
 		public function setTemplate($value)
 		{
 			$this->loadTemplate($value);
+			return $this;
 		}
 
 		/**

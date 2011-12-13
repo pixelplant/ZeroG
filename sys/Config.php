@@ -220,58 +220,6 @@ namespace Sys
 		}
 
 		/**
-		 * Starts the installer
-		 * 
-		 * @return core/installer
-		 */
-		public function getInstaller()
-		{
-			$class = $this->getModelClass('core/installer');
-			return new $class;
-		}
-
-		/**
-		 * Executes all the setup scripts that have not been run yet
-		 */
-		public function runSetupScripts()
-		{
-			//$installed = \Z::getModel('core/resource')->loadAll();
-			foreach ($this->_resources as $name => $resource)
-			{
-				$latestVersion = $resource['requiredVersion'];
-				//$installedVersion = $installed->getResource($name)->getVersion();
-				$installedVersion = '0.0.5';
-				$end = 'install-'.$latestVersion.'.php';
-				$start = 'install-'.$installedVersion.'.php';
-				if ($latestVersion != $installedVersion)
-				{
-					$installerFilesLocation = $this->getModule($resource['module'])->getPath('sql/'.$name.'/');
-					$handle = opendir($installerFilesLocation);
-					if ($handle)
-					{
-						while (FALSE !== ($file = readdir($handle)))
-						{
-							if (strpos($file, '.php') > 0)
-							{
-								if (($file > $start) && ($file <= $end))
-								{
-									//echo $installerFilesLocation.$file.'<br/>';
-									include $installerFilesLocation.$file;
-								}
-								// execute the install script for $file
-								// update the version in the table
-							}
-						}
-						closedir($handle);
-					}
-					else
-						throw new \Sys\Exception('Cannot open the location => %s of the setup install scripts',
-							$installerFilesLocation);
-				}
-			}
-		}
-
-		/**
 		 * Load all xml files from specified directory path
 		 * 
 		 * into one big multi array
@@ -432,6 +380,16 @@ namespace Sys
 				return $event;
 			}
 			return FALSE;
+		}
+
+		/**
+		 * Return <resources> tags content
+		 * 
+		 * @return <array>
+		 */
+		public function getResources()
+		{
+			return $this->_resources;
 		}
 
 		/**

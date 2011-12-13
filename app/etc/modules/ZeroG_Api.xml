@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
  * @category   ZeroG
@@ -12,6 +12,9 @@
 		<ZeroG_Api>
 			<active>true</active>
 			<codePool>core</codePool>
+			<depends>
+				<ZeroG_Core />
+			</depends>
 		</ZeroG_Api>
 	</modules>
 </config>

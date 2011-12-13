@@ -391,6 +391,15 @@ namespace
 			self::getProfiler()->stop($class);
 			return $instance;
 		}
+		
+		public static function getBlock($name)
+		{
+			$class = self::$config->getBlockClass($name);
+			self::getProfiler()->start($class);
+			$instance = new $class($name);
+			self::getProfiler()->stop($class);
+			return $instance;
+		}
 
 		/**
 		 * Returns a resource model
