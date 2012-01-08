@@ -32,10 +32,10 @@ $installer->newTable($installer->getResourceTable('blog/post'))
 			//'default' => NULL
 			))
 		->addColumn('meta_keywords', $installer::TYPE_TEXT, 200, array(
-			'nullable' => FALSE
+			'nullable' => TRUE
 			))
 		->addColumn('meta_description', $installer::TYPE_TEXT, null, array(
-			'nullable' => FALSE
+			'nullable' => TRUE
 			))
 		->setComment('Holds a list of blog posts for the Pixelplant_Blog extension')
 		->insertData(

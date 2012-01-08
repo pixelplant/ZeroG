@@ -10,15 +10,18 @@
 
 <layout version="1.0">
 
-	<default>
+	<blog>
 		<reference name="root">
-			<action method="setTemplate"><template>page/2columns.phtml</template></action>
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
 		</reference>
 		<reference name="right">
 			<action method="setTemplate"><template>page/right.phtml</template></action>
 			<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
 		</reference>
-	</default>
+		<reference name="content">
+			<block type="blog/admin/grid/posts" name="widget.grid" />
+		</reference>
+	</blog>
 
 	<blog_index_ajax>
 		<reference name="root">

@@ -36,9 +36,9 @@ namespace App\Code\Core\ZeroG\Core\Model
 
 		public function run($params)
 		{
-			$siteCode = isset($params['site_code']) ? $params['site_code'] : '';
-			$siteType = isset($params['site_type']) ? $params['site_type'] : 'website_view';
-			$options  = isset($params['options']) ? $params['options'] : array();
+			$siteCode = isset($params['_site_code']) ? $params['_site_code'] : '';
+			$siteType = isset($params['_site_type']) ? $params['_site_type'] : 'website_view';
+			$options  = isset($params['_options']) ? $params['_options'] : array();
 		}
 	}
 }

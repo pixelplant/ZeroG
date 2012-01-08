@@ -1,0 +1,14 @@
+<div data-role="fieldcontain">
+	<label for="start_date">From</label>
+	<input type="text" id="start_date" name="start_date" value="12/07/2010" />
+</div>
+<div data-role="fieldcontain">
+	<label for="end_date">To</label>
+	<input type="text" id="end_date" name="end_date" value="" />
+</div>
+<script>
+	$(function() {
+		$("#start_date").datepicker({defaultDate: null});
+		$("#end_date").datepicker({defaultDate: null});
+	});
+</script>

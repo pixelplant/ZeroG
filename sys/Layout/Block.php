@@ -8,7 +8,7 @@
 namespace Sys\Layout
 {
 
-	class Block
+	class Block extends \Sys\Model
 	{
 		/**
 		 * Holds an array of \Sys\Block chidren
@@ -53,20 +53,78 @@ namespace Sys\Layout
 		protected $_code;
 
 		/**
+		 * The module name this block is linked to
+		 *
+		 * @var <string>
+		 */
+		protected $_moduleName;
+
+		/**
+		 * Block type, eg: 'core/text'
+		 *
+		 * @var <string>
+		 */
+		protected $_type;
+
+		/**
+		 * Block type identifier (the first part of $this->_type)
+		 * @var <type>
+		 */
+		protected $_identifier;
+
+		/**
 		 * Event prefix used when loading blocks
 		 * 
 		 * @var <type>
 		 */
 		protected $_eventPrefix = 'block';
 
-		public function __construct($name, $template = '')
+		/**
+		 * Reference to the parent layout it belongs to
+		 * @var <Sys\Layout>
+		 */
+		protected $_layout;
+
+		/**
+		 * Create a new Block
+		 *
+		 * @param <Sys\Layout> $layout The layout object it belongs to
+		 * @param <string> $name Block name, eg: content
+		 * @param <string> $type Block type, eg: core/base
+		 * @param <string> $template Block template file
+		 */
+		public function __construct($layout, $name, $type, $template = '')
 		{
+			$this->_layout = $layout;
 			$this->_children = array();
 			$this->_parent = '';
 			$this->_name = $name;
 			$this->_templateResource = NULL;
 			$this->_code = NULL;
+			$this->_type = $type;
+			$parts = explode('/', $type);
+			$this->_identifier = $parts[0];
 			$this->setTemplate($template);
+			$this->_setModuleName();
+
+			$this->_construct();
+		}
+
+		/**
+		 * Please overwrite this in your extended classes and not the default
+		 * constructor
+		 */
+		protected function _construct()
+		{
+		}
+
+		/**
+		 * Link the block to it's calling module so we know what translation
+		 * to use
+		 */
+		protected function _setModuleName()
+		{
+			$this->_moduleName = \Z::getConfig()->getBlock($this->_identifier)->getModule();
 		}
 
 		/**
@@ -75,6 +133,7 @@ namespace Sys\Layout
 		 */
 		public function addChild(\Sys\Layout\Block $value)
 		{
+			$value->setParent($this->getName());
 			$this->_children[$value->getName()] = $value;
 		}
 
@@ -85,9 +144,10 @@ namespace Sys\Layout
 		 *
 		 * @return <string> the relative path to the app/views directory
 		 */
-		protected function getPath()
+		protected function getPath($location = 'frontend')
 		{
-			return sprintf('app/design/frontend/%s/%s/template/',
+			return sprintf('app/design/%s/%s/%s/template/',
+					$location,
 					\Z::getConfig('config/global/default/package'),
 					\Z::getConfig('config/global/default/template'));
 		}
@@ -114,24 +174,28 @@ namespace Sys\Layout
 			return $this;
 		}
 
+		protected function _beforeToHtml() {}
+		protected function _afterToHtml() {}
+
 		/**
 		 * Render the current php/html block
 		 * @return <string> The final generated HTML code
 		 */
 		public function render()
 		{
+			\Z::dispatchEvent($this->_eventPrefix.'_block_render_before', array('object' => $this));
+			\Z::dispatchEvent('block_render_before', array('object' => $this));
+			$code = '';
 			if ($this->_template != NULL || $this->_code != NULL)
 			{
+				$this->_beforeToHtml();
 				ob_start();
-				/*eval("?>".$this->_code);*/
 				if ($this->_code == NULL)
 				{
 					include $this->_template;
-					//\Z::dispatchEvent($this->_eventPrefix.'_block_rendered', array('object' => $this));
 				}
 				else
 					echo $this->_code;
-				/*	eval("?>".$this->_code); */
 				//$renderedCode = ob_get_contents();
 				//ob_end_clean();
 				$renderedCode = ob_get_clean();
@@ -139,10 +203,14 @@ namespace Sys\Layout
 				{
 					$renderedCode = $this->wrapTemplateHints($renderedCode);
 				}
-				return $renderedCode;
+				$code = $renderedCode;
+				$this->_afterToHtml();
 			}
 			else
-				return '';
+				$code = '';
+			\Z::dispatchEvent($this->_eventPrefix.'_block_render_after', array('object' => $this));
+			\Z::dispatchEvent('block_render_after', array('object' => $this));
+			return $code;
 		}
 
 		/**
@@ -314,12 +382,11 @@ namespace Sys\Layout
 		 * Return a translated label
 		 *
 		 * @param <string> $label the label to translate
-		 * @param <string> $module the name of the module holding the translation
 		 * @return <string> The translation for the curent locale
 		 */
-		public function __($label, $module = 'global')
+		public function __($label)
 		{
-			return \Z::getLocale()->__($label, $module);
+			return \Z::getLocale()->__($label, $this->_moduleName);
 		}
 
 		/**
@@ -333,6 +400,16 @@ namespace Sys\Layout
 		}
 
 		/**
+		 * Get Request data
+		 *
+		 * @return <array>
+		 */
+		public function getRequest()
+		{
+			return \Z::getRequest();
+		}
+
+		/**
 		 * Returns the absolute path to a resource (image, file, etc)
 		 * located in the current package/theme/skin directory
 		 * @param <string> $resource
@@ -341,6 +418,17 @@ namespace Sys\Layout
 		public function getSkinUrl($resource)
 		{
 			return $this->helper('Sys\Helper\Html')->skinUrl($resource);
+		}
+
+		/**
+		 * Return current layout object
+		 * 
+		 * @return <\Sys\Layout>
+		 */
+		public function getLayout()
+		{
+			//return \Z::getController()->getLayout();
+			return $this->_layout;
 		}
 
 		/**

@@ -32,7 +32,7 @@ namespace Sys\Template
 			parent::__construct();
 			$this->layoutFile = $layoutFile;
 			if ($this->layoutFile === NULL)
-				$this->layoutFile = 'page';
+				$this->layoutFile = 'page.xml';
 		}
 
 		/**
@@ -70,6 +70,11 @@ namespace Sys\Template
 		public function isXHR()
 		{
 			return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && ($_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest'));
+		}
+
+		public function __($text)
+		{
+			return \Z::__($text);
 		}
 	}
 }

@@ -8,6 +8,7 @@ namespace App\Code\Core\ZeroG\Core\Block
 	{
 		public function render()
 		{
+			parent::render();
 			// render all children of this block
 			$content = '';
 			// If the html code is set for this block then it means it has no

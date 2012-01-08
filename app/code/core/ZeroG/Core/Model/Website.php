@@ -13,10 +13,40 @@ namespace App\Code\Core\ZeroG\Core\Model
 	{
 		protected $_eventPrefix = 'website';
 
+		protected $_website_views;
+
+		protected $_website_views_ids;
+
+		protected $_website_groups;
+
+		protected $_website_groups_ids;
+
+		protected $_default_website_group;
+
 		protected function _construct()
 		{
 			parent::_construct();
 			$this->_init('core/website', 'website_id');
+		}
+
+		public function setWebsiteGroups($website_groups)
+		{
+			$this->_website_groups = $groups;
+			foreach ($groups as $group)
+			{
+				$this->_website_groups[$group->getId()] = $group;
+				$this->_website_groups_ids[$group->getId()] = $group->getId();
+				if ($this->getDefaultWebsiteGroupId() == $group->getId())
+				{
+					$this->_default_website_group_id = $group->getId();
+				}
+			}
+			return $this;
+		}
+
+		public function getDefaultWebsiteGroup()
+		{
+			return $this->_default_website_group_id;
 		}
 	}
 }

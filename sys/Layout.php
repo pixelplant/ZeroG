@@ -35,14 +35,23 @@ namespace Sys
 		*/
 		public function __construct($file)
 		{
+			\Z::dispatchEvent('layout_load_before', array('object' => $this));
 			// always load page xml first
-			$this->_file = 'page.xml';
+			$this->_file = $file;
 			$this->_loadLayout();
-			// then load current module's xml file
-			/*if (\Z::registry('current_module')->getLayout())
+			// then load current module's xml file if it is defined
+			$extensionXmls = \Z::getConfig()->getLayouts();
+			foreach ($extensionXmls as $xml)
 			{
-				$this->_file = \Z::registry('current_module')->getLayout();
-				$this->loadLayout();
+				$this->_file = $xml['file'];
+				$this->_loadLayout();
+			}
+			\Z::dispatchEvent('layout_load_after', array('object' => $this));
+			/*$routerXml = \Z::getConfig()->getRouterLayouts(\Z::getRequest()->getParam('router'));
+			if ($routerXml)
+			{
+				$this->_file = $routerXml;
+				$this->_loadLayout();
 			}*/
 		}
 
@@ -59,16 +68,18 @@ namespace Sys
 		 */
 		protected function _loadLayout()
 		{
-			$custom_context = \Z::getContext();
-			//$custom_context = \Z::getContext().'_'.\Z::getParam(\Z::getConfig('config/global/default/context/variable'));
-			$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->_file . $custom_context);
+			$context_router = \Z::getRequest()->getParam('router');
+			$context_router_controller = \Z::getRequest()->getParam('router').'_'.\Z::getRequest()->getParam('controller');
+			$context_router_controller_action = \Z::getRequest()->getParam('router').'_'.\Z::getRequest()->getParam('controller').'_'.\Z::getRequest()->getParam('action');
+
+			/*$hash = md5(\Z::getConfig('config/global/default/package').'/'.\Z::getConfig('config/global/default/layout') . $this->_file . $custom_context);
 			$cacheXml = 'var/cache/serialized/xml_'.md5($hash).'.ser';
-			/*if (file_exists($cacheXml))
+			if (file_exists($cacheXml) && \Z::getConfig('config/global/default/developer/mode') == TRUE)
 			{
 				$this->_blocks = unserialize(file_get_contents($cacheXml));
 			}
-			else*/
-			{
+			else
+			{*/
 				$xml = new \SimpleXMLElement($this->getPath().$this->_file, NULL, TRUE);
 				// make sure the xml layout file exists and is valid
 				if (!$xml)
@@ -83,16 +94,17 @@ namespace Sys
 
 				if (isset($xml->default))
 					$this->_processSection($xml->default);
-				// then we apply the custom action layout. for example, the page /cms/index
-				// would have it's layout defined in "cms_index"
-				//$custom_page = \Z::getContext();
-				// if the tag is defined in the xml, process it, otherwise just use the default settings
-				if (isset($xml->$custom_context))
-					$this->_processSection($xml->$custom_context);;
+				// apply the different possible contexts
+				if (isset($xml->$context_router))
+					$this->_processSection($xml->$context_router);
+				if (isset($xml->$context_router_controller))
+					$this->_processSection($xml->$context_router_controller);
+				if (isset($xml->$context_router_controller_action))
+					$this->_processSection($xml->$context_router_controller_action);
 
 				// cache everything...
-				file_put_contents($cacheXml, serialize($this->_blocks));
-			}
+			/*	file_put_contents($cacheXml, serialize($this->_blocks));
+			}*/
 		}
 
 		/**
@@ -118,20 +130,35 @@ namespace Sys
 		/**
 		* Generates a block based on an XML node
 		*
-		* @param <\SimpleXMLElement> $xml
+		* @param <\SimpleXMLElement> $xmlNode
 		*/
-		private function _createBlock($xml)
+		private function _createBlock($xmlNode)
 		{
-			$name = (string)$xml['name'];
-			$type = (string)$xml['type'];
+			$name     = (string)$xmlNode['name'];
+			$type     = (string)$xmlNode['type'];
+			$template = (string)$xmlNode['template'];
 			/*$typeParts = explode("/", $type);
 			foreach ($typeParts as $key => $value)
 			{
 				$typeParts[$key] = ucfirst($value);
 			}*/
 			$class = \Z::getConfig()->getBlockClass($type);
-			//$type = "App\\Models\\Blocks\\".implode("\\", $typeParts);
-			return new $class($name, $xml['template']);
+
+			return new $class($this, $name, $type, $template);
+		}
+
+		public function createBlock($type, $name = '', $template = '')
+		{
+			if ($name == '')
+			{
+				$name = 'ANONYMOUS_'.count($this->_blocks);
+			}
+			$data = array('type'   => $type,
+						'name'     => $name,
+						'template' => $template);
+			$block = $this->_createBlock($data);
+			$this->_blocks[$name] = $block;
+			return $block;
 		}
 
 		/**
@@ -247,8 +274,9 @@ namespace Sys
 		public function render()
 		{
 			\Z::dispatchEvent('layout_render_before', array('object' => $this));
-			return $this->_blocks['root']->render();
+			$content = $this->_blocks['root']->render();
 			\Z::dispatchEvent('layout_render_after', array('object' => $this));
+			return $content;
 		}
 
 		/**

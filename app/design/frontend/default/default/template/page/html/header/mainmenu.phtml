@@ -1,4 +1,8 @@
-<h3><?php echo \Z::__('Different column layouts', 'cms'); ?></h3>
-<?php echo \Z::getHelper('Sys\Helper\Html')->link('blog/index', 'CMS index'); ?> |
-<?php echo \Z::getHelper('Sys\Helper\Html')->link('blog/index/ajax', '1 column'); ?> |
-<?php echo \Z::getHelper('Sys\Helper\Html')->link('blog/index/ajax', 'Ajax call', 'id="ajax1"'); ?>
+<div class="navbar">
+	<ul>
+		<li><a href="<?php echo $this->getUrl('page/view/index'); ?>"><?php echo $this->__('Home'); ?></a></li>
+		<li><a href="<?php echo $this->getUrl('page/view/extensions'); ?>"><?php echo $this->__('Extensions'); ?></a></li>
+		<li><a href="<?php echo $this->getUrl('page/view/documentation'); ?>"><?php echo $this->__('Documentation'); ?></a></li>
+		<li><a href="<?php echo $this->getUrl('page/view/download'); ?>"><?php echo $this->__('Download'); ?></a></li>
+	</ul>
+</div>

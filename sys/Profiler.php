@@ -68,6 +68,8 @@ namespace Sys
 		 */
 		private function convert($size)
 		{
+			if ($size <= 0)
+				return 0;
 			$unit = array('BYTES', 'KB', 'MB', 'GB', 'TB', 'PB');
 			return @round($size / pow(1024 ,($i = floor(log($size, 1024)))), 2).' '.$unit[$i].' ('.$size.' B)';
 		}
@@ -77,11 +79,19 @@ namespace Sys
 		 * Please note that the predefined timer "timer/global" shows the total execution and memory usage
 		 * of the script.
 		 *
-		 * @return <type>
+		 * @param <string> $timerName Timer name to retrieve. If null, it will return all timers
+		 * @return <array> An array holding 2 key values: cpu and memory
 		 */
-		public function getStatistics()
+		public function getStatistics($timerName = '')
 		{
 			$usage = array();
+			if (!empty($timerName) && isset($this->timers[$timerName]))
+			{
+				$timerValue = $this->timers[$timerName];
+				$usage['cpu'] = ($timerValue[1] - $timerValue[0]).' secunde';
+				$usage['memory'] = $this->convert($timerValue[3] - $timerValue[2]);
+				return $usage;
+			}
 			foreach ($this->timers as $timerName => $timerValue)
 			{
 				$usage[$timerName]['cpu'] = ($timerValue[1] - $timerValue[0]).' secunde';

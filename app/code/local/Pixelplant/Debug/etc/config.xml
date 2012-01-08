@@ -31,22 +31,86 @@
 		</models>
 
 		<events>
+			<model_load_before>
+				<debug_model_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>modelLoadBefore</method>
+				</debug_model_observer>
+			</model_load_before>
 			<model_load_after>
-				<debug_observer>
+				<debug_model_observer>
 					<type>singleton</type>
 					<class>debug/observer</class>
 					<method>modelLoadAfter</method>
-				</debug_observer>
+				</debug_model_observer>
 			</model_load_after>
+			<collection_load_before>
+				<debug_collection_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>collectionLoadBefore</method>
+				</debug_collection_observer>
+			</collection_load_before>
+			<collection_load_after>
+				<debug_collection_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>collectionLoadAfter</method>
+				</debug_collection_observer>
+			</collection_load_after>
+			<block_render_before>
+				<debug_block_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>blockRenderBefore</method>
+				</debug_block_observer>
+			</block_render_before>
 			<layout_render_before>
-				<debug_observer>
+				<debug_layout_observer>
 					<type>singleton</type>
 					<class>debug/observer</class>
 					<method>layoutRenderBefore</method>
-				</debug_observer>
+				</debug_layout_observer>
 			</layout_render_before>
+			<!--<zerog_stop>
+				<debug_observer>
+					<type>singleton</type>
+					<class>debug/observer</class>
+					<method>zerogStop</method>
+				</debug_observer>
+			</zerog_stop>-->
 		</events>
 
 	</global>
+
+	<frontend>
+		<routers>
+			<debug>
+				<use>debug</use>
+				<args>
+					<module>Pixelplant_Debug</module>
+				</args>
+			</debug>
+		</routers>
+
+        <translate>
+        	<modules>
+        		<Pixelplant_Debug>
+        			<files>
+        				<default>Pixelplant_Debug.csv</default>
+        			</files>
+        		</Pixelplant_Debug>
+        	</modules>
+        </translate>
+
+		<layout>
+			<updates>
+				<debug>
+					<file>debug.xml</file>
+				</debug>
+			</updates>
+		</layout>
+	</frontend>
 
 </config>

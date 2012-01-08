@@ -10,9 +10,14 @@ namespace App\Code\Core\ZeroG\Core\Model\Url
  */
 	class Rewrite extends \Sys\Database\Model
 	{
-		protected function _constructor()
+		protected function _construct()
 		{
-			$this->_init('core_resource/url_website', 'website_id');
+			$this->_init('core/url_rewrite', 'url_rewrite_id');
+		}
+
+		public function loadByUrl($value)
+		{
+			return $this->loadByField('request_path', $value);
 		}
 	}
 }

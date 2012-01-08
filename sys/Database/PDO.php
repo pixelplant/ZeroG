@@ -19,6 +19,12 @@ namespace Sys\Database
 		protected $_fields = array();
 
 		/**
+		 * Database name
+		 * @var <string>
+		 */
+		protected $_databaseName;
+
+		/**
 		 * Table prefix, if any
 		 * @var <string>
 		 */
@@ -28,6 +34,7 @@ namespace Sys\Database
 		{
 			$configString = "config/global/resources/db/$connectionName/";
 			$adapter = \Z::getConfig($configString."adapter");
+			$this->_databaseName = \Z::getConfig($configString.'dbname');
 			$this->_tablePrefix = \Z::getConfig($configString."table_prefix");
 			if (!in_array($adapter, \PDO::getAvailableDrivers()))
 				throw new \Sys\Exception("The driver => %s does not seem to be installed on your system.", $connectionName);
@@ -43,7 +50,7 @@ namespace Sys\Database
 					$dsn = 
 						\Z::getConfig($configString.'adapter').
 						':dbname='.
-						\Z::getConfig($configString.'dbname').
+						$this->_databaseName.
 						';host='.
 						\Z::getConfig($configString.'host');
 				}
@@ -113,9 +120,11 @@ namespace Sys\Database
 			{
 				//$table = $this->_driver->quote($table);
 				$table = $this->getTableName($table);
-				$statement = $this->_driver->prepare("select DISTINCT column_name from information_schema.columns where table_name = '$table'");
 				try
 				{
+					$statement = $this->_driver->prepare("SELECT column_name FROM information_schema.columns WHERE table_name = ? AND table_schema = ? ");
+					$statement->bindValue(1, $table,               \PDO::PARAM_STR);
+					$statement->bindValue(2, $this->_databaseName, \PDO::PARAM_STR);
 					if ($statement->execute())
 					{
 						$raw_column_data = $statement->fetchAll(\PDO::FETCH_ASSOC);
@@ -156,12 +165,27 @@ namespace Sys\Database
 		public function load($table, $field, $value = 0)
 		{
 			//$id = (int)$id;
-			$table = $this->getTableName($table);
-			$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE $field = :value");
-			$statement->execute(array(':value' => $value));
-			$row = $statement->fetch(\PDO::FETCH_ASSOC);
-			//var_dump($row);
-			return $row;
+			try
+			{
+				if (!in_array($field, $this->_fields[$table]))
+					throw new \Sys\Exception('Table field is not defined');
+				$table = $this->getTableName($table);
+				$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE $field = ?");
+				//$statement->bindValue(1, $table, \PDO::PARAM_STR);
+				//$statement->bindValue(1, $field, \PDO::PARAM_STR);
+				$statement->bindValue(1, $value, \PDO::PARAM_STR);
+				$statement->execute();
+				$row = $statement->fetch(\PDO::FETCH_ASSOC);
+				return $row;
+			}
+			catch(PDOException $e)
+			{
+				// this NEEDS to be set into a LOG function
+				throw new \Sys\Exception('Cannot load the field %s for the table %s. Further messages: %s',
+						$field,
+						$table,
+						$e->getMessage());
+			}
 		}
 
 		/**
@@ -198,14 +222,13 @@ namespace Sys\Database
 			$values = array();
 			foreach ($data as $key => $value)
 			{
-				$fields[]= $key;
+				$fields[] = $key;
 				$values[] = ':'.$key;
-				//$statementData[':'.$key] = $this->quote($value);
 				$statementData[':'.$key] = $value;
 			}
-			$fields = implode(",", $fields);
-			$values = implode(",", $values);
-			$table = $this->getTableName($table);
+			$fields    = implode(",", $fields);
+			$values    = implode(",", $values);
+			$table     = $this->getTableName($table);
 			$statement = $this->_driver->prepare("INSERT INTO `$table` ($fields) VALUES ($values)");
 			if ($statement->execute($statementData) === FALSE)
 				throw new \Sys\Exception('Cannot execute prepared statement for table => %s', $table);
@@ -222,7 +245,7 @@ namespace Sys\Database
 		{
 			//$table = $this->_driver->quote($criteria['from']);
 			$table = $this->getTableName($criteria['from']);
-			$query = sprintf("SELECT * FROM `%s` ", $table);
+			$query = "SELECT * FROM `$table` ";
 			if (isset($criteria['where']))
 				$query .= sprintf(' WHERE %s ', $criteria['where']);
 			if (isset($criteria['limit']))

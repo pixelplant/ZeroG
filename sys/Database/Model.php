@@ -64,47 +64,6 @@ namespace Sys\Database
 		}
 
 		/**
-		 * Loads a record of this model by id
-		 *
-		 * @param <int> $id
-		 * @return Model
-		 */
-		public function load($id = 0)
-		{
-			$this->_beforeLoad();
-			$this->_getResource()->load($this, $id);
-			$this->_afterLoad();
-			return $this;
-		}
-
-		/**
-		 * The search criteria to use for the query
-		 * 
-		 * @param <array> $criteria
-		 * @return <array> Returns an array of Model items
-		 */
-		public function find($criteria = array())
-		{
-			$criteria['from'] = $this->_table;
-			$collection = $this->_pdo->find($this->_className, $criteria);
-			return $collection;
-		}
-
-		/**
-		 * Save our model data
-		 * 
-		 * @return Model
-		 */
-		public function save()
-		{
-			$this->_beforeSave();
-			$id = $this->_getResource()->save($this);
-			$this->setId($id);
-			$this->_afterSave();
-			return $this;
-		}
-
-		/**
 		 * Base event processing array for all models
 		 * @return <array>
 		 */
@@ -144,6 +103,52 @@ namespace Sys\Database
 		{
 			\Z::dispatchEvent('model_save_before', $this->_getEventData());
 			\Z::dispatchEvent($this->_eventPrefix.'_save_before', $this->_getEventData());
+			return $this;
+		}
+
+		/**
+		 * Loads a record of this model by id
+		 *
+		 * @param <int> $id
+		 * @return Model
+		 */
+		public function load($id = 0)
+		{
+			return $this->loadByField($this->getIdField(), $id);
+		}
+
+		public function loadByField($field, $value)
+		{
+			$this->_beforeLoad();
+			$this->_getResource()->loadByField($field, $this, $value);
+			$this->_afterLoad();
+			return $this;
+		}
+
+		/**
+		 * The search criteria to use for the query
+		 * 
+		 * @param <array> $criteria
+		 * @return <array> Returns an array of Model items
+		 */
+		public function find($criteria = array())
+		{
+			$criteria['from'] = $this->_table;
+			$collection = $this->_pdo->find($this->_className, $criteria);
+			return $collection;
+		}
+
+		/**
+		 * Save our model data
+		 * 
+		 * @return Model
+		 */
+		public function save()
+		{
+			$this->_beforeSave();
+			$id = $this->_getResource()->save($this);
+			$this->setId($id);
+			$this->_afterSave();
 			return $this;
 		}
 
@@ -205,6 +210,11 @@ namespace Sys\Database
 			else
 				$this->setData('id', $id);
 			return $this;
+		}
+
+		public function getResourceName()
+		{
+			return $this->_resourceName;
 		}
 
 	}

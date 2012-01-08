@@ -17,6 +17,11 @@ namespace Sys
 		protected $_sessionName;
 
 		protected $_namespace;
+
+		public function __construct()
+		{
+			$this->_construct();
+		}
 		
 		protected function _construct()
 		{

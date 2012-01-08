@@ -15,10 +15,29 @@ namespace Sys\Database\Model
 
 		protected $_pdo;
 
+		/**
+		 * Called when collection is created
+		 */
+		protected function _construct()
+		{
+			$this->_eventPrefix = 'sys_database_collection';
+			parent::_construct();
+		}
+
+		protected function _init($resourceName)
+		{
+			$this->_pdo = \Z::getDatabaseConnection('default_setup');
+			$this->_itemObjectClass = $resourceName;
+			$this->_resourceName = $resourceName;
+			$this->_resource = \Z::getResource($resourceName);
+			parent::_init($resourceName);
+		}
+
 		public function load()
 		{
 			if ($this->isLoaded())
 				return;
+			$this->_beforeLoad();
 			$this->_isCollectionLoaded = true;
 			//parent::load();
 			$data = $this->_getReadAdapter()->query('SELECT * FROM '.$this->_getResource()->getTable().' WHERE 1');
@@ -29,6 +48,26 @@ namespace Sys\Database\Model
 					$record->setData($row);
 					$this->_items[] = $record;
 				}
+			$this->_afterLoad();
+			return $this;
+		}
+
+		protected function _getEventData()
+		{
+			return array('object' => $this);
+		}
+
+		public function _beforeLoad()
+		{
+			\Z::dispatchEvent('collection_load_before', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_load_after', $this->_getEventData());
+			return $this;
+		}
+
+		public function _afterLoad()
+		{
+			\Z::dispatchEvent('collection_load_after', $this->_getEventData());
+			\Z::dispatchEvent($this->_eventPrefix.'_load_after', $this->_getEventData());
 			return $this;
 		}
 		
@@ -46,17 +85,9 @@ namespace Sys\Database\Model
 			return $this->_resource;
 		}
 
-		protected function _construct()
+		public function getResourceName()
 		{
-			parent::_construct();
-		}
-
-		protected function _init($resourceName)
-		{
-			$this->_pdo = \Z::getDatabaseConnection('default_setup');
-			$this->_itemObjectClass = $resourceName;
-			$this->_resourceName = $resourceName;
-			$this->_resource = \Z::getResource($resourceName);
+			return $this->_resourceName;
 		}
 
 		/**

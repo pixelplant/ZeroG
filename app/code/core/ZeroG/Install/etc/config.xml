@@ -34,13 +34,13 @@
         	</modules>
         </translate>
 
-        <layout>
+        <!--<layout>
             <updates>
                 <install>
-                    <file>main.xml</file>
+                    <file>install.xml</file>
                 </install>
             </updates>
-        </layout>
+        </layout>-->
 
         <routers>
             <install>

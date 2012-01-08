@@ -27,12 +27,13 @@ namespace Sys
 		public function __construct()
 		{
 			$this->_isNew = true;
+			$this->_className = get_class($this);
 			$this->_construct();
 		}
 
 		protected function _construct()
 		{
-			$this->_className = get_class($this);
+			//$this->_className = get_class($this);
 		}
 
 		/**
@@ -86,8 +87,11 @@ namespace Sys
 		}
 
 		/**
-		 * Change all model data using an array
-		 * @param <array> $newData
+		 * Change all model data or just a particular field if $field is array
+		 *
+		 * @param <string> $field Field name
+		 * @param <mixed> $value Field value
+		 * @return \Sys\Model
 		 */
 		public function setData($field, $value = null)
 		{
@@ -95,10 +99,7 @@ namespace Sys
 				$this->_data = $field;
 			else
 				$this->_data[$field] = $value;
-			/*if (!is_array($newData))
-				throw new Sys\Exception('The data you want to assign to the model using ->setData must be an array');
-			$this->_data = $newData;
-			return $this;*/
+			return $this;
 		}
 
 		/**

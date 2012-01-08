@@ -14,8 +14,10 @@
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/reset.css</stylesheet></action>
 				<action method="addCss"><stylesheet>css/style.css</stylesheet></action>
-				<action method="addCss"><stylesheet>css/theme-cool.css</stylesheet></action>
+				<!--<action method="addCss"><stylesheet>css/theme-cool.css</stylesheet></action>-->
+				<action method="addCss"><stylesheet>css/ui-lightness/jquery-ui-1.8.16.custom.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
+				<action method="addJs"><script>js/jquery-ui-1.8.16.custom.min.js</script></action>
 				<action method="setTitle"><title>ZeroG Default theme</title></action>
 			</block>
 			<block type="core/base" name="header" template="page/html/header.phtml">
@@ -28,9 +30,10 @@
 					<block type="core/base" name="left.submenu" />
 				</block>
 			</block>
+			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />
-			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
+			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
 		</block>
 	</default>
 
@@ -40,13 +43,34 @@
 		</block>
 	</print>
 
-	<blog_index_index>
-		<reference name="root">
-			<action method="setTemplate"><template>page/2columns.phtml</template></action>
+	<page>
+		<reference name="content">
+			<block type="page/cms" name="content.cms" template="page/cms/content.phtml" />
 		</reference>
-		<reference name="right">
-			<action method="setTemplate"><template>page/right.phtml</template></action>
+	</page>
+
+	<page_view_index>
+		<reference name="content">
+			<block type="page/home" name="content.home" template="page/content/home.phtml" />
 		</reference>
-	</blog_index_index>
+		<reference name="messages">
+			<block type="core/base" name="messages.dialog" template="page/content/dialog.phtml"/>
+		</reference>
+	</page_view_index>
+
+	<page_view_extensions>
+		<reference name="content">
+			<block type="core/base" name="content.extensions" template="page/content/extensions.phtml" />
+		</reference>
+	</page_view_extensions>
+
+	<page_view_documentation>
+		<reference name="content">
+			<block type="core/base" name="content.documentation" template="page/content/documentation.phtml" />
+		</reference>
+		<reference name="head">
+			<action method="setTitle"><title>ZeroG Documentation</title></action>
+		</reference>
+	</page_view_documentation>
 
 </layout>

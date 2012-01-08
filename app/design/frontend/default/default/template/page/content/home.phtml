@@ -1,0 +1,47 @@
+<form method="post" action="<?php echo $this->getUrl('page/view/index'); ?>">
+	<h2>Test form</h2>
+	<div class="fieldcontain">
+		<label for="testInput">Test POST</label>
+		<input type="text" name="testInput" id="testInput" />
+	</div>
+	<input type="submit" name="testSubmit" value="Send"/>
+</form>
+<h2>ZeroG Features</h2>
+<div id="accordion_features">
+   <h3><a href="#"><?php echo $this->__('PHP 5.3 support (namespaces, SPL, etc)'); ?></a></h3>
+   <div>
+   <p>Yes, namespaces. Not "_" (underscore) characters used as separators so
+	   you can mimic namespaces.
+   </p>
+   <p>
+	   namespace App\Code\Local\Pixelplant\Blog\Blocks {}
+   </p>
+   </div>
+   <h3><a href="#"><?php echo $this->__('Easily build extensions'); ?></a></h3>
+   <div>
+   <p>If you've built extensions for Magento, then building extensions for ZeroG 
+	   will be a breeze for you. If you haven't, then go ahead and
+	   <a href="">read the docs</a></p>
+	</div>
+   <h3><a href="#"><?php echo $this->__('Modifiable design packages, themes and skins'); ?></a></h3>
+   <div>
+	   <p>Built on a system similar to that of Magento's. If you follow the same
+	   structure and already know how to define your xml layout files then you're
+	   already in business with ZeroG</p>
+	</div>
+   <h3><a href="#">jQuery + jQuery mobile support built in</a></h3>
+   <div>
+	   <p>I'm the collapsible content with a themed content block set to "A".</p>
+   </div>
+<?php foreach ($this->getBlogCollection() as $post): ?>
+	<h3><a href="#"><?php echo $post->getTitle(); ?></a></h3>
+	<div>
+		<p><?php echo $post->getPostContent(); ?></p>
+	</div>
+<?php endforeach; ?>
+</div>
+<script>
+	$(function() {
+		$( "#accordion_features" ).accordion();
+	});
+</script>

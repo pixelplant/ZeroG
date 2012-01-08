@@ -70,6 +70,13 @@ namespace Sys
 		private $_events;
 
 		/**
+		 * Layouts array
+		 *
+		 * @var <string>
+		 */
+		private $_layouts;
+
+		/**
 		 * The library router
 		 * @var <\Sys\Config\Router>
 		 */
@@ -89,6 +96,7 @@ namespace Sys
 			$this->_translations = array();
 			$this->_resources = array();
 			$this->_events = array();
+			$this->_layouts = array();
 
 			// first we load all summary module config files defined in app/etc/modules
 			$this->load('app/etc/modules/');
@@ -168,7 +176,12 @@ namespace Sys
 						$module = $parts[0].'_'.$parts[1];
 						// set the class name for these block types, adding the codepool
 						// and all the other info stored in the module
-						$this->_blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
+						//$this->_blocks[$key] = $this->getModule($module)->getCodePoolPath($class);
+						$this->_blocks[$key] = new \Sys\Config\Block(
+									$key,
+									$module,
+									$this->getModule($module)->getCodePoolPath($class)
+								);
 						$this->_helpers[$key] = $this->getModule($module)->getClassName('Helper');
 					}
 				}
@@ -210,6 +223,8 @@ namespace Sys
 									->getVersion();
 					}
 				}
+			// Set resources data
+			$this->_layouts = $configData['config']['frontend']['layout']['updates'];
 			// set events
 			$this->_events = $configData['config']['global']['events'];
 			/*if (isset($configData['config']['global']['events']))
@@ -311,10 +326,20 @@ namespace Sys
 		{
 			$data = $this->classAddition($name);
 			$index = $data['index'];
-			$class = $data['class'];
+			$appendClass = $data['class'];
 			if (!isset($this->_blocks[$index]))
 				throw new \Sys\Exception('The block type => %s is not a registered block', $index);
-			return $this->_blocks[$index].$class;
+			return $this->_blocks[$index]->getClass($appendClass);
+		}
+
+		/**
+		 * Return Block Config data
+		 * @param <string> $name
+		 * @return <\Sys\Config\Block>
+		 */
+		public function getBlock($name)
+		{
+			return $this->_blocks[$name];
 		}
 		
 		/**
@@ -390,6 +415,41 @@ namespace Sys
 		public function getResources()
 		{
 			return $this->_resources;
+		}
+
+		/**
+		 * Return the list of CSV files used for translations
+		 *
+		 * @return <array>
+		 */
+		public function getTranslations()
+		{
+			return $this->_translations;
+		}
+
+		/**
+		 * Return the layouts xml array
+		 *
+		 * @return <array>
+		 */
+		public function getLayouts()
+		{
+			return $this->_layouts;
+		}
+
+		/**
+		 * Return the xml layout files used by this router
+		 *
+		 * @param <string> $router
+		 * @return <array>
+		 */
+		public function getRouterLayouts($router)
+		{
+			if (isset($this->_layouts[$router]))
+			{
+				return $this->_layouts[$router]['file'];
+			}
+			return FALSE;
 		}
 
 		/**

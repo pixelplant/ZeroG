@@ -11,10 +11,9 @@ namespace App\Code\Core\ZeroG\Core\Model\Session
 	class Frontend extends \Sys\Session
 	{
 		
-		public function __construct()
+		protected function _construct()
 		{
 			$this->init('core', 'frontend');
-			parent::__construct();
 		}
 
 	}

@@ -17,6 +17,10 @@ namespace Sys\Model
 
 		protected $_totalRecords;
 
+		protected $_eventPrefix = 'sys_collection';
+
+		protected $_className;
+
 		public function __construct()
 		{
 			$this->_construct();
@@ -24,6 +28,11 @@ namespace Sys\Model
 
 		protected function _construct()
 		{
+		}
+
+		protected function _init($resourceName)
+		{
+			$this->_className = get_class($this);
 		}
 
 		/**
@@ -46,6 +55,7 @@ namespace Sys\Model
 
 		/**
 		 * IteratorAggregate implementation
+		 * 
 		 * @return ArrayIterator
 		 */
 		public function getIterator()
@@ -56,12 +66,23 @@ namespace Sys\Model
 
 		/**
 		 * Countable implementation
+		 * 
 		 * @return <int>
 		 */
 		public function count()
 		{
 			$this->load();
 			return \count($this->_items);
+		}
+
+		/**
+		 * Returns the number of items the collection has
+		 *
+		 * @return <int>
+		 */
+		public function getSize()
+		{
+			return $this->count();
 		}
 
 		/**
@@ -108,6 +129,11 @@ namespace Sys\Model
 			}
 
 			return new $this->_itemObjectClass();
+		}
+
+		public function getClassName()
+		{
+			return $this->_className;
 		}
 
 		/**

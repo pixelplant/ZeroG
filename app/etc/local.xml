@@ -38,7 +38,7 @@
 		<default>
 			<!-- everybody knows what this is... -->
 			<base>
-				<url>http://localhost/zerog/</url>
+				<url>http://192.168.0.14/zerog/</url>
 				<secure_url>https://localhost/zerog/</secure_url>
 			</base>
 			<!-- your media files (images,css,js) can be fetched from another url -->
@@ -59,7 +59,7 @@
 			<!-- default module loaded when people go to the index page -->
 			<router>page</router>
 			<!-- default controller called for the above module -->
-			<controller>view</controller>
+			<controller>index</controller>
 			<!-- default action called in the above module -->
 			<action>index</action>
 			<!-- below you can find the template settings for your application

@@ -87,6 +87,16 @@
 			</updates>
 		</layout>
 
+        <translate>
+        	<modules>
+        		<Pixelplant_Blog>
+        			<files>
+        				<default>Pixelplant_Blog.csv</default>
+        			</files>
+        		</Pixelplant_Blog>
+        	</modules>
+        </translate>
+
 	</frontend>
 
 </config>

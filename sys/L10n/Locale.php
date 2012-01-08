@@ -9,35 +9,35 @@ namespace Sys\L10n
 		 * The current locale used in the project, specified in the App\Config\System::LOCALE constant
 		 * @var <string> locale, in format language_COUNTRY, eg: ro_RO for romania, fr_FR for france, fr_CH for switzerland, etc...
 		 */
-		protected $locale = '';
+		protected $_locale = '';
 
-		protected $translations = array();
+		protected $_translations = array();
 
-		protected $currencies = array();
+		protected $_currencies = array();
 
-		protected $days = array();
+		protected $_days = array();
 
-		protected $shortDays = array();
+		protected $_shortDays = array();
 
-		protected $months = array();
+		protected $_months = array();
 
-		protected $shortMonths =  array();
+		protected $_shortMonths =  array();
 
 		//abstract public function setLocale();
 
 		public function __construct($locale)
 		{
-			$this->locale = $locale;
+			$this->_locale = $locale;
 			$this->setLocale();
 			$this->cacheTranslations();
 		}
 
 		public function setLocale()
 		{
-			$xml = new \SimpleXMLElement('sys/locale/'.$this->locale.'.xml', NULL, TRUE);
+			$xml = new \SimpleXMLElement('sys/Locale/'.$this->_locale.'.xml', NULL, TRUE);
 
 			// make sure the xml locale and the app locale settings are the same
-			if ($xml->locale->zone != $this->locale)
+			if ($xml->locale->zone != $this->_locale)
 				throw new \Sys\Exception("Current xml locale file does not match the application's locale settings...");
 
 			// set datetime zome
@@ -47,7 +47,7 @@ namespace Sys\L10n
 			$decimals = $xml->numbers->decimals;
 			foreach ($xml->currencies->currency as $currency)
 			{
-				$this->currencies[(string)$currency->name] = new \Sys\L10n\Currency(
+				$this->_currencies[(string)$currency->name] = new \Sys\L10n\Currency(
 						(string)$currency->name,
 						(string)$currency->symbol,
 						(string)$currency->singleFormat,
@@ -61,8 +61,8 @@ namespace Sys\L10n
 			{
 				foreach ($days as $day)
 				{
-					$this->days[(string)$day["type"]] = (string)$day;
-					$this->shortDays[(string)$day["type"]] = (string)$day;
+					$this->_days[(string)$day["type"]] = (string)$day;
+					$this->_shortDays[(string)$day["type"]] = (string)$day;
 				}
 			}
 
@@ -71,8 +71,8 @@ namespace Sys\L10n
 			{
 				foreach ($months as $month)
 				{
-					$this->months[(string)$month["type"]] = (string)$month;
-					$this->shortMonths[(string)$month["type"]] = (string)$month;
+					$this->_months[(string)$month["type"]] = (string)$month;
+					$this->_shortMonths[(string)$month["type"]] = (string)$month;
 				}
 			}
 
@@ -87,7 +87,7 @@ namespace Sys\L10n
 		 */
 		public function getCurrency($symbol)
 		{
-			return $this->currencies[$symbol];
+			return $this->_currencies[$symbol];
 		}
 
 		/**
@@ -96,7 +96,7 @@ namespace Sys\L10n
 		 */
 		public function getCurrencies()
 		{
-			return $this->currencies;
+			return $this->_currencies;
 		}
 
 		/**
@@ -125,10 +125,10 @@ namespace Sys\L10n
 		{
 			switch ($character)
 			{
-				case 'F': return $this->months[date('F', $timestamp)]; break;
-				case 'M': return $this->shortMonths[date('M', $timestamp)]; break;
-				case 'l': return $this->days[date('l', $timestamp)]; break;
-				case 'D': return $this->shortDays[date('D', $timestamp)]; break;
+				case 'F': return $this->_months[date('F', $timestamp)]; break;
+				case 'M': return $this->_shortMonths[date('M', $timestamp)]; break;
+				case 'l': return $this->_days[date('l', $timestamp)]; break;
+				case 'D': return $this->_shortDays[date('D', $timestamp)]; break;
 				default:
 					if (($character >= 'a' && $character <= 'z') ||
 							($character >= 'A' && $character <= 'Z'))
@@ -140,14 +140,34 @@ namespace Sys\L10n
 
 		private function cacheTranslations($forceRegenerateCache = FALSE)
 		{
-			$cacheFile = 'var/cache/locale/'.$this->locale.'.lng';
-			$localeDir = 'app/locale/'.$this->locale.'/';
-			if (\Z::getConfig('config/global/default/developer/mode') === TRUE)
+			$cacheFile = 'var/cache/locale/'.$this->_locale.'.lng';
+			$localeDir = 'app/locale/'.$this->_locale.'/';
+
+			if (\Z::getConfig('config/global/default/developer/mode') == TRUE)
 				$forceRegenerateCache = TRUE;
+
 			// if the cache does not exist, regenerate it...
-			if (!file_exists($cacheFile) || $forceRegenerateCache === TRUE)
+			if ($forceRegenerateCache === TRUE)
 			{
-				if (is_dir($localeDir))
+				foreach (\Z::getConfig()->getTranslations() as $moduleName => $translationFiles)
+				{
+					foreach ($translationFiles as $translationFile)
+					{
+						$file = $localeDir.$translationFile;
+						if (file_exists($file))
+						{
+							$labels = \Sys\Helper\Csv::csvToArray($file);
+							foreach ($labels as $label)
+							{
+								$this->_translations[$moduleName][$label['from']] = $label['to'];
+							}
+						}
+					}
+				}
+				$f = fopen($cacheFile, "w");
+				fwrite($f, serialize($this->_translations));
+				fclose($f);
+				/*if (is_dir($localeDir))
 				{
 					if ($dh = opendir($localeDir))
 					{
@@ -159,21 +179,18 @@ namespace Sys\L10n
 								$labels = \Sys\Helper\Csv::csvToArray($localeDir.$file);
 								foreach ($labels as $label)
 								{
-									$this->translations[$module][$label['from']] = $label['to'];
+									$this->_translations[$module][$label['from']] = $label['to'];
 								}
 							}
 						}
 					}
-				}
-				$f = fopen($cacheFile, "w");
-				fwrite($f, serialize($this->translations));
-				fclose($f);
+				}*/
 			}
 			else
 			{
 				$f = fopen($cacheFile, "r");
-				$this->translations = unserialize(fread($f, filesize($cacheFile)));
-				//print_r($this->translations);
+				$this->_translations = unserialize(fread($f, filesize($cacheFile)));
+				//print_r($this->_translations);
 				fclose($f);
 			}
 		}
@@ -185,10 +202,10 @@ namespace Sys\L10n
 		 * @param <string> $module the module that holds the translation (csv file). If not specified, defaults to the global.csv file
 		 * @return <string> the translated label
 		 */
-		public function __($label, $module = 'global')
+		public function __($label, $module = 'ZeroG_Core')
 		{
-			if (isset($this->translations[$module][$label]))
-				return $this->translations[$module][$label];
+			if (isset($this->_translations[$module][$label]))
+				return $this->_translations[$module][$label];
 			return $label;
 		}
 	}

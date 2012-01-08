@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+
+	<modules>
+		<ZeroG_Admin>
+			<version>0.1.0</version>
+		</ZeroG_Admin>
+	</modules>
+
+	<global>
+
+		<blocks>
+			<admin>
+				<class>ZeroG\Admin\Block</class>
+			</admin>
+		</blocks>
+
+	</global>
+
+	<frontend>
+
+		<routers>
+			<admin>
+				<use>admin</use>
+				<args>
+					<module>ZeroG_Admin</module>
+				</args>
+			</admin>
+		</routers>
+
+        <translate>
+        	<modules>
+        		<ZeroG_Admin>
+        			<files>
+        				<default>ZeroG_Admin.csv</default>
+        			</files>
+        		</ZeroG_Admin>
+        	</modules>
+        </translate>
+
+	</frontend>
+
+</config>

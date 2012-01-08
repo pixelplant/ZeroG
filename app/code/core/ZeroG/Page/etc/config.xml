@@ -12,6 +12,27 @@
 				<class>ZeroG\Page\Block</class>
 			</page>
 		</blocks>
+		<models>
+			<page>
+				<class>ZeroG\Page\Model</class>
+				<resourceModel>page_resource</resourceModel>
+			</page>
+			<page_resource>
+				<class>ZeroG\Page\Model\Resource</class>
+				<entities>
+					<cms>
+						<table>page_cms</table>
+					</cms>
+				</entities>
+			</page_resource>
+		</models>
+        <resources>
+            <page_setup>
+                <setup>
+                    <module>ZeroG_Page</module>
+                </setup>
+            </page_setup>
+        </resources>
 	</global>
 
 	<frontend>
@@ -34,9 +55,9 @@
         </translate>
 		<!--<layout>
 			<updates>
-				<blog>
+				<page>
 					<file>page.xml</file>
-				</blog>
+				</page>
 			</updates>
 		</layout>-->
 	</frontend>

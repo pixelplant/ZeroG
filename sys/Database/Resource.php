@@ -59,6 +59,11 @@ namespace Sys\Database
 		{
 			return $this->_pdo;
 		}
+		
+		protected function _beforeLoad(\Sys\Model $model)
+		{
+			return $this;
+		}
 
 		protected function _afterLoad(\Sys\Model $model)
 		{
@@ -84,6 +89,12 @@ namespace Sys\Database
 		public function load(\Sys\Model $model, $value)
 		{
 			$field = $this->getIdField();
+			return $this->loadByField($field, $model, $value);
+		}
+
+		public function loadByField($fieldName, \Sys\Model $model, $value)
+		{
+			$field = $fieldName;
 			if ($this->_getReadAdapter() && !is_null($value))
 			{
 				$data = $this->_getReadAdapter()->load($this->_table, $field, $value);

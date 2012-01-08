@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : debug.xml
+    Created on : 13 decembrie 2011, 14:40
+    Author     : radu.mogos
+    Description:
+        Xml layout file for the Pixelplant_Debug extension
+-->
+
+<layout version="1.0">
+	<default>
+		<reference name="head">
+			<action method="addCss"><stylesheet>css/debug/px_debug.css</stylesheet></action>
+		</reference>
+	</default>
+</layout>

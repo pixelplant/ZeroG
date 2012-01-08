@@ -19,6 +19,12 @@ namespace Sys\Config
 		protected $_requestUri;
 
 		/**
+		 * The initial URI, before any processing
+		 * @var <string>
+		 */
+		protected $_originalRequestUri;
+
+		/**
 		 * The controller of the executed route
 		 * @var <string>
 		 */
@@ -128,8 +134,10 @@ namespace Sys\Config
 		 */
 		private function setRouterParams()
 		{
+			$this->_originalRequestUri = $this->_requestUri;
 			if ($this->_config->getConfig(self::XML_REWRITE_ENABLED) == 1)
 			{
+				$this->checkRewriteUrlFirst();
 				$regularUri = $this->_requestUri;
 				$queryPos = strpos($this->_requestUri, '?');
 				if ($queryPos !== FALSE)
@@ -139,6 +147,8 @@ namespace Sys\Config
 					'router'      => !empty($parts[0]) ? $parts[0] : $this->_config->getConfig(self::XML_DEFAULT_ROUTER),
 					'controller'  => !empty($parts[1]) ? $parts[1] : $this->_config->getConfig(self::XML_DEFAULT_CONTROLLER),
 					'action'      => !empty($parts[2]) ? $parts[2] : $this->_config->getConfig(self::XML_DEFAULT_ACTION),
+					'_requestUri' => $this->_requestUri,
+					'_originalRequestUri' => $this->_originalRequestUri,
 					);
 				$params['module'] = $this->_config->getCurrentModule($params['router']);
 				if (sizeof($parts) > 3)
@@ -154,6 +164,7 @@ namespace Sys\Config
 
 			$this->_controller = $params['controller'];
 			$this->_action = $params['action'];
+
 			// merge the GET and POST variables
 			$this->_params['request'] = array_merge($params, $_GET, $_POST);
 
@@ -191,6 +202,27 @@ namespace Sys\Config
 		public function getParams($type = 'request')
 		{
 			return $this->_params[$type];
+		}
+
+		/**
+		 * Loads a rewrite rule first, if one is defined
+		 * @return <string>
+		 */
+		public function checkRewriteUrlFirst()
+		{
+			if ($this->_requestUri == '')
+				return;
+			$url = \Z::getModel('core/url/rewrite')->loadByUrl($this->_requestUri);
+			if ($url->getTargetPath())
+				$this->_requestUri = $url->getTargetPath();
+		}
+
+		/**
+		 * Returns the original unaltered URI
+		 */
+		public function getOriginalRequestUri()
+		{
+			return $this->_originalRequestUri;
 		}
 	}
 }

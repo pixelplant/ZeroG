@@ -25,28 +25,34 @@
 			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />
-			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
+			<block type="core/base" name="footer" template="page/html/footer.phtml"/>
 		</block>
 	</default>
 
+	<page>
+		<reference name="content">
+			<block type="page/cms" name="content.cms" template="page/cms/content.phtml" />
+		</reference>
+	</page>
+
 	<page_view_index>
 		<reference name="content">
-			<block type="page/home" template="page/content/home.phtml" />
+			<block type="page/home" name="content.home" template="page/content/home.phtml" />
 		</reference>
 		<reference name="messages">
-			<block type="core/base" name="dialog" template="page/content/dialog.phtml"/>
+			<block type="core/base" name="messages.dialog" template="page/content/dialog.phtml"/>
 		</reference>
 	</page_view_index>
 
 	<page_view_extensions>
 		<reference name="content">
-			<block type="core/base" template="page/content/extensions.phtml" />
+			<block type="core/base" name="content.extensions" template="page/content/extensions.phtml" />
 		</reference>
 	</page_view_extensions>
 
 	<page_view_documentation>
 		<reference name="content">
-			<block type="core/base" template="page/content/documentation.phtml" />
+			<block type="core/base" name="content.documentation" template="page/content/documentation.phtml" />
 		</reference>
 		<reference name="head">
 			<action method="setTitle"><title>ZeroG Documentation</title></action>

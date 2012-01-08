@@ -4,18 +4,18 @@
 		<?php echo $this->getChildHtml('head'); ?>
 	</head>
 	<body>
-		<div data-role="page" id="mainpage" data-add-back-btn="true" data-theme="b">
-			<div data-role="header" data-theme="c">
+		<div data-role="page" id="page-main" class="page-main" data-add-back-btn="true" data-theme="b">
+			<div data-role="header" data-theme="c" class="page-header" id="page-header">
 				<?php echo $this->getChildHtml('header'); ?>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="page-content" id="page-content">
 				<?php echo $this->getChildHtml('content'); ?>
 			</div>
-			<div data-role="footer" data-position="fixed"  data-theme="c">
+			<div data-role="footer" data-position="fixed"  data-theme="c" class="page-footer" id="page-footer">
 				<?php echo $this->getChildHtml('footer'); ?>
 			</div>
 		</div>
-		<div data-role="page" id="messages" data-theme="a">
+		<div data-role="page" class="page-messages" id="page-messages" data-theme="a">
 			<?php echo $this->getChildHtml('messages'); ?>
 		</div>
 	</body>

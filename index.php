@@ -4,7 +4,7 @@
  * 
 * @author Radu Mogos <radu.mogos@pixelplant.ro>
 * @copyright Radu Mogos, www.pixelplant.ro
-* @version 1.0.6
+* @version 1.0.8
 */
 
 namespace
@@ -18,7 +18,7 @@ namespace
 	//ini_set('display_errors', '1');
 
 	// framework version number
-	const ZEROG_VERSION = '1.0.7';
+	const ZEROG_VERSION = '1.0.8';
 
 	try
 	{

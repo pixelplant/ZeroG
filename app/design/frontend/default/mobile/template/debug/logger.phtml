@@ -1,0 +1,47 @@
+<div data-content-theme="d" id="pixelplant_debug" data-role="collapsible-set">
+<h1><?php echo $this->__('Debug output') ?></h1>
+<?php foreach ($this->getLoggerData() as $type => $data): ?>
+	<div data-role="collapsible" data-collapsed="false">
+		<h3><?php echo $this->__($type); ?></h3>
+		<table class="pixelplant_debug_table">
+			<thead>
+				<tr>
+				<?php $colNumber = 0; ?>
+				<?php foreach (array_keys(current($data)) as $key): ?>
+					<th scope="col"><?php echo $this->__($key); ?></th>
+					<?php $colNumber++; ?>
+				<?php endforeach; ?>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($data as $item): ?>
+				<tr>
+				<?php foreach ($item as $details): ?>
+					<td><?php echo $details; ?></td>
+				<?php endforeach; ?>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+			<!--<tfoot>
+				<tr>
+					<td colspan="<?php echo $colNumber; ?>">Profiler</td>
+				</tr>
+			</tfoot>-->
+		</table>
+	</div>
+<?php endforeach; ?>
+	<div data-role="collapsible" data-collapsed="false">
+		<h3><?php echo $this->__('utils'); ?></h3>
+		<form data-ajax="false" method="post" action="<?php echo $this->getUrl('debug/resolve');?>" >
+			<p><?php echo $this->__('Enter a module identifier name or identifier + path to see what classes it maps to.');?></p>
+			<p><?php echo $this->__('Eg: &laquo;core&raquo; or &laquo;core/website&raquo; for the ZeroG_Core extension');?></p>
+			<div data-role="fieldcontain">
+				<label for="debug_caller"><?php echo $this->__('Resolve reference to'); ?></label>
+				<input type="text" name="debug_caller" id="debug_caller" />
+			</div>
+			<div id="resolve_response">
+			</div>
+			<button type="submit" data-theme="b" name="submit" value="submit-value"><?php echo $this->__('Submit'); ?></button>
+		</form>
+	</div>
+</div>

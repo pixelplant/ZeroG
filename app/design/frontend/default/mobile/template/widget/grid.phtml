@@ -1,0 +1,49 @@
+<?php ?>
+<h1>Grid widget</h1>
+<table class="widget_grid" id="<?php echo $this->getId(); ?>">
+	<?php foreach ($this->getColumns() as $_column): ?>
+	<col <?php echo $_column->getHeaderProperty(); ?>/>
+	<?php endforeach; ?>
+	<thead>
+		<tr>
+			<?php foreach ($this->getColumns() as $_column): ?>
+			<th><?php echo $_column->getHeader(); ?></th>
+			<?php endforeach; ?>
+		</tr>
+		<tr class="filter">
+			<?php foreach ($this->getColumns() as $_column): ?>
+			<th><?php echo $_column->getFilterHtml(); ?></th>
+			<?php endforeach; ?>
+		</tr>
+	</thead>
+	<tbody>
+		<?php if ($this->getCollection()->getSize() > 0): ?>
+		<?php $start = 0; ?>
+		<?php foreach ($this->getCollection() as $item): ?>
+		<tr class="<?php echo ($start++ % 2 == 0) ? 'tr_odd' : 'tr_even';?>" >
+			<?php foreach ($this->getColumns() as $_column): ?>
+			<td><?php echo $_column->getContent($item); ?></td>
+			<?php endforeach; ?>
+		</tr>
+		<?php endforeach; ?>
+		<?php endif; ?>
+	</tbody>
+</table>
+<h1>Mobile widget</h1>
+<ul data-role="listview">
+	<?php if ($this->getCollection()->getSize() > 0): ?>
+	<?php $start = 0; ?>
+	<?php foreach ($this->getCollection() as $item): ?>
+	<li data-theme="<?php echo ($start++ % 2 == 0) ? 'a': 'b'; ?>">
+		<a href="">
+		<?php foreach ($this->getColumns() as $_column): ?>
+		<div class="ui-grid-a">
+			<div class="ui-block-a"><?php echo $_column->getHeader(); ?></div>
+			<div class="ui-block-b"><?php echo $_column->getContent($item); ?></div>
+		</div>
+		<?php endforeach; ?>
+		</a>
+	</li>
+	<?php endforeach; ?>
+	<?php endif; ?>
+</ul>

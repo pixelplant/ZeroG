@@ -79,9 +79,9 @@ namespace
 
 		/**
 		 * Current running controller name
-		 * @var <string>
+		 * @var <mixed>
 		 */
-		private static $_controller = '';
+		private static $_controller = null;
 
 		/**
 		 * Current running action name
@@ -102,20 +102,20 @@ namespace
 			// generate the singleton
 			self::$_instance = self::getInstance();
 
-			// initialize the registry
-			self::resetRegistry();
-
 			// start global profiler timer
 			self::getProfiler()->start('timer/global');
 
 			// load config data + execute router
 			self::$config = self::getSingleton('Sys\\Config');
-			// TO BE REMOVED
-			//self::$config->runSetupScripts();
+
+			// call the framework start event
+			// it's called after the config is loaded because the observers are
+			// defined in the xml config files or in the config cache
+			self::dispatchEvent('zerog_start');
 
 			// get request parameters
 			self::getRequest();
-			//self::$params = self::getConfig()->getRouter()->getParams();
+
 			if (self::getRequest()->getParams() === NULL)
 				throw new \Sys\Exception('No map matched the current route');
 
@@ -124,6 +124,9 @@ namespace
 
 			// run the application
 			self::bootstrap();
+
+			// call the framework stop event
+			self::dispatchEvent('zerog_stop');
 
 			// end global profiler timer
 			self::getProfiler()->stop('timer/global');
@@ -152,7 +155,7 @@ namespace
 			// store the current module, controller, and action
 			self::$_module = $module;
 			// store the current controller
-			self::$_controller = $controller;
+			//self::$_controller = $controller;
 			// store the current action
 			$action .= 'Action';
 			self::$_action = $action;
@@ -171,6 +174,7 @@ namespace
 				die('TODO: Fa un redirect la pagina 404');
 				//$this->redirect('page/view/error');
 			}
+			self::$_controller = $class;
 			// send all the GET/POST requests to the controller's action for
 			// further processing
 			//if (!method_exists($class, $action))
@@ -203,7 +207,7 @@ namespace
 		 */
 		public static function getRequest()
 		{
-			if (empty(self::$_request))
+			if (self::$_request == null)
 				self::$_request = new \Sys\Request();
 			return self::$_request;
 		}
@@ -288,8 +292,8 @@ namespace
 		}
 
 		/**
-		 * Get the current controller name
-		 * @return <string>
+		 * Get the current controller object
+		 * @return <mixed>
 		 */
 		public static function getController()
 		{
@@ -391,14 +395,31 @@ namespace
 			self::getProfiler()->stop($class);
 			return $instance;
 		}
-		
-		public static function getBlock($name)
+
+		/**
+		 * Add a block to the current layout (if the layout was not rendered yet)
+		 *
+		 * @param <string> $name
+		 * @param <string> $type
+		 * @return \Sys\Layout\Block
+		 */
+		public static function getBlock($name, $type)
 		{
-			$class = self::$config->getBlockClass($name);
+			$class = self::$config->getBlockClass($type);
 			self::getProfiler()->start($class);
-			$instance = new $class($name);
+			$instance = new $class($name, $type);
 			self::getProfiler()->stop($class);
 			return $instance;
+		}
+
+		/**
+		 * Returns the current controller's layout object
+		 * 
+		 * @return <Sys\Layout>
+		 */
+		public static function getLayout()
+		{
+			return self::$_controller->getLayout();
 		}
 
 		/**
