@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : blog.xml
+    Created on : 13 ianuarie 2012 13:00
+    Author     : radu.mogos
+    Description:
+        XMLlayout for the blog extension, admin section
+-->
+
+<layout version="1.0">
+
+	<blog_admin_admin_list>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<remove name="footer" />
+		<reference name="content">
+			<block type="blog/admin/grid/posts" name="widget.grid" />
+		</reference>
+		<reference name="right">
+			<block type="core/base" name="page.right" template="page/html/right.phtml" />
+		</reference>
+		<!--<reference name="status_bar.right">
+			<block type="admin/page/statusBar/item" template="test/item_right_1.phtml" />
+		</reference>-->
+	</blog_admin_admin_list>
+
+</layout>

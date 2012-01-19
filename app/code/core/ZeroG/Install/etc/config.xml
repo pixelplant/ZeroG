@@ -42,6 +42,9 @@
             </updates>
         </layout>-->
 
+	</frontend>
+
+	<admin>
         <routers>
             <install>
                 <use>install</use>
@@ -51,6 +54,5 @@
                 </args>
             </install>
         </routers>
-
-	</frontend>
+	</admin>
 </config>

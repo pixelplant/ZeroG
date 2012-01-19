@@ -40,5 +40,20 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 			//$this->setItem($item);
 			//return $this->render();
 		}
+
+		public function getHtmlId()
+		{
+			return 'filter_'.$this->getColumn()->getIndex();
+		}
+
+		public function getFieldName()
+		{
+			return $this->getColumn()->getIndex();
+		}
+
+		public function getCondition()
+		{
+			return array('like' => '%'.$this->getValue().'%');
+		}
 	}
 }

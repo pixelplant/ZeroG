@@ -22,7 +22,7 @@ namespace Sys
 			$this->_params = $this->_router->getParams('request');
 		}
 		
-		public function getParam($name, $defaultValue = '')
+		public function getParam($name, $defaultValue = null)
 		{
 			if (isset($this->_params[$name]))
 			{

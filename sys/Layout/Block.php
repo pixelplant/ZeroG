@@ -144,7 +144,7 @@ namespace Sys\Layout
 		 *
 		 * @return <string> the relative path to the app/views directory
 		 */
-		protected function getPath($location = 'frontend')
+		protected function getPath($location = 'adminhtml')
 		{
 			return sprintf('app/design/%s/%s/%s/template/',
 					$location,
@@ -346,6 +346,7 @@ namespace Sys\Layout
 		public function setHtml($value)
 		{
 			$this->_code = $value;
+			return $this;
 		}
 
 		/**
@@ -364,6 +365,7 @@ namespace Sys\Layout
 		public function setParent($value)
 		{
 			$this->_parent = $value;
+			return $this;
 		}
 
 		// shortcuts to be used in every block phtml file
@@ -415,9 +417,14 @@ namespace Sys\Layout
 		 * @param <string> $resource
 		 * @return <string>
 		 */
-		public function getSkinUrl($resource)
+		public function getSkinUrl($resource = '')
 		{
 			return $this->helper('Sys\Helper\Html')->skinUrl($resource);
+		}
+
+		public function getMediaUrl($resource = '')
+		{
+			return $this->helper('Sys\Helper\Html')->mediaUrl($resource);
 		}
 
 		/**
@@ -429,6 +436,11 @@ namespace Sys\Layout
 		{
 			//return \Z::getController()->getLayout();
 			return $this->_layout;
+		}
+
+		public function getParam($name, $defaultValue = null)
+		{
+			return \Z::getRequest()->getParam($name, $defaultValue);
 		}
 
 		/**

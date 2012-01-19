@@ -7,7 +7,6 @@
 namespace Sys
 {
 	use \Sys\Config\Module;
-	//use \Sys\Config\Router;
 
 	class Config
 	{
@@ -77,6 +76,12 @@ namespace Sys
 		private $_layouts;
 
 		/**
+		 * To be changed by the site code
+		 * @var <string>
+		 */
+		private $_siteVersion;
+
+		/**
 		 * The library router
 		 * @var <\Sys\Config\Router>
 		 */
@@ -87,6 +92,9 @@ namespace Sys
 		 */
 		public function __construct()
 		{
+			// TO BE REPLACED BY SITE CODE
+			$this->_siteVersion = 'admin';
+
 			$this->_configData = array();
 			$this->_flatData = array();
 			$this->_modules = array();
@@ -99,9 +107,9 @@ namespace Sys
 			$this->_layouts = array();
 
 			// first we load all summary module config files defined in app/etc/modules
-			$this->load('app/etc/modules/');
+			$this->_load('app/etc/modules/');
 			// then we read the system config in app/etc/local.xml
-			$this->load('app/etc/');
+			$this->_load('app/etc/');
 			// and then each module's specific xml file
 			foreach ($this->_configData['config']['modules'] as $moduleName => $moduleData)
 			{
@@ -111,7 +119,7 @@ namespace Sys
 					$moduleCodePool = $moduleData['codePool'];
 					$modulePath = $moduleCodePool.'/'.str_replace('_', '/', $moduleName);
 					// read the xml data for each module, and add it to the global config
-					$this->load('app/code/'.$modulePath.'/etc/');
+					$this->_load('app/code/'.$modulePath.'/etc/');
 					// make an object out of each module, for easy handling
 					//$this->_modules[$moduleName] = new Module($moduleName, $this->_configData['config']['modules'][$moduleName]);
 				}
@@ -127,7 +135,17 @@ namespace Sys
 			}
 
 			// Set blocks, layouts, models and other references
-			$this->setReferences();
+			$this->_setReferences();
+		}
+
+		public function loadDatabaseData()
+		{
+			$dbConfig = \Z::getModel('core/config/data')->getCollection();
+					/*->addFieldToFilter('website_id', 0)
+					->addFieldToFilter('config_id', array('like' => '13'))
+					->addFieldToFilter('config_id', array('gt' => '2', 'lt' => '10'));*/
+			$this->_flatData = array_replace_recursive($this->_flatData, $dbConfig->toFlatArray());
+			//var_dump($this->_flatData);die();
 		}
 
 		/**
@@ -140,7 +158,7 @@ namespace Sys
 			$routerName = htmlspecialchars($routerName);
 			if (strpos($routerName, '_'))
 				return $routerName;
-			foreach ($this->_configData['config']['frontend']['routers'] as $router)
+			foreach ($this->_configData['config'][$this->_siteVersion]['routers'] as $router)
 			{
 				if ($router['use'] == $routerName)
 				{
@@ -150,11 +168,11 @@ namespace Sys
 			throw new \Sys\Exception('There is no module mapped to this router name '.$routerName);
 		}
 
-		private function setReferences()
+		private function _setReferences()
 		{
 			// Populates the block, model and translations data from all
 			// the xml configuration files
-			$this->setXmlConfigData($this->_configData);
+			$this->_setXmlConfigData($this->_configData);
 		}
 
 		/**
@@ -163,7 +181,7 @@ namespace Sys
 		 *
 		 * @param <array> $configData
 		 */
-		private function setXmlConfigData($configData)
+		private function _setXmlConfigData($configData)
 		{
 			// Set blocks data
 			if (isset($configData['config']['global']['blocks']))
@@ -198,8 +216,8 @@ namespace Sys
 					$this->_models[$key]['class'] = $this->getModule($module)->getCodePoolPath($model['class']);
 				}
 			// Set translation files data
-			if (isset($configData['config']['frontend']['translate']['modules']))
-				foreach ($configData['config']['frontend']['translate']['modules'] as $key => $module)
+			if (isset($configData['config'][$this->_siteVersion]['translate']['modules']))
+				foreach ($configData['config'][$this->_siteVersion]['translate']['modules'] as $key => $module)
 				{
 					$temp = array();
 					foreach ($module['files'] as $id => $file)
@@ -224,14 +242,11 @@ namespace Sys
 					}
 				}
 			// Set resources data
-			$this->_layouts = $configData['config']['frontend']['layout']['updates'];
+			if (isset($configData['config'][$this->_siteVersion]['layout']['updates']))
+				$this->_layouts = $configData['config'][$this->_siteVersion]['layout']['updates'];
 			// set events
-			$this->_events = $configData['config']['global']['events'];
-			/*if (isset($configData['config']['global']['events']))
-				foreach ($configData['config']['global']['events'] as $eventName => $event)
-				{
-					$this->_events[$eventName] = $event['class'];
-				}*/
+			if (isset($configData['config']['global']['events']))
+				$this->_events = $configData['config']['global']['events'];
 		}
 
 		/**
@@ -240,7 +255,7 @@ namespace Sys
 		 * into one big multi array
 		 * @param <string> Directory path
 		 */
-		protected function load($path)
+		protected function _load($path)
 		{
 			$handle = opendir($path);
 			if ($handle)
@@ -249,11 +264,11 @@ namespace Sys
 				{
 					if (strpos($file, '.xml') > 0)
 					{
-						$moduleConfig = new \Sys\Helper\XmlToArray($path.$file);
-						$moduleArray = $moduleConfig->createArray();
-						$flattenArray = $moduleConfig->getFlatData();
+						$moduleConfig      = new \Sys\Helper\XmlToArray($path.$file);
+						$moduleArray       = $moduleConfig->createArray();
+						$flattenArray      = $moduleConfig->getFlatData();
 						$this->_configData = array_replace_recursive($this->_configData, $moduleArray);
-						$this->_flatData = array_replace_recursive($this->_flatData, $flattenArray);
+						$this->_flatData   = array_replace_recursive($this->_flatData, $flattenArray);
 					}
 				}
 				closedir($handle);
@@ -282,9 +297,24 @@ namespace Sys
 			return $this->_configData;
 		}
 
+		/**
+		 * Return the array for a specific node in the configuration data
+		 * 
+		 * @return <array>
+		 */
+		public function getNode($name)
+		{
+			return $this->_configData['config'][$name];
+		}
+
+		/**
+		 * Return the router configuration data
+		 * 
+		 * @return <array>
+		 */
 		public function getRouterXmlData()
 		{
-			return $this->_configData['config']['frontend']['routers'];
+			return $this->_configData['config'][$this->_siteVersion]['routers'];
 		}
 
 		/**
@@ -324,7 +354,7 @@ namespace Sys
 		 */
 		public function getBlockClass($name)
 		{
-			$data = $this->classAddition($name);
+			$data = $this->_classAddition($name);
 			$index = $data['index'];
 			$appendClass = $data['class'];
 			if (!isset($this->_blocks[$index]))
@@ -349,7 +379,7 @@ namespace Sys
 		 */
 		public function getModelClass($name)
 		{
-			$data = $this->classAddition($name);
+			$data = $this->_classAddition($name);
 			$index = $data['index'];
 			$subclass = $data['class'];
 			if (!isset($this->_models[$index]['class']))
@@ -389,9 +419,11 @@ namespace Sys
 		 */
 		public function getHelperClass($name)
 		{
-			$data = $this->classAddition($name);
+			$data = $this->_classAddition($name);
 			$index = $data['index'];
 			$class = $data['class'];
+			if ($class == '')
+				$class = '\Data';
 			if (!isset($this->_helpers[$index]))
 				throw new \Sys\Exception('The helper type => %s is not a registered helper'. $index);
 			return $this->_helpers[$index].$class;
@@ -458,7 +490,7 @@ namespace Sys
 		 * @param <string> $name
 		 * @return <array> Holds index and class name
 		 */
-		private function classAddition($name)
+		private function _classAddition($name)
 		{
 			$name = str_replace('_', '/', $name);
 			$parts = explode("/", $name);

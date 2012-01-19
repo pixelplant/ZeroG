@@ -40,4 +40,16 @@
 
 	</frontend>
 
+	<admin>
+        <translate>
+        	<modules>
+        		<ZeroG_Admin>
+        			<files>
+        				<default>ZeroG_Admin.csv</default>
+        			</files>
+        		</ZeroG_Admin>
+        	</modules>
+        </translate>
+	</admin>
+
 </config>

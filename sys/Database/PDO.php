@@ -71,6 +71,7 @@ namespace Sys\Database
 
 		/**
 		 * Execute the final query
+		 * 
 		 * @param <string> $query
 		 * @return <resource>
 		 */
@@ -80,9 +81,26 @@ namespace Sys\Database
 			return $this->_driver->query($query);
 		}
 
+		/**
+		 * Quotes an sql query
+		 *
+		 * @param <string> $query
+		 * @return <type>
+		 */
 		public function quote($query)
 		{
 			return $this->_driver->quote($query);
+		}
+
+		/**
+		 * Prepares an SQL query
+		 *
+		 * @param <string> $query
+		 * @return <type>
+		 */
+		public function prepare($query)
+		{
+			return $this->_driver->prepare($query);
 		}
 
 		/**
@@ -197,7 +215,7 @@ namespace Sys\Database
 		public function save($table, $idField, $id, $data = array())
 		{
 			$list = array();
-			$statementData[':id'] = (int)$id;
+			$statementData[':id'] = $id;
 			foreach ($data as $key => $value)
 			{
 				$list[]= $key.' = :'.$key;
@@ -206,8 +224,15 @@ namespace Sys\Database
 			}
 			$list = implode(",", $list);
 			$table = $this->getTableName($table);
-			$statement = $this->_driver->prepare("UPDATE `$table` SET $list WHERE $idField = :id");
-			$statement->execute($statementData);
+			try
+			{
+				$statement = $this->_driver->prepare("UPDATE `$table` SET $list WHERE $idField = :id");
+				$statement->execute($statementData);
+			}
+			catch (\PDOException $e)
+			{
+				throw new \Sys\Exception("Cannot update table data: %s", $e->getMessage());
+			}
 		}
 
 		/**
@@ -267,6 +292,21 @@ namespace Sys\Database
 		public function lastInsertId()
 		{
 			return (int)$this->_driver->lastInsertId();
+		}
+
+		public function beginTransaction()
+		{
+			$this->beginTransaction();
+		}
+
+		public function commit()
+		{
+			$this->commit();
+		}
+
+		public function rollback()
+		{
+			$this->rollback();
 		}
 	}
 }

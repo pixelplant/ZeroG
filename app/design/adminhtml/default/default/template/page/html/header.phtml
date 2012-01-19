@@ -1,18 +1,20 @@
-<h1><?php echo $this->__('ZeroG Admin Skin'); ?></h1>
+<div class="inner">
+<h1><a href=""><img src="<?php echo $this->getSkinUrl('images/logo.png'); ?>" /></a></h1>
 <div id="header_nav">
-	<div id="header_nav">
+	<div class="header_nav_wrap">
 		<div class="avatar">
-			<a href="index.html"><?php echo $this->__('User thumbnail'); ?><img alt="Avatar_user" height="30" src="<?php echo $this->getSkinUrl(); ?>/images/icons/avatar.png" style=" height:30px; width:30px;" width="30" /></a>
+			<a href="index.html"><img alt="<?php echo $this->__('User thumbnail'); ?>" height="30" src="<?php echo $this->getMediaUrl('avatar/avatar1.gif'); ?>" style=" height:30px; width:30px;" width="30" /></a>
 		</div>
 		<ul>
-			<li><a href="">me@me.com</a></li>
+			<li><a href="">radu.mogos@abcnet.ch</a></li>
 			<li>
 				<ul class="links">
 					<li><a href="/settings">Settings</a></li>
-					<li></li>
+					<li><a href="/settings">Logout</a></li>
 				</ul>
 			</li>
 		</ul>
 	</div>
 </div>
 <?php echo $this->getChildHtml('mainmenu');?>
+</div>

@@ -12,7 +12,7 @@
 
 	<modules>
 		<Pixelplant_Blog>
-			<version>0.1.0</version>
+			<version>0.1.1</version>
 		</Pixelplant_Blog>
 	</modules>
 
@@ -38,6 +38,9 @@
 					<category>
 						<table>pixelplant_blog_category</table>
 					</category>
+					<site>
+						<table>pixelplant_blog_site</table>
+					</site>
 				</entities>
 			</blog_resource>
 		</models>
@@ -98,5 +101,35 @@
         </translate>
 
 	</frontend>
+
+	<admin>
+		<routers>
+			<blog>
+				<use>blog_admin</use>
+				<args>
+					<module>Pixelplant_Blog</module>
+				</args>
+			</blog>
+		</routers>
+
+		<layout>
+			<updates>
+				<blog>
+					<file>blog.xml</file>
+				</blog>
+			</updates>
+		</layout>
+
+        <translate>
+        	<modules>
+        		<Pixelplant_Blog>
+        			<files>
+        				<default>Pixelplant_Blog.csv</default>
+        			</files>
+        		</Pixelplant_Blog>
+        	</modules>
+        </translate>
+
+	</admin>
 
 </config>

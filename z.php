@@ -48,20 +48,20 @@ namespace
 		 * A shortcut to the Profiler class
 		 * @var <\Sys\Profiler>
 		 */
-		private static $profiler = NULL;
+		private static $_profiler = NULL;
 
 		/**
 		 * A shortcut to the Configuration class
 		 * @var <App\Config\System>
 		 */
-		private static $config = NULL;
+		private static $_config = NULL;
 
 		/**
 		 * The internal registry holding array of mixed types
 		 * 
 		 * @var <array>
 		 */
-		private static $registry = array();
+		private static $_registry = array();
 
 		/**
 		 * Current running module name
@@ -106,7 +106,8 @@ namespace
 			self::getProfiler()->start('timer/global');
 
 			// load config data + execute router
-			self::$config = self::getSingleton('Sys\\Config');
+			self::$_config = self::getSingleton('Sys\\Config');
+			self::$_config->loadDatabaseData();
 
 			// call the framework start event
 			// it's called after the config is loaded because the observers are
@@ -186,7 +187,7 @@ namespace
 		public static function dispatchEvent($eventName, $eventParams = null)
 		{
 			// There can be more than 1 observer for an event
-			$observersForThisEvent = self::$config->getEventObserver($eventName);
+			$observersForThisEvent = self::$_config->getEventObserver($eventName);
 			if ($observersForThisEvent !== FALSE)
 			{
 				$eventData = new \Sys\Model();
@@ -219,7 +220,7 @@ namespace
 		 */
 		/*public static function getContextParams()
 		{
-			return self::$config->getRouter()->getContextParams();
+			return self::$_config->getRouter()->getContextParams();
 		}*/
 
 		/**
@@ -242,9 +243,9 @@ namespace
 			if (!array_key_exists('Sys\\Profiler', self::$_singletons))
 			{
 				self::$_singletons['Sys\\Profiler'] = new \Sys\Profiler();
-				self::$profiler = self::$_singletons['Sys\\Profiler'];
+				self::$_profiler = self::$_singletons['Sys\\Profiler'];
 			}
-			return self::$profiler;
+			return self::$_profiler;
 		}
 
 		/**
@@ -275,7 +276,7 @@ namespace
 			// if it's a model we created in an extension, the identifier and
 			// class are different, so we need to load the proper class
 			if (strpos($class, '/') !== FALSE)
-				$class = self::$config->getModelClass($identifier);
+				$class = self::$_config->getModelClass($identifier);
 			if (!array_key_exists($identifier, self::$_singletons)) {
 				//$serializedFile = 'var/cache/serialized/'.md5($class).'.ser';
 				self::getProfiler()->start($class);
@@ -334,7 +335,7 @@ namespace
 		 */
 		public static function register($name, $value)
 		{
-			self::$registry[$name] = $value;
+			self::$_registry[$name] = $value;
 		}
 
 		/**
@@ -345,8 +346,8 @@ namespace
 		 */
 		public static function registry($name)
 		{
-			if (isset(self::$registry[$name]))
-				return self::$registry[$name];
+			if (isset(self::$_registry[$name]))
+				return self::$_registry[$name];
 			return FALSE;
 		}
 
@@ -355,7 +356,7 @@ namespace
 		 */
 		public static function resetRegistry()
 		{
-			self::$registry = array();
+			self::$_registry = array();
 		}
 
 		/**
@@ -377,7 +378,7 @@ namespace
 		{
 			if (substr($name, 0, 4) == "Sys\\")
 				return self::getSingleton($name);
-			return self::getSingleton(self::$config->getHelperClass($name));
+			return self::getSingleton(self::$_config->getHelperClass($name));
 		}
 		
 		/**
@@ -388,8 +389,8 @@ namespace
 		 */
 		public static function getModel($name)
 		{
-			//return self::getSingleton(self::$config->getModelClass($name));
-			$class = self::$config->getModelClass($name);
+			//return self::getSingleton(self::$_config->getModelClass($name));
+			$class = self::$_config->getModelClass($name);
 			self::getProfiler()->start($class);
 			$instance = new $class;
 			self::getProfiler()->stop($class);
@@ -405,7 +406,7 @@ namespace
 		 */
 		public static function getBlock($name, $type)
 		{
-			$class = self::$config->getBlockClass($type);
+			$class = self::$_config->getBlockClass($type);
 			self::getProfiler()->start($class);
 			$instance = new $class($name, $type);
 			self::getProfiler()->stop($class);
@@ -433,7 +434,7 @@ namespace
 			$resourceIdentifier = 'resource_'.$name;
 			if (!array_key_exists($resourceIdentifier, self::$_singletons))
 			{
-				$class = self::$config->getResourceClass($name);
+				$class = self::$_config->getResourceClass($name);
 				self::$_singletons[$resourceIdentifier] = new $class;
 			}
 			return self::$_singletons[$resourceIdentifier];
@@ -447,9 +448,8 @@ namespace
 		 */
 		public static function getConfig($variable = NULL)
 		{
-			return self::$config->getConfig($variable);
+			return self::$_config->getConfig($variable);
 		}
-
 
 		/**
 		 * Returns a reference to the current locale

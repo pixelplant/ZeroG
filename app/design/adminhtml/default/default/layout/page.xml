@@ -10,28 +10,44 @@
 
 <layout version="1.0">
 	<default>
-		<block type="page/html" name="root" template="page/1column.phtml">
+		<block type="page/html" name="root" template="page/2columns.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
+				<action method="addCss"><stylesheet>css/ui-lightness/jquery-ui-1.8.16.custom.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
+				<action method="addJs"><script>js/jquery-ui-1.8.16.custom.min.js</script></action>
+				<action method="addJs"><script>js/admin.all.js</script></action>
 				<action method="setTitle"><title>ZeroG Admin</title></action>
 			</block>
+			<block type="page/html/notices" name="notices" template="page/html/notices.phtml" />
+			<block type="core/text" name="after_body_start" />
 			<block type="core/base" name="header" template="page/html/header.phtml">
-				<block type="core/base" name="mainmenu" template="page/html/header/mainmenu.phtml" />
+				<block type="admin/page/menu" name="mainmenu" template="page/menu.phtml" />
 			</block>
 			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />
 			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>
+			<block type="admin/page/statusBar" name="status_bar" template="page/status_bar.phtml">
+				<block type="core/text" name="status_bar.left" />
+				<block type="core/text" name="status_bar.right">
+					<block type="admin/page/statusBar/item" template="page/status_bar/right.phtml">
+						<action method="setTitle"><title>Testing</title></action>
+						<action method="setLabel"><label>3</label></action>
+						<action method="setAction"><url>page/test</url></action>
+					</block>
+				</block>
+			</block>
 		</block>
 	</default>
 
 	<page_view_index>
+		<remove name="footer" />
 		<reference name="content">
-			<block type="page/home" template="page/content/home.phtml" />
+			<block type="blog/admin/grid/posts" name="widget.grid" />
 		</reference>
-		<reference name="messages">
-			<block type="core/base" name="dialog" template="page/content/dialog.phtml"/>
+		<reference name="right">
+			<block type="core/base" name="page.right" template="page/html/right.phtml" />
 		</reference>
 	</page_view_index>
 

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @category   Pixelplant
+ * @package    Pixelplant_Shop
+ * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
+ * @license    M.O.K.A.
+ */
+ -->
+<config>
+	<modules>
+		<Pixelplant_Shop>
+			<active>true</active>
+			<codePool>local</codePool>
+			<depends>
+				<ZeroG_Core />
+			</depends>
+		</Pixelplant_Shop>
+	</modules>
+</config>

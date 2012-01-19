@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Document   : config.xml
+	Created on : 12 decembrie 2011, 17:00
+	Author     : radu.mogos
+	Description:
+		Config file for the Pixelplant_Shop extension
+-->
+
+<config>
+
+	<modules>
+		<Pixelplant_Shop>
+			<version>0.1.0</version>
+		</Pixelplant_Shop>
+	</modules>
+
+	<global>
+
+		<blocks>
+			<shop>
+				<class>Pixelplant\Shop\Block</class>
+			</shop>
+		</blocks>
+
+		<models>
+			<shop>
+				<class>Pixelplant\Shop\Model</class>
+			</shop>
+		</models>
+
+	</global>
+
+	<frontend>
+		<routers>
+			<shop>
+				<use>standard</use>
+				<args>
+					<module>Pixelplant_Shop</module>
+					<frontName>shop</frontName>
+				</args>
+			</shop>
+		</routers>
+
+        <translate>
+        	<modules>
+        		<Pixelplant_Shop>
+        			<files>
+        				<default>Pixelplant_Shop.csv</default>
+        			</files>
+        		</Pixelplant_Shop>
+        	</modules>
+        </translate>
+
+		<layout>
+			<updates>
+				<shop>
+					<file>shop.xml</file>
+				</shop>
+			</updates>
+		</layout>
+	</frontend>
+
+	<admin>
+
+		<routers>
+			<shop>
+				<use>admin</use>
+				<args>
+					<module>Pixelplant_Shop</module>
+					<frontName>shop</frontName>
+				</args>
+			</shop>
+		</routers>
+
+		<layout>
+			<updates>
+				<shop>
+					<file>shop.xml</file>
+				</shop>
+			</updates>
+		</layout>
+		
+	</admin>
+
+</config>

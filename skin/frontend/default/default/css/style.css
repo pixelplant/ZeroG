@@ -22,15 +22,19 @@ body {
 	line-height: 1.5em;
 }
 
+.page-main a {
+	color: red;
+}
+
 h1 {
 	font-size: 1.5em;
 	font-weight: bold;
-	margin-bottom: .5em;
+	margin: .5em 0;
 }
 
 h2 {
 	font-size: 1.3em;
-	margin-bottom: .3em;
+	margin: .3em 0;
 }
 
 .navbar {
@@ -51,6 +55,21 @@ h2 {
 
 .navbar a { color: white;}
 
+.listview li { 
+	padding: 3px 3px 3px 1em;
+}
+
+li.list-divider {
+	font-weight: bold;
+}
+
+.page-footer {
+	background: #333333;
+	color: white;
+	margin: 5px 0;
+	padding: 1em;
+}
+
 /*  TO BE MOVED TO ADMIN CSS */
 
 .widget_grid {
@@ -70,18 +89,15 @@ h2 {
     font-size: 1em;
     background-color:#222;
     font-weight:normal;
-    border-right:1px dotted #666;
+    border:1px solid #666;
     border-top:1px solid #666;
-    text-shadow:1px 1px 1px #000;
 	vertical-align: top;
 }
 
 .widget_grid tbody td {
     padding: 10px;
     background-color:#f0f0f0;
-    border-right:1px dotted #999;
-    text-shadow:-1px 1px 1px #fff;
-    text-transform:none;
+    border:1px solid #999;
     color:#333;
 	vertical-align: top;
 }

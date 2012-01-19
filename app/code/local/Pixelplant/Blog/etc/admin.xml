@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Backend menu for the blog extension
+	@module: Pixelplant_Blog
+	@author: Radu Mogos
+	@website: www.pixelplant.ro
+	@created: 09.01.2012
+-->
+<config>
+	<menu>
+		<pixelplant_blog>
+			<helper>blog</helper>
+			<title>Blog</title>
+			<sort_order>100</sort_order>
+			<children>
+				<blog_list>
+					<helper>blog</helper>
+					<title>Blog list</title>
+					<sort_order>10</sort_order>
+					<action>blog_admin/admin_list</action>
+					<children>
+						<blog_list_top_5>
+							<helper>blog</helper>
+							<title>Top 5 blog posts</title>
+							<sort_order>10</sort_order>
+						</blog_list_top_5>
+						<blog_list_worst_5>
+							<helper>blog</helper>
+							<title>Worst 5 posts</title>
+							<sort_order>20</sort_order>
+						</blog_list_worst_5>
+					</children>
+				</blog_list>
+				<blog_settings>
+					<helper>blog</helper>
+					<title>Blog settings</title>
+					<sort_order>20</sort_order>
+					<action>blog_admin/settings</action>
+				</blog_settings>
+			</children>
+		</pixelplant_blog>
+	</menu>
+</config>

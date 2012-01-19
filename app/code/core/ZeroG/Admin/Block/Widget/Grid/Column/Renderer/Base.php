@@ -10,30 +10,58 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 	 */
 	class Base extends \App\Code\Core\ZeroG\Admin\Block\Template
 	{
-		protected $_column;
-
 		/**
 		 * The column this rendered belongs to
 		 *
 		 * @param <App\Code\ZeroG\Admin\Block\Widget\Grid\Column> $column
 		 */
+		protected $_column;
 
 		protected function _construct()
 		{
 			$this->setTemplate('widget/grid/column/renderer/base.phtml');
 		}
 
+		/**
+		 * Set the parent column this renderer belongs to
+		 *
+		 * @param <App\Code\ZeroG\Admin\Block\Widget\Grid\Column> $column
+		 * @return Base
+		 */
 		public function setColumn($column)
 		{
 			$this->_column = $column;
 			return $this;
 		}
 
-		public function getHeader()
+		/**
+		 * Returns the parent column
+		 * 
+		 * @return <App\Code\ZeroG\Admin\Block\Widget\Grid\Column>
+		 */
+		public function getColumn()
 		{
-			return $this->_column->getData('header');
+			return $this->_column;
 		}
 
+		/**
+		 * Return column html header
+		 *
+		 * @return <string>
+		 */
+		public function getHeader()
+		{
+			if ($this->_column->getSortable())
+				return '<a href="#" name="'.$this->_column->getId().'">'.$this->_column->getData('header').'</a>';
+			else
+				return $this->_column->getData('header');
+		}
+
+		/**
+		 * Return the styles for the header
+		 * 
+		 * @return string
+		 */
 		public function getHeaderProperty()
 		{
 			$html = '';
@@ -45,6 +73,12 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 			return $html;
 		}
 
+		/**
+		 * Returns the Rendered content
+		 *
+		 * @param <\Sys\Model> $item
+		 * @return <string> Html code to show in the data column
+		 */
 		public function getContent($item)
 		{
 			$this->setItem($item);

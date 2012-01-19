@@ -61,4 +61,25 @@
 			</updates>
 		</layout>-->
 	</frontend>
+
+	<admin>
+		<routers>
+			<page>
+				<use>page</use>
+				<args>
+					<module>ZeroG_Page</module>
+				</args>
+			</page>
+		</routers>
+
+        <translate>
+        	<modules>
+        		<ZeroG_Page>
+        			<files>
+        				<default>ZeroG_Page.csv</default>
+        			</files>
+        		</ZeroG_Page>
+        	</modules>
+        </translate>
+	</admin>
 </config>

@@ -38,7 +38,7 @@
 		<default>
 			<!-- everybody knows what this is... -->
 			<base>
-				<url>http://192.168.0.14/zerog/</url>
+				<url>http://localhost/zerog/</url>
 				<secure_url>https://localhost/zerog/</secure_url>
 			</base>
 			<!-- your media files (images,css,js) can be fetched from another url -->

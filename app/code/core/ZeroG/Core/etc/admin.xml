@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Backend menu for the Core extension
+	@module: ZeroG_Core
+	@author: Radu Mogos
+	@website: www.pixelplant.ro
+	@created: 09.01.2012
+-->
+<config>
+	<menu>
+		<dashboard>
+			<helper>admin</helper>
+			<title>Dashboard</title>
+			<action>page/view/index</action>
+			<sort_order>10</sort_order>
+		</dashboard>
+		<system>
+			<helper>admin</helper>
+			<title>System</title>
+			<sort_order>1000</sort_order>
+			<children>
+				<design>
+					<helper>admin</helper>
+					<title>Design</title>
+					<action>admin/system/design</action>
+					<sort_order>30</sort_order>
+				</design>
+				<tools>
+					<title>Tools</title>
+					<children>
+						<backup>
+							<helper>admin</helper>
+							<title>Backup</title>
+							<sort_order>10</sort_order>
+						</backup>
+						<compilation>
+							<title>Compilation</title>
+						</compilation>
+						<t2>
+							<title>This should be a longer text</title>
+						</t2>
+						<t3>
+							<title>Email templates</title>
+						</t3>
+					</children>
+				</tools>
+				<cache>
+					<helper>admin</helper>
+					<title>Cache Management</title>
+					<action>admin/cache</action>
+					<sort_order>90</sort_order>
+				</cache>
+				<sites>
+					<helper>admin</helper>
+					<title>Manage Sites</title>
+					<action>admin/system/sites</action>
+					<sort_order>100</sort_order>
+				</sites>
+				<config>
+					<helper>admin</helper>
+					<title>Configuration</title>
+					<action>admin/system/config</action>
+					<sort_order>110</sort_order>
+				</config>
+			</children>
+		</system>
+	</menu>
+</config>

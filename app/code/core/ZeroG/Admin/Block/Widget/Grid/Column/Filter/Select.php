@@ -39,7 +39,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 		{
 			$options = $this->_getOptions();
 
-			$html = '<select>';
+			$html = '<select name="'.$this->getFieldName().'" id="'.$this->getHtmlId().'">';
 			foreach ($options as $option)
 			{
 				$html .= $this->_buildOption($option['value'], $option['label']);

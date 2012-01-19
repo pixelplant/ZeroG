@@ -14,18 +14,28 @@ namespace Sys
 	{
 		/**
 		 * The name of the xml layout file. The default xml file is page.xml
+		 *
 		 * @var <string>
 		 */
 		protected $_file;
 
 		/**
 		 * A layout consists of an array of blocks
+		 *
 		 * @var <array>
 		 */
 		protected $_blocks = array();
 
 		/**
+		 * Current block index
+		 *
+		 * @var <int>
+		 */
+		protected $_blockIndex = 0;
+
+		/**
 		 * The layout version number
+		 *
 		 * @var <string>
 		 */
 		protected $_version;
@@ -55,7 +65,7 @@ namespace Sys
 			}*/
 		}
 
-		protected function getPath($context = 'frontend')
+		protected function getPath($context = 'adminhtml')
 		{
 			return sprintf('app/design/%s/%s/%s/layout/',
 					$context,
@@ -68,6 +78,11 @@ namespace Sys
 		 */
 		protected function _loadLayout()
 		{
+			$xmlFile = $this->getPath().$this->_file;
+
+			if (!file_exists($xmlFile))
+				return;
+
 			$context_router = \Z::getRequest()->getParam('router');
 			$context_router_controller = \Z::getRequest()->getParam('router').'_'.\Z::getRequest()->getParam('controller');
 			$context_router_controller_action = \Z::getRequest()->getParam('router').'_'.\Z::getRequest()->getParam('controller').'_'.\Z::getRequest()->getParam('action');
@@ -80,7 +95,7 @@ namespace Sys
 			}
 			else
 			{*/
-				$xml = new \SimpleXMLElement($this->getPath().$this->_file, NULL, TRUE);
+				$xml = new \SimpleXMLElement($xmlFile, NULL, TRUE);
 				// make sure the xml layout file exists and is valid
 				if (!$xml)
 					throw new \Sys\Exception('Current layout => %s file does not exist or is not a valid xml',
@@ -122,7 +137,7 @@ namespace Sys
 				$this->_getReferences($section->reference);
 			if ($section->remove)
 			{
-				$this->removeBlocks($section->remove);
+				$this->_removeBlocks($section->remove);
 			}
 			//print_r($this->_blocks);
 		}
@@ -134,9 +149,14 @@ namespace Sys
 		*/
 		private function _createBlock($xmlNode)
 		{
+			$this->_blockIndex++;
 			$name     = (string)$xmlNode['name'];
 			$type     = (string)$xmlNode['type'];
 			$template = (string)$xmlNode['template'];
+			if ($name == '')
+			{
+				$name = 'ANONYMOUS_'.$this->_blockIndex;
+			}
 			/*$typeParts = explode("/", $type);
 			foreach ($typeParts as $key => $value)
 			{
@@ -149,10 +169,6 @@ namespace Sys
 
 		public function createBlock($type, $name = '', $template = '')
 		{
-			if ($name == '')
-			{
-				$name = 'ANONYMOUS_'.count($this->_blocks);
-			}
 			$data = array('type'   => $type,
 						'name'     => $name,
 						'template' => $template);
@@ -240,7 +256,7 @@ namespace Sys
 			foreach ($blocks as $block)
 			{
 				$name = (string)$block['name'];
-				$this->_removeBlock($name);
+				$this->removeBlock($name);
 			}
 		}
 

@@ -6,18 +6,33 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 	{
 		protected function _prepareColumns()
 		{
+			$this->getHeader()
+				->addButton('new', array(
+					'label'   => 'Adauga ceva nou',
+					'onclick' => 'ceva',
+					'class'   => 'ui-icon-circle-plus',
+				))
+				->addButton('amazon', array(
+					'label'   => 'Fetch Amazon bullshit',
+					'onclick' => 'blabla',
+					'class'   => 'ui-icon-transfer-e-w',
+				));
+
 			$this->setId('blog_posts');
 
-			$this->addColumn('col1', array(
+			$this->addColumn('post_id', array(
 				'header'   => $this->__('Post id'),
 				'index'    => 'post_id',
 				'type'     => 'number',
+				'sortable' => true,
 				'width'    => '10%'
 				));
 
-			$this->addColumn('col2', array(
+			$this->addColumn('title', array(
 				'header'   => $this->__('Overall post'),
-				'renderer' => 'admin/widget/grid/column/renderer/base',
+				'index'    => 'title',
+				'sortable' => true,
+				//'renderer' => 'admin/widget/grid/column/renderer/base',
 				//'width'    => '70%'
 				));
 
@@ -25,6 +40,14 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'header'   => $this->__('Published'),
 				'index'    => 'published',
 				'type'     => 'checkbox',
+				'sortable' => true,
+				'width'    => '10%'
+				));
+
+			$this->addColumn('site', array(
+				'header'   => $this->__('Site view'),
+				'index'    => 'site',
+				'type'     => 'site',
 				'width'    => '10%'
 				));
 
@@ -35,19 +58,10 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'width'    => '10%'
 				));
 
-			$this->addColumn('test', array(
-				'header'   => $this->__('Options'),
-				'index'    => 'test',
-				'type'     => 'select',
-				'width'    => '10%',
-				'options'  => array(
-					'v1' => $this->__('First option'),
-					'v2' => $this->__('Second option')),
-				));
-
 			$this->addColumn('col4', array(
 				'header'   => $this->__('Last modified'),
 				'index'    => 'updated_time',
+				'type'     => 'date',
 				'width'    => '10%'
 				));
 
@@ -57,7 +71,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 
 		protected function _prepareCollection()
 		{
-			$this->setCollection(\Z::getModel('blog/post')->getCollection()->load());
+			$this->setCollection(\Z::getModel('blog/post')->getCollection());
 			parent::_prepareCollection();
 			return $this;
 		}

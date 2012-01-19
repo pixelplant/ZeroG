@@ -35,6 +35,13 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected $_defaultPage = 1;
 
 		/**
+		 * Container for the header menu
+		 *
+		 * @var <Container>
+		 */
+		protected $_headerContainer;
+
+		/**
 		 * Grid id, also used as the table id attribute
 		 * @var <string>
 		 */
@@ -44,8 +51,16 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		{
 			parent::_construct();
 			$this->_id = 'default';
+			$this->_headerContainer = $this->getLayout()
+					->createBlock('admin/widget/grid/container')
+					->setGrid($this);
 			$this->setTemplate('widget/grid.phtml');
 			//$column->setData($columnData);
+		}
+
+		public function getHeader()
+		{
+			return $this->_headerContainer;
 		}
 
 		public function getId()
@@ -96,8 +111,68 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			return $this->_collection;
 		}
 
+		protected function _setFilterValues($data)
+		{
+			foreach ($this->getColumns() as $columnId => $column)
+			{
+				if (isset($data[$columnId]) && (!empty($data[$columnId]) || strlen($data[$columnId]) > 0) && $column->getFilter())
+				{
+					$column->getFilter()->setValue($data[$columnId]);
+					$this->_addColumnFilterToCollection($column);
+				}
+			}
+			return $this;
+		}
+		
+		protected function _addColumnFilterToCollection($column)
+		{
+			if ($this->getCollection())
+			{
+				$field = ( $column->getFilterIndex() ) ? $column->getFilterIndex() : $column->getIndex();
+				if ($column->getFilterConditionCallback())
+				{
+					call_user_func($column->getFilterConditionCallback(), $this->getCollection(), $column);
+				}
+				else
+				{
+					$cond = $column->getFilter()->getCondition();
+					if ($field && isset($cond))
+					{
+						$this->getCollection()->addFieldToFilter($field , $cond);
+					}
+				}
+			}
+			return $this;
+		}
+
+		protected function _preparePage()
+		{
+			$this->getCollection()->setPage(
+					$this->getParam('_page', $this->_defaultPage),
+					$this->getParam('_pagesize', $this->_defaultLimit));
+		}
+
 		protected function _prepareCollection()
 		{
+			if ($this->getCollection())
+			{
+				$this->_preparePage();
+
+				$sort   = $this->getParam('_sort', false);
+				$dir    = $this->getParam('_dir', 'asc');
+				$filter = $this->getParam('_filter', null);
+			}
+
+			if (is_string($filter))
+			{
+				//$this->_setFilterValues($data);
+				$this->_setFilterValues(array('post_id' => array('from' => 3, 'to' => 4)));
+			}
+			if ($sort)
+			{
+				$this->getCollection()->addFieldToSort($sort, $dir);
+			}
+
 			return $this;
 		}
 

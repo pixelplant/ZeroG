@@ -5,16 +5,16 @@
 	</head>
 	<body>
 		<div id="page-main" class="page-main">
-			<div data-role="header" data-theme="c">
+			<div class="page-header" id="page-header">
 				<?php echo $this->getChildHtml('header'); ?>
 			</div>
 			<div id="page-messages">
 				<?php echo $this->getChildHtml('messages'); ?>
 			</div>
-			<div class="page-content">
+			<div class="page-content" id="page-content">
 				<?php echo $this->getChildHtml('content'); ?>
 			</div>
-			<div class="footer" id="page-footer">
+			<div class="page-footer" id="page-footer">
 				<?php echo $this->getChildHtml('footer'); ?>
 			</div>
 		</div>

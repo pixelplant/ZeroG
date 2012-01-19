@@ -10,7 +10,7 @@
 <config>
 	<modules>
 		<Pixelplant_Debug>
-			<active>true</active>
+			<active>false</active>
 			<codePool>local</codePool>
 			<depends>
 				<ZeroG_Core />

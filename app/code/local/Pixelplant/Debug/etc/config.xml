@@ -113,4 +113,16 @@
 		</layout>
 	</frontend>
 
+	<admin>
+
+		<layout>
+			<updates>
+				<debug>
+					<file>debug.xml</file>
+				</debug>
+			</updates>
+		</layout>
+		
+	</admin>
+
 </config>

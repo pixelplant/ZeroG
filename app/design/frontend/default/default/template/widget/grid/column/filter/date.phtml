@@ -1,14 +1,16 @@
+<?php $startId =  $this->getFieldName().'_from'; ?>
+<?php $endId   =  $this->getFieldName().'_to'; ?>
 <div data-role="fieldcontain">
-	<label for="start_date">From</label>
-	<input type="text" id="start_date" name="start_date" value="12/07/2010" />
+	<label for="<?php echo $startId; ?>"><?php echo $this->__('From'); ?></label>
+	<input type="text" name="<?php echo $this->getFieldName(); ?>[from]" id="<?php echo $startId; ?>" value="" />
 </div>
 <div data-role="fieldcontain">
-	<label for="end_date">To</label>
-	<input type="text" id="end_date" name="end_date" value="" />
+	<label for="<?php echo $endId; ?>"><?php echo $this->__('To'); ?></label>
+	<input type="text" name="<?php echo $this->getFieldName(); ?>[to]" id="<?php echo $endId; ?>" value="" />
 </div>
 <script>
 	$(function() {
-		$("#start_date").datepicker({defaultDate: null});
-		$("#end_date").datepicker({defaultDate: null});
+		$("#<?php echo $startId; ?>").datepicker({defaultDate: null});
+		$("#<?php echo $endId; ?>").datepicker({defaultDate: null});
 	});
 </script>

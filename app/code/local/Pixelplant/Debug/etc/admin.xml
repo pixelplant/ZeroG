@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+	Backend menu for the Core extension
+	@module: ZeroG_Core
+	@author: Radu Mogos
+	@website: www.pixelplant.ro
+	@created: 09.01.2012
+-->
+<config>
+	<menu>
+		<system>
+			<children>
+				<debug>
+					<helper>debug</helper>
+					<title>Debug</title>
+					<action>pxdebug/settings</action>
+					<sort_order>100</sort_order>
+				</debug>
+			</children>
+		</system>
+	</menu>
+</config>

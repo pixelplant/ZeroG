@@ -8,10 +8,10 @@ namespace Sys\Config
 	 */
 	class Router
 	{
-		const XML_REWRITE_ENABLED = 'config/global/default/url/rewrite';
-		const XML_DEFAULT_ROUTER = 'config/global/default/router';
+		const XML_REWRITE_ENABLED    = 'config/global/default/url/rewrite';
+		const XML_DEFAULT_ROUTER     = 'config/global/default/router';
 		const XML_DEFAULT_CONTROLLER = 'config/global/default/controller';
-		const XML_DEFAULT_ACTION = 'config/global/default/action';
+		const XML_DEFAULT_ACTION     = 'config/global/default/action';
 		/**
 		 * The request uri ($_GET['path'])
 		 * @var <string>

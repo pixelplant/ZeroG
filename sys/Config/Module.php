@@ -105,7 +105,7 @@ namespace Sys\Config
 		 */
 		public function getControllerClass($controller = 'index')
 		{
-			$controller = ucfirst($controller);
+			$controller = ucfirst(str_replace('_', '\\', $controller)).'Controller';
 			return $this->getClassName('Controller\\'.$controller);
 		}
 

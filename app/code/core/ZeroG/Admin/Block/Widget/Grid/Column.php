@@ -134,6 +134,9 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 				case 'number' :
 					$filterClass = 'admin/widget/grid/column/filter/number';
 					break;
+				case 'site' :
+					$filterClass = 'admin/widget/grid/column/filter/site';
+					break;
 				default:
 					$filterClass = 'admin/widget/grid/column/filter/text';
 					break;

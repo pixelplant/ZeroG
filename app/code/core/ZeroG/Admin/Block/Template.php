@@ -10,6 +10,9 @@ namespace App\Code\Core\ZeroG\Admin\Block
 	 */
 	class Template extends \Sys\Layout\Block
 	{
-		//put your code here
+		public function getFormKey()
+		{
+			return \Z::getSingleton('core/session')->getFormKey();
+		}
 	}
 }

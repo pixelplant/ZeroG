@@ -4,11 +4,13 @@
 		<?php echo $this->getChildHtml('head'); ?>
 	</head>
 	<body>
+		<?php echo $this->getChildHtml('after_body_start'); ?>
 		<div id="container" class="container">
+			<?php echo $this->getChildHtml('notices'); ?>
 			<div id="header" class="header">
 				<?php echo $this->getChildHtml('header'); ?>
 			</div>
-			<div id="content_wrapper">
+			<div id="content_wrapper" class="full_window">
 				<div id="content">
 					<?php echo $this->getChildHtml('content'); ?>
 				</div>
@@ -16,9 +18,12 @@
 			<div id="footer">
 				<?php echo $this->getChildHtml('footer'); ?>
 			</div>
+			<div id="status_bar">
+				<?php echo $this->getChildHtml('status_bar'); ?>
+			</div>
 		</div>
 
-		<div data-role="page" id="messages" data-theme="a">
+		<div id="messages" class="messages">
 			<?php echo $this->getChildHtml('messages'); ?>
 		</div>
 	</body>
