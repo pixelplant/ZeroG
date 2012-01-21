@@ -275,10 +275,19 @@ namespace Sys\Database
 			// Then set the LIMIT
 			if ($this->getSize() !== null)
 			{
-				($this->getPage() === null) ? $this->setPage(0) : $this->setPage((int)$this->_page) ;
-				$select .= ' LIMIT '.$this->getPage().', '.$this->getSize();
+				//($this->getPage() === null) ? $this->setPage(0) : $this->setPage((int)$this->_page) ;
+				$select .= ' LIMIT '.$this->_getSqlPage().', '.$this->getSize();
 			}
 			return $select;
+		}
+
+		protected function _getSqlPage()
+		{
+			if ($this->getPage() === null)
+				return 0;
+			$page = (int)$this->getPage();
+			if ($page > 0)
+				return ($page * $this->getSize() - $this->getSize());
 		}
 	}
 }

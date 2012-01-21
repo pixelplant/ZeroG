@@ -202,10 +202,19 @@ namespace Sys\L10n
 		 * @param <string> $module the module that holds the translation (csv file). If not specified, defaults to the global.csv file
 		 * @return <string> the translated label
 		 */
-		public function __($label, $module = 'ZeroG_Core')
+		public function __($label, $module = 'ZeroG_Core', $arguments = array())
 		{
 			if (isset($this->_translations[$module][$label]))
-				return $this->_translations[$module][$label];
+			{
+				$label = $this->_translations[$module][$label];
+			}
+			if (sizeof($arguments) > 1)
+			{
+				// the first argument is the label, which is always set
+				// so we need to remove it from the argument list
+				unset($arguments[0]);
+				return sprintf($label, $arguments);
+			}
 			return $label;
 		}
 	}

@@ -48,12 +48,17 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 
 		public function getFieldName()
 		{
-			return $this->getColumn()->getIndex();
+			return '_filter['.$this->getColumn()->getIndex().']';
 		}
 
 		public function getCondition()
 		{
 			return array('like' => '%'.$this->getValue().'%');
+		}
+
+		public function getEscapedValue($index = null)
+		{
+			return htmlspecialchars($this->getValue($index));
 		}
 	}
 }

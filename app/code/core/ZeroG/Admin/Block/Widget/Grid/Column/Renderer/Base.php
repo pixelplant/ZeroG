@@ -52,9 +52,20 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		public function getHeader()
 		{
 			if ($this->_column->getSortable())
-				return '<a href="#" name="'.$this->_column->getId().'">'.$this->_column->getData('header').'</a>';
+			{
+				$sortClass = 'column-no-sorting';
+				$dir = strtolower($this->getColumn()->getSortDirection());
+				if ($dir)
+				{
+					$sortClass = 'column-sort-'.$dir;
+				}
+				return '<a href="#" class="'.$sortClass.'" name="'.$this->_column->getId().'">'
+						.$this->_column->getData('header').'</a>';
+			}
 			else
-				return $this->_column->getData('header');
+			{
+				return '<p class="no-link">'.$this->_column->getData('header').'</p>';
+			}
 		}
 
 		/**

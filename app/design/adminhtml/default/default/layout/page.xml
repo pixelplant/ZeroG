@@ -15,6 +15,7 @@
 				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
 				<action method="addCss"><stylesheet>css/ui-lightness/jquery-ui-1.8.16.custom.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
+				<action method="addJs"><script>js/jquery.form.js</script></action>
 				<action method="addJs"><script>js/jquery-ui-1.8.16.custom.min.js</script></action>
 				<action method="addJs"><script>js/admin.all.js</script></action>
 				<action method="setTitle"><title>ZeroG Admin</title></action>
@@ -40,16 +41,6 @@
 			</block>
 		</block>
 	</default>
-
-	<page_view_index>
-		<remove name="footer" />
-		<reference name="content">
-			<block type="blog/admin/grid/posts" name="widget.grid" />
-		</reference>
-		<reference name="right">
-			<block type="core/base" name="page.right" template="page/html/right.phtml" />
-		</reference>
-	</page_view_index>
 
 	<print>
 		<block type="page/html" name="root" template="page/print.phtml">

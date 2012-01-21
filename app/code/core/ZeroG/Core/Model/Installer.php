@@ -278,16 +278,8 @@ namespace App\Code\Core\ZeroG\Core\Model
 			$query = $this->generateQueries();
 			if ($query != '')
 			{
-				echo $query;
-				try
-				{
-					//if ($this->_pdo->query($query) === FALSE)
-					$this->_pdo->query($query);
-				}
-				catch (\PDOException $e)
-				{
-					throw new \Sys\Exception('The installer query is invalid: %s', $e->getMessage());
-				}
+				if ($this->_pdo->query($query) === FALSE)
+					throw new \Sys\Exception('The installer query is invalid on this table: %s', $this->_currentTable);
 				$this->endSetup();
 			}
 			else

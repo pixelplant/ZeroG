@@ -117,13 +117,18 @@ namespace Sys
 		 * Return the data a model holds
 		 * @return <array>
 		 */
-		public function getData($field = '')
+		public function getData($field = '', $index = null)
 		{
 			if ($field == '')
 				return $this->_data;
 			else
 				if (isset($this->_data[$field]))
-					return $this->_data[$field];
+				{
+					if (!is_null($index))
+						return $this->_data[$field][$index];
+					else
+						return $this->_data[$field];
+				}
 				else
 					return FALSE;
 		}
@@ -134,6 +139,21 @@ namespace Sys
 		public function getClassName()
 		{
 			return $this->_className;
+		}
+
+		/**
+		 * Convert the item data to XML
+		 */
+		public function toXml()
+		{
+			$xml = '<item>';
+			$xml .= '<class_name>'.$this->_className.'</class_name>';
+			foreach ($this->getData() as $key => $value)
+			{
+				$xml .= sprintf('<%s><![CDATA[ %s ]]></%s>', $key, $value, $key);
+			}
+			$xml .= '</item>';
+			return $xml;
 		}
 
 	}

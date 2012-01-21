@@ -21,5 +21,26 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 			return $this->render();
 			//return '<div class="grid-input-medium"><input type="text" name="" class="input-text" /></div>';
 		}
+
+		public function getValue($index = null)
+		{
+			if ($index)
+			{
+				if ($data = $this->getData('value', $index))
+				{
+					return $data;//date('Y-m-d', strtotime($data));
+				}
+				return null;
+			}
+
+			return $this->getData('value');
+		}
+
+		public function getCondition()
+		{
+			$value = $this->getValue();
+
+			return $value;
+		}
 	}
 }

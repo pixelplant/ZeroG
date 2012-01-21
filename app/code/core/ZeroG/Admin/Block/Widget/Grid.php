@@ -23,6 +23,20 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected $_collection;
 
 		/**
+		 * Paging variables
+		 *
+		 * @var <string>
+		 */
+		protected $_varNameLimit    = '_limit';
+		protected $_varNamePage     = '_page';
+		protected $_varNameSort     = '_sort';
+		protected $_varNameDir      = '_dir';
+		protected $_varNameFilter   = '_filter';
+
+		protected $_defaultSort     = false;
+		protected $_defaultDir      = 'desc';
+
+		/**
 		 * Grid collection default limit per page
 		 * @var <int>
 		 */
@@ -148,8 +162,8 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected function _preparePage()
 		{
 			$this->getCollection()->setPage(
-					$this->getParam('_page', $this->_defaultPage),
-					$this->getParam('_pagesize', $this->_defaultLimit));
+					$this->getParam($this->_varNamePage, $this->_defaultPage),
+					$this->getParam($this->_varNameLimit, $this->_defaultLimit));
 		}
 
 		protected function _prepareCollection()
@@ -158,19 +172,34 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			{
 				$this->_preparePage();
 
-				$sort   = $this->getParam('_sort', false);
-				$dir    = $this->getParam('_dir', 'asc');
-				$filter = $this->getParam('_filter', null);
-			}
+				$sort   = $this->getParam($this->_varNameSort, $this->_defaultSort);
+				$dir    = $this->getParam($this->_varNameDir, $this->_defaultDir);
+				$filter = $this->getParam($this->_varNameFilter, null);
 
-			if (is_string($filter))
-			{
-				//$this->_setFilterValues($data);
-				$this->_setFilterValues(array('post_id' => array('from' => 3, 'to' => 4)));
-			}
-			if ($sort)
-			{
-				$this->getCollection()->addFieldToSort($sort, $dir);
+				if (is_null($filter))
+				{
+					$filter = array();
+				}
+
+				if (is_string($filter))
+				{
+					$data = $this->helper('admin')->prepareFilterString($filter);
+					$this->_setFilterValues($data);
+					//$this->_setFilterValues(array('post_id' => array('from' => 3, 'to' => 4)));
+				}
+				else if ($filter && is_array($filter))
+				{
+					$this->_setFilterValues($filter);
+				}
+
+				if (isset($this->_columns[$sort]) && $this->_columns[$sort]->getIndex())
+				{
+					$dir    = (strtolower($dir)=='desc') ? 'desc' : 'asc';
+					$column = $this->_columns[$sort]->getFilterIndex() ?
+							$this->_columns[$sort]->getFilterIndex() : $this->_columns[$sort]->getIndex();
+					$this->_columns[$sort]->setSortDirection($dir);
+					$this->getCollection()->addFieldToSort($column, $dir);
+				}
 			}
 
 			return $this;

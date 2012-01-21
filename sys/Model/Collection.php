@@ -15,8 +15,6 @@ namespace Sys\Model
 
 		protected $_isCollectionLoaded = false;
 
-		protected $_totalRecords;
-
 		protected $_eventPrefix = 'sys_collection';
 
 		protected $_className;
@@ -145,13 +143,13 @@ namespace Sys\Model
 		{
 			$xml = '<?xml version="1.0" encoding="UTF-8"?>
 			<collection>
-				<totalRecords>'.$this->_totalRecords.'</totalRecords>
+				<totalRecords>'.$this->getSize().'</totalRecords>
 				<items>';
-			foreach ($this as $item)
+			foreach ($this->getItems() as $_item)
 			{
-				$xml.=$item->toXml();
+				$xml .= $_item->toXml();
 			}
-			$xml.= '</items>
+			$xml .= '</items>
 				</collection>';
 			return $xml;
 		}

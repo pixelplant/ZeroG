@@ -13,7 +13,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 
 		public function getContent()
 		{
-			return '<div class="grid-input-medium"><input type="text" name="" class="input-text" /></div>';
+			return '<div class="grid-input-medium"><input type="text" name="'.$this->getFieldName().'" id="'.$this->getHtmlId().'" value="'.$this->getEscapedValue().'" class="input-text" /></div>';
 			//$this->setItem($item);
 			//return $this->render();
 		}

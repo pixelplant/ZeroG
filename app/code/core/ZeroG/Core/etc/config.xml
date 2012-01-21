@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<ZeroG_Core>
-			<version>0.1.0</version>
+			<version>0.1.1</version>
 		</ZeroG_Core>
 	</modules>
 
@@ -47,6 +47,9 @@
 					<url_rewrite>
 						<table>core_url_rewrite</table>
 					</url_rewrite>
+					<attribute>
+						<table>core_attribute</table>
+					</attribute>
 				</entities>
 			</core_resource>
 		</models>

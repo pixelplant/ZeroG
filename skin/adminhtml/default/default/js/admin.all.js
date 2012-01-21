@@ -1,29 +1,15 @@
-(function($)
+/**
+ * Called before an ajax request is executed
+ **/
+function showAjaxRequest(formData, jqForm, options)
 {
-	var methods =
-	{
-		init : function( options )
-		{
-		},
-		test: function() {}
-	};
+	$('#ajax_worker').show();
+}
 
-	$.fn.emptyPlugin = function($method)
-	{
-		if ( methods[method] )
-		{
-			return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-		}
-		else if ( typeof method === 'object' || ! method )
-		{
-			return methods.init.apply( this, arguments );
-		}
-		else
-		{
-			$.error( 'Method ' +  method + ' does not exist on jQuery.tooltip' );
-		}
-	}
-})(jQuery);
+function hideAjaxRequest(responseText, statusText, xhr, $form)
+{
+	$('#ajax_worker').hide();
+}
 
 /**
  * Initializes the backend popup menu
@@ -85,12 +71,15 @@ function statusBarPopup(targetUrl, target)
 function applyJqueryTheme()
 {
 	// style buttons
-	$( "input:submit, a.button, button", ".widget_grid_buttons" ).each( function()
+	$( "input:submit, a.button, button", ".grid" ).each( function()
 	{
 		$(this).button({icons: { primary: $(this).attr('class')}});
 	});
 }
 
+/**
+ * Initialization...
+ */
  $(document).ready(function(){
    initAdminMenu();
    applyJqueryTheme();

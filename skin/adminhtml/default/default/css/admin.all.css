@@ -33,7 +33,9 @@ body{
 
 a { color: #af1d00; text-decoration: underline; }
 
-h1 { font-size: 1.6em; margin: .5em 0;}
+h1 { font-size: 1.4em;}
+ol { list-style: decimal;}
+ol li { padding-left: .5em; list-style: decimal;}
 
 /* content */
 #container{
@@ -132,12 +134,12 @@ h1 { font-size: 1.6em; margin: .5em 0;}
 	width:150px;
 }
 
-#header_nav{
+#header_nav {
 	float:right;
 	margin-right:7px;
 	margin-top:-6px;
 	position:relative;
-	width:300px;
+	width:290px;
 }
 
 #header_nav div.header_nav_wrap {
@@ -606,6 +608,10 @@ li:hover a.sui-list-dismiss {
 	visibility:visible;
 }
 
+table .a-right {
+	text-align: right;
+}
+
 /* Widget grid */
 .widget_grid {
     font-size: 1em;
@@ -622,7 +628,6 @@ li:hover a.sui-list-dismiss {
     padding: 10px;
     color:#fff;
     font-size: 1em;
-    background-color:#002F51;
     font-weight:normal;
     border:1px solid #0082D1;
 	vertical-align: top;
@@ -636,16 +641,45 @@ li:hover a.sui-list-dismiss {
 	vertical-align: top;
 }
 
+.widget_grid .filter {
+	background: #3f4c6b;
+}
+
 .widget_grid tr.tr_odd td {
 	background-color: white;
 }
 
-.widget_grid .grid_column_header {
+.widget_grid .columns {
 	color: white;
+	background: rgb(29,136,249); /* Old browsers */
+	background: -moz-linear-gradient(top,  rgba(29,136,249,1) 0%, rgba(38,102,204,1) 50%, rgba(3,40,173,1) 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(29,136,249,1)), color-stop(50%,rgba(38,102,204,1)), color-stop(100%,rgba(3,40,173,1))); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  rgba(29,136,249,1) 0%,rgba(38,102,204,1) 50%,rgba(3,40,173,1) 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  rgba(29,136,249,1) 0%,rgba(38,102,204,1) 50%,rgba(3,40,173,1) 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  rgba(29,136,249,1) 0%,rgba(38,102,204,1) 50%,rgba(3,40,173,1) 100%); /* IE10+ */
+	background: linear-gradient(top,  rgba(29,136,249,1) 0%,rgba(38,102,204,1) 50%,rgba(3,40,173,1) 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1d88f9', endColorstr='#0328ad',GradientType=0 ); /* IE6-9 */
+}
+
+.widget_grid .columns th {
+	padding: 0;
+	white-space: nowrap;
+}
+
+.widget_grid p.no-link {
+	padding: 10px;
+	margin: 0;
 }
 
 .widget_grid .grid_column_header a {
+	font-weight: bold;
 	color: white;
+	display: block;
+	padding: 10px;
+}
+
+.widget_grid .grid_column_header a:hover {
+	background-color: #2c539e;
 }
 
 .widget_grid p,
@@ -665,6 +699,33 @@ li:hover a.sui-list-dismiss {
 
 .widget_grid_buttons {
 	float: right;
+}
+
+.widget_grid_pager {
+	width: 100%;
+}
+
+.widget_grid_pager td {
+	padding: 10px 0;
+}
+
+.column-sort-asc,
+.column-sort-desc {
+	padding-left: 30px !important;
+}
+
+.column-sort-asc {
+	background: url(../images/icons/sort_asc.png) 10px 10px no-repeat;
+}
+
+.column-sort-desc {
+	background: url(../images/icons/sort_desc.png) 10px 10px no-repeat;
+}
+
+.grid-header {
+	border-bottom: 1px solid lightgray;
+	padding: 8px 0;
+	overflow: hidden;
 }
 
 .grid-input-small {

@@ -124,6 +124,38 @@ namespace Sys\Database\Model
 		}
 
 		/**
+		 * Returns the SQL page
+		 * 
+		 * @return <int>
+		 */
+		public function getCurPage()
+		{
+			return $this->getSelect()->getPage();
+		}
+
+		public function getPageSize()
+		{
+			return $this->getSelect()->getSize();
+		}
+
+		public function getLastPageNumber()
+		{
+			$collectionSize = (int) $this->getSize();
+			if ($collectionSize == 0)
+			{
+				return 1;
+			}
+			else if ($this->getPageSize())
+			{
+				return ceil($collectionSize / $this->getPageSize());
+			}
+			else
+			{
+				return 1;
+			}
+		}
+
+		/**
 		 * Load the current collection data from the database
 		 * 
 		 * @return Collection
@@ -136,6 +168,7 @@ namespace Sys\Database\Model
 			$this->_isCollectionLoaded = true;
 			//parent::load();
 			//$data = $this->_getReadAdapter()->query('SELECT * FROM '.$this->_getResource()->getTable().' WHERE 1');
+			//echo $this->getSelect();
 			$sth = $this->_getReadAdapter()->prepare($this->getSelect());
 			$sth->execute($this->getSelect()->getValues());
 			while ($row = $sth->fetch(\PDO::FETCH_ASSOC))

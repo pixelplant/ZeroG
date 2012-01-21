@@ -11,5 +11,11 @@ namespace App\Code\Local\Pixelplant\Blog\Controller\Admin
 			$this->loadLayout();
 			$this->renderLayout();
 		}
+
+		public function gridAction()
+		{
+			$this->loadLayout();
+			$this->renderLayout();
+		}
 	}
 }

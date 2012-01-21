@@ -8,15 +8,11 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 		{
 			$this->getHeader()
 				->addButton('new', array(
-					'label'   => 'Adauga ceva nou',
+					'label'   => $this->__('New blog post'),
 					'onclick' => 'ceva',
 					'class'   => 'ui-icon-circle-plus',
 				))
-				->addButton('amazon', array(
-					'label'   => 'Fetch Amazon bullshit',
-					'onclick' => 'blabla',
-					'class'   => 'ui-icon-transfer-e-w',
-				));
+				->setTitle($this->__('Blog posts'));
 
 			$this->setId('blog_posts');
 
@@ -29,14 +25,14 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				));
 
 			$this->addColumn('title', array(
-				'header'   => $this->__('Overall post'),
+				'header'   => $this->__('Title'),
 				'index'    => 'title',
 				'sortable' => true,
 				//'renderer' => 'admin/widget/grid/column/renderer/base',
 				//'width'    => '70%'
 				));
 
-			$this->addColumn('published', array(
+			/*$this->addColumn('published', array(
 				'header'   => $this->__('Published'),
 				'index'    => 'published',
 				'type'     => 'checkbox',
@@ -49,16 +45,16 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'index'    => 'site',
 				'type'     => 'site',
 				'width'    => '10%'
-				));
+				));*/
 
-			$this->addColumn('col3', array(
+			$this->addColumn('created_time', array(
 				'header'   => $this->__('Created at'),
 				'index'    => 'created_time',
 				'type'     => 'date',
 				'width'    => '10%'
 				));
 
-			$this->addColumn('col4', array(
+			$this->addColumn('updated_time', array(
 				'header'   => $this->__('Last modified'),
 				'index'    => 'updated_time',
 				'type'     => 'date',

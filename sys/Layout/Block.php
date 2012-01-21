@@ -388,7 +388,8 @@ namespace Sys\Layout
 		 */
 		public function __($label)
 		{
-			return \Z::getLocale()->__($label, $this->_moduleName);
+			$arguments = func_get_args();
+			return \Z::getLocale()->__($label, $this->_moduleName, $arguments);
 		}
 
 		/**
