@@ -1,0 +1,37 @@
+<?php $_menuItems = $this->getMenuItems(); ?>
+<div id="navigation" class="navigation">
+	<ul class="top-level" data-role="listview">
+		<?php foreach ($_menuItems as $_menuItem): ?>
+		<?php if (!isset($_menuItem['children'])): ?>
+		<li class="level-1"><a href="<?php echo $_menuItem['url']; ?>"><?php echo $_menuItem['label'];?></a></li>
+		<?php else: ?>
+		<li class="level-1 has-menu <?php echo $_menuItem['name']; ?>"><a class="level-1-link" href="<?php echo $_menuItem['url']; ?>"><?php echo $_menuItem['label']; ?></a>
+				<ul class="main">
+		<?php foreach ($_menuItem['children'] as $_submenuItem): ?>
+				<?php if (isset($_submenuItem['children'])): ?>
+					<li class="level-2 submenu submenu-open" id="menu-option-<?php echo $_submenuItem['name']; ?>">
+						<a href="<?php echo $_submenuItem['url']; ?>"><?php echo $_submenuItem['label']; ?></a>
+							<ul class="submenu">
+						<?php foreach ($_submenuItem['children'] as $_lastItem): ?>
+								<li class="level-3"><a href="<?php echo $_lastItem['url']; ?>"><?php echo $_lastItem['label']; ?></a>
+									<?php if (isset($_lastItem['children'])): ?>
+									<ul>
+										<?php foreach ($_lastItem['children'] as $_lastLevel): ?>
+										<li class="level-4"><a href="<?php echo $_lastLevel['url'];?>"><?php echo $_lastLevel['label'];?></a></li>
+										<?php endforeach; ?>
+									</ul>
+									<?php endif; ?>
+								</li>
+						<?php endforeach; ?>
+							</ul>
+					</li>
+				<?php else: ?>
+					<li class="level-2"><a href="<?php echo $_submenuItem['url']; ?>"><?php echo $_submenuItem['label']; ?></a></li>
+				<?php endif; ?>
+		<?php endforeach; ?>
+				</ul>
+		</li>
+		<?php endif; ?>
+		<?php endforeach; ?>
+	</ul>
+</div>

@@ -1,0 +1,52 @@
+<h2><?php echo $this->__('Debug output') ?></h2>
+<div id="pixelplant_debug" class="pixelplant_debug">
+<?php foreach ($this->getLoggerData() as $type => $data): ?>
+	<h3><a href="#"><?php echo $this->__($type); ?></a></h3>
+	<div>
+		<table class="pixelplant_debug_table">
+			<thead>
+				<tr>
+				<?php $colNumber = 0; ?>
+				<?php foreach (array_keys(current($data)) as $key): ?>
+					<th scope="col"><?php echo $this->__($key); ?></th>
+					<?php $colNumber++; ?>
+				<?php endforeach; ?>
+				</tr>
+			</thead>
+			<tbody>
+			<?php foreach ($data as $item): ?>
+				<tr>
+				<?php foreach ($item as $details): ?>
+					<td><?php echo $details; ?></td>
+				<?php endforeach; ?>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+			<!--<tfoot>
+				<tr>
+					<td colspan="<?php echo $colNumber; ?>">Profiler</td>
+				</tr>
+			</tfoot>-->
+		</table>
+	</div>
+<?php endforeach; ?>
+	<h3><a href="#"><?php echo $this->__('utils'); ?></a></h3>
+	<div>
+		<form method="post" action="<?php echo $this->getUrl('debug/resolve');?>" >
+			<p><?php echo $this->__('Enter a module identifier name or identifier + path to see what classes it maps to.');?></p>
+			<p><?php echo $this->__('Eg: &laquo;core&raquo; or &laquo;core/website&raquo; for the ZeroG_Core extension');?></p>
+			<div class="fieldcontain">
+				<label for="debug_caller"><?php echo $this->__('Resolve reference to'); ?></label>
+				<input type="text" name="debug_caller" id="debug_caller" />
+			</div>
+			<div id="resolve_response">
+			</div>
+			<button type="submit" name="submit" value="submit-value"><?php echo $this->__('Submit'); ?></button>
+		</form>
+	</div>
+</div>
+<script>
+	$(function() {
+		$( "#pixelplant_debug" ).accordion();
+	});
+</script>

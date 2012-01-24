@@ -89,13 +89,13 @@ namespace Sys
 		/**
 		 * Change all model data or just a particular field if $field is array
 		 *
-		 * @param <string> $field Field name
+		 * @param <mixed> $field Field name
 		 * @param <mixed> $value Field value
 		 * @return \Sys\Model
 		 */
 		public function setData($field, $value = null)
 		{
-			if (!is_string($field))
+			if (is_array($field))
 				$this->_data = $field;
 			else
 				$this->_data[$field] = $value;
@@ -120,17 +120,25 @@ namespace Sys
 		public function getData($field = '', $index = null)
 		{
 			if ($field == '')
+			{
 				return $this->_data;
+			}
 			else
+			{
 				if (isset($this->_data[$field]))
 				{
 					if (!is_null($index))
-						return $this->_data[$field][$index];
+					{
+						if (isset($this->_data[$field][$index]))
+							return $this->_data[$field][$index];
+					}
 					else
 						return $this->_data[$field];
 				}
 				else
 					return FALSE;
+			}
+			return FALSE;
 		}
 
 		/**

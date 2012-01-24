@@ -697,7 +697,7 @@ table .a-right {
 	font-weight: normal;
 }
 
-.widget_grid_buttons {
+.widget_header_buttons {
 	float: right;
 }
 
@@ -712,20 +712,24 @@ table .a-right {
 .column-sort-asc,
 .column-sort-desc {
 	padding-left: 30px !important;
+   -moz-box-shadow: inset 0 0 5px #000000;
+   -webkit-box-shadow: inset 0 0 5px #000000;
+   box-shadow: inset 0 0 5px #000000;
 }
 
 .column-sort-asc {
-	background: url(../images/icons/sort_asc.png) 10px 10px no-repeat;
+	background: brown url(../images/icons/sort_asc.png) 10px 10px no-repeat;
 }
 
 .column-sort-desc {
-	background: url(../images/icons/sort_desc.png) 10px 10px no-repeat;
+	background: brown url(../images/icons/sort_desc.png) 10px 10px no-repeat;
 }
 
-.grid-header {
+.widget-header {
 	border-bottom: 1px solid lightgray;
 	padding: 8px 0;
 	overflow: hidden;
+	margin-bottom: 8px;
 }
 
 .grid-input-small {
@@ -738,4 +742,64 @@ table .a-right {
 
 .grid-input-medium .input-text {
 	width: 100%;
+}
+
+.range-line {
+	margin-bottom: 4px;
+	overflow: hidden;
+}
+
+.range-line label {
+	width: 50px;
+	float: left;
+}
+
+.range-line .input-text {
+	width: 80px;
+	float: left;
+}
+
+.breadcrumbs li {
+	display: inline;
+}
+
+/* forms */
+.widget h3 {
+	font-size: 1em;
+	font-weight: bold;
+	background-color: #3F4C6B;
+	color: white;
+	padding: 5px;
+}
+.form-field {
+	margin: .5em 0;
+}
+.form-field label {
+	width: 200px;
+	float: left
+}
+
+.form-fieldset {
+	border: 1px solid lightgray;
+	margin: 1em 0;
+}
+
+.form-fieldset-header {
+}
+
+.form-fieldset-content {
+	padding: 1em;
+}
+
+.form .input-text {
+	width: 250px;
+}
+
+.form .textarea {
+	width: 500px;
+	height: 15em;
+}
+
+.form .select {
+	width: 250px;
 }

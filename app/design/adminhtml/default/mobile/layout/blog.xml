@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : blog.xml
+    Created on : 13 ianuarie 2012 13:00
+    Author     : radu.mogos
+    Description:
+        XMLlayout for the blog extension, admin section
+-->
+
+<layout version="1.0">
+
+	<blog_admin>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+	</blog_admin>
+
+	<blog_admin_admin_list_posts>
+		<reference name="root">
+			<action method="setTemplate"><template>page/1column.phtml</template></action>
+		</reference>
+		<remove name="footer" />
+		<reference name="content">
+			<block type="blog/admin/grid/posts" name="widget.grid" />
+		</reference>
+		<reference name="right">
+			<block type="core/base" name="blog.right" template="blog/right.phtml" />
+		</reference>
+	</blog_admin_admin_list_posts>
+
+	<blog_admin_admin_edit_post>
+		<reference name="content">
+			<block type="blog/admin/form/post" name="form.post" />
+		</reference>
+	</blog_admin_admin_edit_post>
+
+	<blog_admin_admin_list_categories>
+		<reference name="content">
+			<block type="blog/admin/grid/categories" name="widget.grid" />
+		</reference>
+	</blog_admin_admin_list_categories>
+
+	<!-- Grid Reload/apply filters for Posts Ajax call -->
+	<blog_admin_admin_list_posts_grid>
+		<block type="blog/admin/grid/posts" name="root"/>
+	</blog_admin_admin_list_posts_grid>
+
+	<!-- Grid Reload/aply filters for Categories Ajax call -->
+	<blog_admin_admin_list_categories_grid>
+		<block type="blog/admin/grid/categories" name="root"/>
+	</blog_admin_admin_list_categories_grid>
+
+</layout>

@@ -132,7 +132,7 @@ namespace Sys\Config
 		/**
 		 * Setup router parameters
 		 */
-		private function setRouterParams()
+		private function _setRouterParams()
 		{
 			$this->_originalRequestUri = $this->_requestUri;
 			if ($this->_config->getConfig(self::XML_REWRITE_ENABLED) == 1)
@@ -182,7 +182,7 @@ namespace Sys\Config
 		public function execute()
 		{
 			$this->loadRules($this->_config->getRouterXmlData());
-			$this->setRouterParams();
+			$this->_setRouterParams();
 			$router = $this->_params['request']['router'];
 			if (isset($this->_routes[$router]))
 			{

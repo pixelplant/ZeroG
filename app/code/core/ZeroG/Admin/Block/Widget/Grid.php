@@ -23,6 +23,13 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected $_collection;
 
 		/**
+		 * Url called when the grid form is submitted
+		 *
+		 * @var <string>
+		 */
+		protected $_actionUrl = null;
+
+		/**
 		 * Paging variables
 		 *
 		 * @var <string>
@@ -55,12 +62,6 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		 */
 		protected $_headerContainer;
 
-		/**
-		 * Grid id, also used as the table id attribute
-		 * @var <string>
-		 */
-		protected $_id;
-
 		protected function _construct()
 		{
 			parent::_construct();
@@ -72,59 +73,103 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			//$column->setData($columnData);
 		}
 
+		public function setActionUrl($path = null)
+		{
+			$this->_actionUrl = $this->getUrl($path);
+			return $this;
+		}
+
+		public function getActionUrl()
+		{
+			if (is_null($this->_actionUrl))
+			{
+				$this->setActionUrl();
+			}
+			return $this->_actionUrl;
+		}
+
+		/**
+		 * Get grid header container
+		 *
+		 * @return <Container>
+		 */
 		public function getHeader()
 		{
 			return $this->_headerContainer;
 		}
 
-		public function getId()
-		{
-			return $this->_id;
-		}
-
-		public function setId($id)
-		{
-			$this->_id = $id;
-			return $this;
-		}
-
+		/**
+		 * Return grid columns
+		 *
+		 * @return <array>
+		 */
 		public function getColumns()
 		{
 			return $this->_columns;
 		}
 
+		/**
+		 * How many columns do we have?
+		 * 
+		 * @return <type>
+		 */
 		public function getColumnCount()
 		{
 			return count($this->_columns);
 		}
 
+		/**
+		 * Add a new column to our grid
+		 *
+		 * @param <string> $columnId
+		 * @param <array> $columnData
+		 * @return Grid
+		 */
 		public function addColumn($columnId, $columnData)
 		{
 			if (is_array($columnData))
 			{
 				$this->_columns[$columnId] = $this->getLayout()->createBlock('admin/widget/grid/column')
 						->setData($columnData)
-						->setGrid($this);
+						->setGrid($this)
+						->setId($columnId);
 			}
 			else
 			{
 				throw new \Sys\Exception("The grid column data should be specified as an array.");
 			}
-			$this->_columns[$columnId]->setId($columnId);
+			//$this->_columns[$columnId]->setId($columnId);
 			return $this;
 		}
 
+		/**
+		 * Set the grid collection
+		 *
+		 * @param <Collection> $collection
+		 * @return Grid
+		 */
 		public function setCollection($collection)
 		{
 			$this->_collection = $collection;
 			return $this;
 		}
 
+		/**
+		 * Get the current collection used by the grid
+		 *
+		 * @return <Collection>
+		 */
 		public function getCollection()
 		{
 			return $this->_collection;
 		}
 
+		/**
+		 * Populate the values used by the filters
+		 *
+		 * @param <array> $data
+		 * @return Grid
+		 */
 		protected function _setFilterValues($data)
 		{
 			foreach ($this->getColumns() as $columnId => $column)
@@ -137,7 +182,13 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			}
 			return $this;
 		}
-		
+
+		/**
+		 * Apply the different filter conditions to our collection
+		 *
+		 * @param <Column> $column
+		 * @return Grid
+		 */
 		protected function _addColumnFilterToCollection($column)
 		{
 			if ($this->getCollection())
@@ -159,6 +210,9 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			return $this;
 		}
 
+		/**
+		 * Set grid and collection paging data
+		 */
 		protected function _preparePage()
 		{
 			$this->getCollection()->setPage(
@@ -166,6 +220,11 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 					$this->getParam($this->_varNameLimit, $this->_defaultLimit));
 		}
 
+		/**
+		 * Apply filters and sort our collection
+		 * 
+		 * @return Grid
+		 */
 		protected function _prepareCollection()
 		{
 			if ($this->getCollection())
@@ -210,6 +269,11 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			return $this;
 		}
 
+		/**
+		 * Prepare our grid
+		 *
+		 * @return Grid
+		 */
 		protected function _prepareGrid()
 		{
 			$this->_prepareColumns();
@@ -217,9 +281,17 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			return $this;
 		}
 
+		/**
+		 * Called before the Grid is rendered
+		 */
 		protected function _beforeToHtml()
 		{
 			$this->_prepareGrid();
+		}
+
+		public function getHtmlId()
+		{
+			return 'grid_'.$this->_id;
 		}
 	}
 }

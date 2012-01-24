@@ -86,7 +86,7 @@ namespace Sys\Database\Model
 		 */
 		public function addFieldToFilter($field, $condition = null)
 		{
-			if ($condition === null)
+			if ($condition == null)
 				return $this;
 			if ($this->_getResource()->hasTableField($field))
 			{
@@ -149,10 +149,7 @@ namespace Sys\Database\Model
 			{
 				return ceil($collectionSize / $this->getPageSize());
 			}
-			else
-			{
-				return 1;
-			}
+			return 1;
 		}
 
 		/**

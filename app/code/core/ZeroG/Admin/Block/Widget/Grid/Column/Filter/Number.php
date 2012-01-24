@@ -13,8 +13,11 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 
 		public function getContent()
 		{
-			$html = '<div class="grid-input-medium"><div class="range-line"><span class="label">'.$this->__('From').'</span> <input type="text" name="'.$this->getFieldName().'[from]" id="'.$this->getHtmlId().'_from" class="input-text" value="'.$this->getEscapedValue('from').'"/></div>';
-			$html .= '<div class="grid-input-medium"><span class="label">'.$this->__('To').'</span><input type="text" name="'.$this->getFieldName().'[to]" id="'.$this->getHtmlId().'_to" value="'.$this->getEscapedValue('to').'" class="input-text"/></div></div>';
+			$startId =  $this->getHtmlId().'_from';
+			$endId   =  $this->getHtmlId().'_to';
+
+			$html  = '<div class="grid-input-medium"><div class="range-line"><label for="'.$startId.'">'.$this->__('From').'</label><input type="text" name="'.$this->getFieldName().'[from]" id="'.$startId.'" class="input-text" value="'.$this->getEscapedValue('from').'"/></div></div>';
+			$html .= '<div class="grid-input-medium"><div class="range-line"><label for="'.$endId.'">'.$this->__('To').'</label><input type="text" name="'.$this->getFieldName().'[to]" id="'.$endId.'" value="'.$this->getEscapedValue('to').'" class="input-text"/></div></div>';
 			return $html;
 		}
 

@@ -63,8 +63,6 @@ function linux_spl_autoload($class)
 		$class = strtolower($class);
 	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
 	include ($class);
-	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
-	include ($class);
 }
 
 set_error_handler('error_handler');

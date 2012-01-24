@@ -1,0 +1,59 @@
+/* 
+    Document   : local
+    Created on : 29.11.2011, 17:38:36
+    Author     : radu.mogos
+    Description:
+        Local overwrites
+*/
+
+.widget_grid {
+    font-size: 1em;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.2em;
+    border-collapse:collapse;
+    text-align:left;
+	width: 100%;
+}
+
+.widget_grid thead th,
+.widget_grid tfoot td {
+    padding: 10px;
+    color:#fff;
+    font-size: 1em;
+    background-color:#222;
+    font-weight:normal;
+    border-right:1px dotted #666;
+    border-top:1px solid #666;
+    text-shadow:1px 1px 1px #000;
+	vertical-align: top;
+}
+
+.widget_grid tbody td {
+    padding: 10px;
+    background-color:#f0f0f0;
+    border-right:1px dotted #999;
+    text-shadow:-1px 1px 1px #fff;
+    text-transform:none;
+    color:#333;
+	vertical-align: top;
+}
+
+.widget_grid tr.tr_odd td {
+	background-color: white;
+}
+
+.widget_grid p,
+.widget_grid h1,
+.widget_grid h2,
+.widget_grid h3 {
+	margin: 0 0 3px 0;
+}
+
+.grid-input-small {
+	width: 100%;
+}
+
+.grid-input-medium {
+	width: 100%;
+}

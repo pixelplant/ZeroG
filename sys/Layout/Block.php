@@ -462,5 +462,10 @@ namespace Sys\Layout
 					$code);
 			return $code;
 		}
+
+		protected function _escape($text)
+		{
+			return htmlspecialchars($text);
+		}
 	}
 }

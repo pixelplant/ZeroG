@@ -1,96 +1,101 @@
-<div class="grid" id="grid_<?php echo $this->getId(); ?>">
-<div class="grid-header">
-	<div class="widget_grid_buttons">
-		<?php echo $this->getHeader()->getButtonsHtml(); ?>
+<div class="grid widget" id="widget_<?php echo $this->getHtmlId(); ?>">
+	<div class="widget-header">
+		<div class="widget_header_buttons">
+			<?php echo $this->getHeader()->getButtonsHtml(); ?>
+		</div>
+		<h1><?php echo $this->getHeader()->getTitle(); ?></h1>
 	</div>
-	<h1><?php echo $this->getHeader()->getTitle(); ?></h1>
-</div>
-<form method="post" action="<?php echo $this->getUrl('blog_admin/admin_list/grid');?>" id="widget_form_<?php echo $this->getId(); ?>">
-<table class="widget_grid_pager">
-	<td>
-		<?php echo $this->__('Page') ?>
-		<?php $_curPage  = $this->getCollection()->getCurPage(); ?>
-		<?php $_lastPage = $this->getCollection()->getLastPageNumber(); ?>
-		<?php if($_curPage>1): ?>
-			<a href="#" title="<?php echo $this->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/></a>
-		<?php else: ?>
-			<img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev_dis.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/>
-		<?php endif; ?>
+	<form method="post" action="<?php echo $this->getActionUrl();?>" id="<?php echo $this->getHtmlId(); ?>">
+	<table class="widget_grid_pager">
+		<tr>
+			<td>
+				<?php echo $this->__('Page') ?>
+				<?php $_curPage  = $this->getCollection()->getCurPage(); ?>
+				<?php $_lastPage = $this->getCollection()->getLastPageNumber(); ?>
+				<?php if($_curPage>1): ?>
+					<a href="#" title="<?php echo $this->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/></a>
+				<?php else: ?>
+					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev_dis.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/>
+				<?php endif; ?>
 
-		<input type="text" name="<?php echo $this->_varNamePage; ?>" class="input-text" size="3" value="<?php echo $_curPage ?>" class="input-text page" onkeypress=""/>
+				<input type="text" name="<?php echo $this->_varNamePage; ?>" size="3" value="<?php echo $_curPage ?>" class="input-text page" onkeypress=""/>
 
-		<?php if($_curPage < $_lastPage): ?>
-			<a href="#" title="<?php echo $this->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
-		<?php else: ?>
-			<img src="<?php echo $this->getSkinUrl('images/icons/arrow_next_dis.png') ?>" alt="<?php echo $this->__('Go to next page') ?>" class="arrow"/>
-		<?php endif; ?>
+				<?php if($_curPage < $_lastPage): ?>
+					<a href="#" title="<?php echo $this->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
+				<?php else: ?>
+					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_next_dis.png') ?>" alt="<?php echo $this->__('Go to next page') ?>" class="arrow"/>
+				<?php endif; ?>
 
-		<?php echo $this->__('of '.$_lastPage.' pages'); ?>
+				<?php echo $this->__('of '.$_lastPage.' pages'); ?>
 
-            <span class="separator">|</span>
-            <?php echo $this->__('View') ?>
-            <select name="<?php echo $this->_varNameLimit; ?>" onchange="">
-                <option value="10"<?php if($this->getCollection()->getPageSize()==10): ?> selected="selected"<?php endif; ?>>10</option>
-                <option value="20"<?php if($this->getCollection()->getPageSize()==20): ?> selected="selected"<?php endif; ?>>20</option>
-                <option value="30"<?php if($this->getCollection()->getPageSize()==30): ?> selected="selected"<?php endif; ?>>30</option>
-                <option value="40"<?php if($this->getCollection()->getPageSize()==40): ?> selected="selected"<?php endif; ?>>40</option>
-                <option value="50"<?php if($this->getCollection()->getPageSize()==50): ?> selected="selected"<?php endif; ?>>50</option>
-            </select>
-            <?php echo $this->__('per page') ?><span class="separator">|</span>
+					<span class="separator">|</span>
+					<?php echo $this->__('View') ?>
+					<select name="<?php echo $this->_varNameLimit; ?>" onchange="">
+						<option value="10"<?php if($this->getCollection()->getPageSize()==10): ?> selected="selected"<?php endif; ?>>10</option>
+						<option value="20"<?php if($this->getCollection()->getPageSize()==20): ?> selected="selected"<?php endif; ?>>20</option>
+						<option value="30"<?php if($this->getCollection()->getPageSize()==30): ?> selected="selected"<?php endif; ?>>30</option>
+						<option value="40"<?php if($this->getCollection()->getPageSize()==40): ?> selected="selected"<?php endif; ?>>40</option>
+						<option value="50"<?php if($this->getCollection()->getPageSize()==50): ?> selected="selected"<?php endif; ?>>50</option>
+					</select>
+					<?php echo $this->__('per page') ?><span class="separator">|</span>
 
-		<?php echo $this->__('Total %d records found', $this->getCollection()->getSize()) ?>
-	</td>
-	<td class="export a-right">
-		<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->__('Export to:') ?>
-		<select name="<?php echo $this->getId() ?>_export" id="<?php echo $this->getId() ?>_export" style="width:8em;">
-			<option value="empty">Export option</option>
-		</select>
-		<?php echo $this->getExportButtonHtml() ?>
-	</td>
-	<td class="a-right"><input type="submit" value="<?php echo $this->__('Search'); ?>" /></td>
-</table>
-<table class="widget_grid" id="<?php echo $this->getId(); ?>">
-	<?php foreach ($this->getColumns() as $_column): ?>
-	<col <?php echo $_column->getHeaderProperty(); ?>/>
-	<?php endforeach; ?>
-	<thead>
-		<tr class="columns">
-			<?php foreach ($this->getColumns() as $_column): ?>
-			<th class="grid_column_header"><?php echo $_column->getHeader(); ?></th>
-			<?php endforeach; ?>
+				<?php echo $this->__('Total %d records found', $this->getCollection()->getSize()) ?>
+			</td>
+			<td class="export a-right">
+				<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->__('Export to:') ?>
+				<select name="<?php echo $this->getHtmlId() ?>_export" id="<?php echo $this->getHtmlId() ?>_export" style="width:8em;">
+					<option value="empty">Export option</option>
+				</select>
+				<?php echo $this->getExportButtonHtml() ?>
+			</td>
+			<td class="a-right">
+				<input type="reset" name="reset" onclick="$('#<?php echo $this->getHtmlId(); ?>').clearForm().submit();" class="ui-icon-refresh" value="<?php echo $this->__('Reset filters'); ?>" />
+				<input type="submit" name="submit" class="ui-icon-search" value="<?php echo $this->__('Search'); ?>" />
+			</td>
 		</tr>
-		<tr class="filter">
-			<?php foreach ($this->getColumns() as $_column): ?>
-			<th><?php echo $_column->getFilterHtml(); ?></th>
-			<?php endforeach; ?>
-		</tr>
-	</thead>
-	<tbody>
-		<?php if ($this->getCollection()->getSize() > 0): ?>
-		<?php $start = 0; ?>
-		<?php foreach ($this->getCollection() as $item): ?>
-		<tr class="<?php echo ($start++ % 2 == 0) ? 'tr_odd' : 'tr_even';?>" >
-			<?php foreach ($this->getColumns() as $_column): ?>
-			<td><?php echo $_column->getContent($item); ?></td>
-			<?php endforeach; ?>
-		</tr>
+	</table>
+	<table class="widget_grid" id="table_<?php echo $this->getHtmlId(); ?>">
+		<?php foreach ($this->getColumns() as $_column): ?>
+		<col <?php echo $_column->getHeaderProperty(); ?>/>
 		<?php endforeach; ?>
-		<?php endif; ?>
-	</tbody>
-</table>
-</form>
+		<thead>
+			<tr class="columns">
+				<?php foreach ($this->getColumns() as $_column): ?>
+				<th class="grid_column_header"><?php echo $_column->getHeader(); ?></th>
+				<?php endforeach; ?>
+			</tr>
+			<tr class="filter">
+				<?php foreach ($this->getColumns() as $_column): ?>
+				<th><?php echo $_column->getFilterHtml(); ?></th>
+				<?php endforeach; ?>
+			</tr>
+		</thead>
+		<tbody>
+			<?php if ($this->getCollection()->getSize() > 0): ?>
+			<?php $start = 0; ?>
+			<?php foreach ($this->getCollection() as $item): ?>
+			<tr class="<?php echo ($start++ % 2 == 0) ? 'tr_odd' : 'tr_even';?>" >
+				<?php foreach ($this->getColumns() as $_column): ?>
+				<td><?php echo $_column->getContent($item); ?></td>
+				<?php endforeach; ?>
+			</tr>
+			<?php endforeach; ?>
+			<?php endif; ?>
+		</tbody>
+	</table>
+	</form>
 </div>
-<script type="text/javascript">
-$('#widget_form_<?php echo $this->getId(); ?>').submit(function()
-{
-	var options = {
-		target: '#grid_<?php echo $this->getId(); ?>',
-		beforeSubmit: showAjaxRequest,
-		success: hideAjaxRequest,
-		};
-	$(this).ajaxSubmit(options);
-	 //!!! Important !!!
-	 // always return false to prevent standard browser submit and page navigation
-	 return false;
-});
-</script>
+	<script type="text/javascript">
+	$('#<?php echo $this->getHtmlId(); ?>').submit(function()
+	{
+		var options = {
+			target: '#widget_<?php echo $this->getHtmlId(); ?>',
+			beforeSubmit: showAjaxRequest,
+			success: hideAjaxRequest
+			};
+		$(this).ajaxSubmit(options);
+		//!!! Important !!!
+		// always return false to prevent standard browser submit and page navigation
+		return false;
+	});
+	</script>

@@ -51,7 +51,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		 */
 		public function getHeader()
 		{
-			if ($this->_column->getSortable())
+			if ($this->getColumn()->getSortable())
 			{
 				$sortClass = 'column-no-sorting';
 				$dir = strtolower($this->getColumn()->getSortDirection());
@@ -59,12 +59,12 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 				{
 					$sortClass = 'column-sort-'.$dir;
 				}
-				return '<a href="#" class="'.$sortClass.'" name="'.$this->_column->getId().'">'
-						.$this->_column->getData('header').'</a>';
+				return '<a href="#" class="'.$sortClass.'" id="'.$this->getColumn()->getId().'">'
+						.$this->getColumn()->getData('header').'</a>';
 			}
 			else
 			{
-				return '<p class="no-link">'.$this->_column->getData('header').'</p>';
+				return '<p class="no-link">'.$this->getColumn()->getData('header').'</p>';
 			}
 		}
 
@@ -76,10 +76,10 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		public function getHeaderProperty()
 		{
 			$html = '';
-			if ($this->_column->getWidth())
+			if ($this->getColumn()->getWidth())
 			{
-				$width = $this->_column->getWidth();
-				$html = ' width="'.$width.'"';
+				$width = $this->getColumn()->getWidth();
+				$html = ' style="width: '.$width.'"';
 			}
 			return $html;
 		}

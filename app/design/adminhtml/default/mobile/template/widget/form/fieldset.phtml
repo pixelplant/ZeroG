@@ -1,0 +1,15 @@
+<?php $_elements = $this->getChildren(); ?>
+<?php if ($_elements): ?>
+<div class="form-fieldset">
+	<div class="form-fieldset-header">
+		<h3><?php echo $this->getHeader(); ?></h3>
+	</div>
+	<div class="form-fieldset-content">
+		<?php foreach ($_elements as $_element): ?>
+		<div class="form-field">
+			<?php echo $_element->getContent(); ?>
+		</div>
+		<?php endforeach; ?>
+	</div>
+</div>
+<?php endif; ?>

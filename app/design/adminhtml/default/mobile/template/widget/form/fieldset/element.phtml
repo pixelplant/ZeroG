@@ -1,0 +1,60 @@
+<?php switch ($this->getType()) {
+    case 'hidden': ?>
+    <input type="<?php echo $this->getType() ?>" name="<?php echo $this->getName() ?>" id="<?php echo $this->getHtmlId() ?>" value="<?php echo $this->getValue() ?>">
+      <?php break;
+    case 'select': ?>
+    <span class="form_row">
+        <?php if ($this->getLabel()): ?><label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label><?php endif; ?>
+        <?php echo $this->getElementHtml();?>
+    </span>
+      <?php break;
+    case 'text':
+    case 'button':
+    case 'password': ?>
+    <span class="form_row">
+        <?php if($this->getLabel()): ?><label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label><?php endif; ?>
+        <input type="<?php echo $this->getType() ?>" name="<?php echo $this->getName() ?>" id="<?php echo $this->getHtmlId() ?>" value="<?php echo $this->getValue() ?>" class="input-text <?php echo $this->getClass() ?>" title="<?php echo $this->getTitle() ?>" <?php echo ( $this->getOnClick() ? 'onClick="'.$this->getOnClick().'"' : '' ) ?>/>
+    </span>
+      <?php break;
+    case 'radio': ?>
+    <span class="form_row">
+        <?php if($this->getLabel()): ?><label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label><?php endif; ?>
+        <input type="<?php echo $this->getType() ?>" name="<?php echo $this->getName() ?>" id="<?php echo $this->getHtmlId() ?>" value="<?php echo $this->getValue() ?>" class="input-text <?php echo $this->getClass() ?>" title="<?php echo $this->getTitle() ?>"/>
+    </span>
+      <?php break;
+    case 'hidden': ?>
+        <input type="<?php echo $this->getType() ?>" name="<?php echo $this->getName() ?>" id="<?php echo $this->getHtmlId() ?>" value="<?php echo $this->getValue() ?>">
+      <?php break;
+    case 'radios': ?>
+    <span class="form_row">
+        <label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label>
+    <?php foreach($this->getRadios() as $_radio): ?>
+    <input type="radio" name="<?php echo $_radio->getName() ?>" id="<?php echo $_radio->getHtmlId() ?>" value="<?php echo $_radio->getValue() ?>" class="input-radio <?php echo $_radio->getClass() ?>" title="<?php echo $_radio->getTitle() ?>" <?php echo ( $_radio->getValue() == $this->getChecked() ) ? 'checked="true"' : '' ?> >&nbsp;<?php echo $_radio->getLabel() ?>
+    <?php endforeach; ?>
+    </span>
+      <?php break;
+    case 'wysiwyg': ?>
+    <span class="form_row">
+      <label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label>
+      <textarea name="<?php echo $this->getName() ?>" title="<?php echo $this->getTitle() ?>" id="<?php echo $this->getHtmlId() ?>" class="textarea <?php echo $this->getClass() ?>" cols="80" rows="20"><?php echo $this->getValue(); ?></textarea>
+    </span>
+      <?php break;
+        case 'textarea': ?>
+            <span class="form_row">
+                    <label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label>
+                    <textarea name="<?php echo $this->getName() ?>" title="<?php echo $this->getTitle() ?>" id="<?php echo $this->getHtmlId() ?>" class="textarea <?php echo $this->getClass() ?>" cols="15" rows="2"><?php echo $this->getValue(); ?></textarea>
+            </span>
+      <?php break;
+    case 'editor': ?>
+      <?php break;
+    case 'file': ?>
+      <?php break;
+    case 'checkbox': ?>
+      <?php break;
+} ?>
+<?php echo $this->getAfterElementHtml(); ?>
+<?php if($this->getScript()): ?>
+<script type="text/javascript">
+    <?php echo $this->getScript() ?>
+</script>
+<?php endif; ?>

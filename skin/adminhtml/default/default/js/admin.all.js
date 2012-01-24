@@ -9,6 +9,7 @@ function showAjaxRequest(formData, jqForm, options)
 function hideAjaxRequest(responseText, statusText, xhr, $form)
 {
 	$('#ajax_worker').hide();
+	applyJqueryTheme();
 }
 
 /**
@@ -71,9 +72,9 @@ function statusBarPopup(targetUrl, target)
 function applyJqueryTheme()
 {
 	// style buttons
-	$( "input:submit, a.button, button", ".grid" ).each( function()
+	$("input:submit, input:reset, a.button, button", ".widget").each( function()
 	{
-		$(this).button({icons: { primary: $(this).attr('class')}});
+		$(this).button({icons: { primary: $(this).attr("class")}});
 	});
 }
 

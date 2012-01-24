@@ -23,6 +23,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		 */
 		protected function _addButton($name, $data)
 		{
+			$data['id'] = $name;
 			$this->_buttons[$name] = $this->getLayout()->createBlock('admin/widget/button')->setData($data);
 			return $this;
 		}
@@ -105,6 +106,16 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 				$html .= $button->getContent();
 			}
 			return $html;
+		}
+
+		/**
+		 * Returns all the container's buttons
+		 *
+		 * @return <array>
+		 */
+		public function getButtons()
+		{
+			return $this->_buttons;
 		}
 
 		/**

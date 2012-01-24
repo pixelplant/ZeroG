@@ -22,6 +22,10 @@ $installer->newTable($installer->getResourceTable('blog/post'))
 			'nullable' => FALSE,
 			'default' => '',
 		),'Title of the blog post')
+		->addColumn('comments', $installer::TYPE_INTEGER, 1, array(
+			'nullable' => FALSE,
+			'default'  => 1
+		))
 		->addColumn('post_content', $installer::TYPE_TEXT, null, array(
 			'nullable' => FALSE,
 		))

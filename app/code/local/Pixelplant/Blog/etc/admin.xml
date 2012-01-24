@@ -8,46 +8,47 @@
 -->
 <config>
 	<menu>
-		<pixelplant_blog>
+		<blog>
 			<helper>blog</helper>
 			<title>Blog</title>
 			<sort_order>100</sort_order>
 			<children>
-				<blog_list>
+				<list>
 					<helper>blog</helper>
 					<title>All Posts</title>
 					<sort_order>10</sort_order>
-					<action>blog_admin/admin_list</action>
+					<action>blog_admin/admin_list/posts</action>
 					<children>
-						<blog_new_post>
+						<new_post>
 							<helper>blog</helper>
 							<title>Add new post</title>
 							<sort_order>10</sort_order>
-						</blog_new_post>
+						</new_post>
 					</children>
-				</blog_list>
-				<blog_comments>
+				</list>
+				<comments>
 					<helper>blog</helper>
 					<title>Comments</title>
 					<sort_order>20</sort_order>
-				</blog_comments>
-				<blog_categories>
+				</comments>
+				<categories>
 					<helper>blog</helper>
 					<title>Categories</title>
 					<sort_order>30</sort_order>
-				</blog_categories>
-				<blog_attributes>
+					<action>blog_admin/admin_list/categories</action>
+				</categories>
+				<attributes>
 					<helper>blog</helper>
 					<title>Attributes</title>
 					<sort_order>40</sort_order>
-				</blog_attributes>
-				<blog_settings>
+				</attributes>
+				<settings>
 					<helper>blog</helper>
 					<title>Blog settings</title>
 					<sort_order>100</sort_order>
 					<action>blog_admin/settings</action>
-				</blog_settings>
+				</settings>
 			</children>
-		</pixelplant_blog>
+		</blog>
 	</menu>
 </config>

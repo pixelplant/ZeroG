@@ -18,14 +18,19 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 		 * @param <App\Code\ZeroG\Admin\Block\Widget\Grid\Column> $column
 		 */
 
-		protected function _construct()
+		/*protected function _construct()
 		{
-			//$this->setTemplate('widget/grid/column/renderer/base.phtml');
+			$this->setTemplate('widget/grid/column/renderer/base.phtml');
+		}*/
+
+		protected function _init()
+		{
 		}
 
 		public function setColumn($column)
 		{
 			$this->_column = $column;
+			$this->_init();
 			return $this;
 		}
 

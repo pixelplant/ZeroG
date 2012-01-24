@@ -31,6 +31,12 @@ namespace App\Code\Core\ZeroG\Core\Controller
 		{
 			return \Z::getSingleton('core/session/admin');
 		}
+
+		protected function _addBreadcrumb($label, $url = null)
+		{
+			$this->getLayout()->getBlock('breadcrumbs')->addLink($label, $url);
+			return $this;
+		}
 	}
 }
 

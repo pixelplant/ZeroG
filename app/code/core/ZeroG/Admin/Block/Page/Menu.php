@@ -10,7 +10,22 @@ namespace App\Code\Core\ZeroG\Admin\Block\Page
 	 */
 	class Menu extends \App\Code\Core\ZeroG\Admin\Block\Template
 	{
+		/**
+		 * Current loaded menu items
+		 *
+		 * @var <array>
+		 */
 		protected $_menuItems;
+
+		/**
+		 * Active path in the menu
+		 *
+		 * @var <string>
+		 */
+		protected $_active = null;
+
+		protected $_xmlPath;
+		protected $_xmlOrig;
 
 		/**
 		 * Generates the admin menu block
@@ -56,6 +71,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Page
 				$menuItem['label']        = $childData['title'];
 				if (isset($childData['children']))
 				{
+					//$this->_xmlOrig = $this->_xmlOrig.$childName.'/';
 					$menuItem['children'] = $this->_buildMenu($childData['children']);
 				}
 				$menuItems[$childName]    = $menuItem;
@@ -76,6 +92,11 @@ namespace App\Code\Core\ZeroG\Admin\Block\Page
 		protected function _sortByOrder($left, $right)
 		{
 			return $left['sort_order'] < $right['sort_order'] ? -1 : ($left['sort_order'] > $right['sort_order'] ? 1 : 0);
+		}
+
+		public function setActive($path)
+		{
+			$this->_active = $path;
 		}
 	}
 }

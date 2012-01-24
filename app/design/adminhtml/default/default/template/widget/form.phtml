@@ -1,0 +1,27 @@
+<div class="form widget" id="widget_<?php echo $this->getHtmlId(); ?>">
+	<div class="widget-header">
+		<div class="widget_header_buttons">
+			<button id="b1" class="ui-icon-circle-plus">Adaugă postare nouă</button>
+		</div>
+		<h1><?php echo $this->getHeaderText(); ?></h1>
+	</div>
+	<form method="post" action="" id="<?php echo $this->getHtmlId(); ?>" name="<?php echo $this->getId(); ?>" >
+	<?php $tabs = $this->getTabs(); ?>
+	<?php if ($tabs): ?>
+		<ul>
+		<?php foreach ($tabs as $_tab): ?>
+			<li><a href="#<?php echo $_tab->getHtmlId(); ?>"><?php echo $_tab->getHeader(); ?></a></li>
+		<?php endforeach; ?>
+		</ul>
+		<?php foreach ($tabs as $_tab): ?>
+		<div id="<?php echo $_tab->getHtmlId(); ?>">
+			<?php echo $_tab->getContent(); ?>
+		</div>
+		<?php endforeach; ?>
+	<?php endif; ?>
+	<?php echo $this->getChildHtml('form_after');?>
+	</form>
+</div>
+<script type="text/javascript">
+	$( "#<?php echo $this->getHtmlId(); ?>" ).tabs();
+</script>

@@ -1,0 +1,5 @@
+<?php if ($this->getActions()): ?>
+	<?php foreach ($this->getActions() as $_action): ?>
+	<a href="<?php echo $_action['url']; ?>"><?php echo $_action['caption']; ?></a>
+	<?php endforeach; ?>
+<?php endif; ?>

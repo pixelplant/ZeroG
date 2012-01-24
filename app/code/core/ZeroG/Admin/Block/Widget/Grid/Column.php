@@ -120,7 +120,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 			switch ($type)
 			{
 				case 'text' :
-					$filterClass = 'admin/widget/grid/column/filter/base';
+					$filterClass = 'admin/widget/grid/column/filter/text';
 					break;
 				case 'checkbox' :
 					$filterClass = 'admin/widget/grid/column/filter/checkbox';
@@ -138,7 +138,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 					$filterClass = 'admin/widget/grid/column/filter/site';
 					break;
 				default:
-					$filterClass = 'admin/widget/grid/column/filter/text';
+					$filterClass = 'admin/widget/grid/column/filter/base';
 					break;
 			}
 
@@ -152,12 +152,27 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 				$renderer = $this->getData('renderer');
 				if (!$renderer)
 				{
-					$renderer = $this->_getDefaultRenderer();
+					$renderer = $this->_getRendererByType();
 				}
 				$this->_renderer = $this->getLayout()->createBlock($renderer)
 						->setColumn($this);
 			}
 			return $this->_renderer;
+		}
+
+		protected function _getRendererByType()
+		{
+			$type = strtolower($this->getType());
+
+			switch ($type)
+			{
+				case 'action' :
+					$renderer = 'admin/widget/grid/column/renderer/action';
+					break;
+				default:
+					$renderer = 'admin/widget/grid/column/renderer/base';
+			}
+			return $renderer;
 		}
 
 		protected function _getDefaultRenderer()

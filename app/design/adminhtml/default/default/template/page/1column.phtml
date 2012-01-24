@@ -12,15 +12,14 @@
 			</div>
 			<div id="content_wrapper" class="full_window">
 				<div id="content">
+					<?php echo $this->getChildHtml('breadcrumbs'); ?>
 					<?php echo $this->getChildHtml('content'); ?>
 				</div>
 			</div>
 			<div id="footer">
 				<?php echo $this->getChildHtml('footer'); ?>
 			</div>
-			<div id="status_bar">
-				<?php echo $this->getChildHtml('status_bar'); ?>
-			</div>
+			<?php echo $this->getChildHtml('status_bar'); ?>
 		</div>
 
 		<div id="messages" class="messages">

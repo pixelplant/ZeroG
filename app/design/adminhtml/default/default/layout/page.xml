@@ -13,10 +13,10 @@
 		<block type="page/html" name="root" template="page/2columns.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
-				<action method="addCss"><stylesheet>css/ui-lightness/jquery-ui-1.8.16.custom.css</stylesheet></action>
-				<action method="addJs"><script>js/jquery-1.7.min.js</script></action>
+				<action method="addCss"><stylesheet>css/flick/jquery-ui-1.8.17.custom.css</stylesheet></action>
+				<action method="addJs"><script>js/jquery-1.7.1.min.js</script></action>
 				<action method="addJs"><script>js/jquery.form.js</script></action>
-				<action method="addJs"><script>js/jquery-ui-1.8.16.custom.min.js</script></action>
+				<action method="addJs"><script>js/jquery-ui-1.8.17.custom.min.js</script></action>
 				<action method="addJs"><script>js/admin.all.js</script></action>
 				<action method="setTitle"><title>ZeroG Admin</title></action>
 			</block>
@@ -25,6 +25,7 @@
 			<block type="core/base" name="header" template="page/html/header.phtml">
 				<block type="admin/page/menu" name="mainmenu" template="page/menu.phtml" />
 			</block>
+			<block type="page/html/breadcrumbs" template="page/html/breadcrumbs.phtml" name="breadcrumbs"/>
 			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />

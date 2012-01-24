@@ -6,6 +6,8 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 	{
 		protected function _prepareColumns()
 		{
+			$this->setActionUrl('blog_admin/admin_list/posts_grid');
+
 			$this->getHeader()
 				->addButton('new', array(
 					'label'   => $this->__('New blog post'),
@@ -21,12 +23,13 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'index'    => 'post_id',
 				'type'     => 'number',
 				'sortable' => true,
-				'width'    => '10%'
+				'width'    => '160px'
 				));
 
 			$this->addColumn('title', array(
 				'header'   => $this->__('Title'),
 				'index'    => 'title',
+				'type'     => 'text',
 				'sortable' => true,
 				//'renderer' => 'admin/widget/grid/column/renderer/base',
 				//'width'    => '70%'
@@ -51,14 +54,29 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'header'   => $this->__('Created at'),
 				'index'    => 'created_time',
 				'type'     => 'date',
-				'width'    => '10%'
+				'width'    => '160px'
 				));
 
 			$this->addColumn('updated_time', array(
 				'header'   => $this->__('Last modified'),
 				'index'    => 'updated_time',
 				'type'     => 'date',
-				'width'    => '10%'
+				'width'    => '160px'
+				));
+
+			$this->addColumn('action', array(
+				'header'   => $this->__('Actions'),
+				'filter'   => false,
+				'sortable' => false,
+				'type'     => 'action',
+				//'index'    => 'stores',
+				'actions'  => array(
+					array(
+						'caption' => $this->__('Edit'),
+						'url'     => $this->getUrl('*/*/edit'),
+						'field'   => 'id'
+					)),
+				'width'    => '60px'
 				));
 
 			parent::_prepareColumns();
