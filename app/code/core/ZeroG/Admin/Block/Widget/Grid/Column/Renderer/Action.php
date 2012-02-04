@@ -20,5 +20,11 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		{
 			return $this->getColumn()->getActions();
 		}
+
+		public function getContent($item)
+		{
+			$this->setItem($item);
+			return $this->render();
+		}
 	}
 }

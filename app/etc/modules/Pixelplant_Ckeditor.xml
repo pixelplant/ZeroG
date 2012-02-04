@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @category   Pixelplant
+ * @package    Pixelplant_Ckeditor
+ * @author     Pixelplant, Radu Mogos, <radu.mogos@pixelplant.ro>
+ * @license    M.O.K.A.
+ */
+ -->
+<config>
+	<modules>
+		<Pixelplant_Ckeditor>
+			<active>true</active>
+			<codePool>community</codePool>
+			<depends>
+				<ZeroG_Core />
+			</depends>
+		</Pixelplant_Ckeditor>
+	</modules>
+</config>

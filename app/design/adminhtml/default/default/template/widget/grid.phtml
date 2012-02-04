@@ -9,27 +9,27 @@
 	<table class="widget_grid_pager">
 		<tr>
 			<td>
-				<?php echo $this->__('Page') ?>
+				<?php echo $this->helper('admin')->__('Page') ?>
 				<?php $_curPage  = $this->getCollection()->getCurPage(); ?>
 				<?php $_lastPage = $this->getCollection()->getLastPageNumber(); ?>
 				<?php if($_curPage>1): ?>
-					<a href="#" title="<?php echo $this->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/></a>
+					<a href="#" title="<?php echo $this->helper('admin')->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to previous page') ?>" class="arrow"/></a>
 				<?php else: ?>
-					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev_dis.png') ?>" alt="<?php echo $this->__('Go to previous page') ?>" class="arrow"/>
+					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev_dis.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to previous page') ?>" class="arrow"/>
 				<?php endif; ?>
 
 				<input type="text" name="<?php echo $this->_varNamePage; ?>" size="3" value="<?php echo $_curPage ?>" class="input-text page" onkeypress=""/>
 
 				<?php if($_curPage < $_lastPage): ?>
-					<a href="#" title="<?php echo $this->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
+					<a href="#" title="<?php echo $this->helper('admin')->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
 				<?php else: ?>
-					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_next_dis.png') ?>" alt="<?php echo $this->__('Go to next page') ?>" class="arrow"/>
+					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_next_dis.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to next page') ?>" class="arrow"/>
 				<?php endif; ?>
 
-				<?php echo $this->__('of '.$_lastPage.' pages'); ?>
+				<?php echo $this->helper('admin')->__('of %s pages', $_lastPage); ?>
 
 					<span class="separator">|</span>
-					<?php echo $this->__('View') ?>
+					<?php echo $this->helper('admin')->__('View') ?>
 					<select name="<?php echo $this->_varNameLimit; ?>" onchange="">
 						<option value="10"<?php if($this->getCollection()->getPageSize()==10): ?> selected="selected"<?php endif; ?>>10</option>
 						<option value="20"<?php if($this->getCollection()->getPageSize()==20): ?> selected="selected"<?php endif; ?>>20</option>
@@ -37,23 +37,26 @@
 						<option value="40"<?php if($this->getCollection()->getPageSize()==40): ?> selected="selected"<?php endif; ?>>40</option>
 						<option value="50"<?php if($this->getCollection()->getPageSize()==50): ?> selected="selected"<?php endif; ?>>50</option>
 					</select>
-					<?php echo $this->__('per page') ?><span class="separator">|</span>
+					<?php echo $this->helper('admin')->__('per page') ?> <span class="separator">|</span>
 
-				<?php echo $this->__('Total %d records found', $this->getCollection()->getSize()) ?>
+				<?php echo $this->helper('admin')->__('Total %d records found', $this->getCollection()->getSize()) ?>
 			</td>
 			<td class="export a-right">
-				<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->__('Export to:') ?>
+				<img src="<?php echo $this->getSkinUrl('images/icon_export.gif') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->helper('admin')->__('Export to:') ?>
 				<select name="<?php echo $this->getHtmlId() ?>_export" id="<?php echo $this->getHtmlId() ?>_export" style="width:8em;">
 					<option value="empty">Export option</option>
 				</select>
 				<?php echo $this->getExportButtonHtml() ?>
 			</td>
 			<td class="a-right">
-				<input type="reset" name="reset" onclick="$('#<?php echo $this->getHtmlId(); ?>').clearForm().submit();" class="ui-icon-refresh" value="<?php echo $this->__('Reset filters'); ?>" />
-				<input type="submit" name="submit" class="ui-icon-search" value="<?php echo $this->__('Search'); ?>" />
+				<input type="reset" name="reset" onclick="$('#<?php echo $this->getHtmlId(); ?>').clearForm().submit();" class="ui-icon-refresh" value="<?php echo $this->helper('admin')->__('Reset filters'); ?>" />
+				<input type="submit" name="submit" class="ui-icon-search" value="<?php echo $this->helper('admin')->__('Search'); ?>" />
 			</td>
 		</tr>
 	</table>
+	<?php if($this->getMassactionBlock()->isAvailable()): ?>
+		<?php echo $this->getChildHtml('massaction'); ?>
+	<?php endif ?>
 	<table class="widget_grid" id="table_<?php echo $this->getHtmlId(); ?>">
 		<?php foreach ($this->getColumns() as $_column): ?>
 		<col <?php echo $_column->getHeaderProperty(); ?>/>

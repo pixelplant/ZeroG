@@ -62,6 +62,12 @@ namespace Sys\Config
 		protected $_routeFound = false;
 
 		/**
+		 * Current HTTP host
+		 * @var <string>
+		 */
+		protected $_host = '';
+
+		/**
 		 * Reference to the main config
 		 *
 		 * @var <\Sys\Config>
@@ -107,6 +113,8 @@ namespace Sys\Config
 			$baseUrl = 'http://'.$host.$scriptFolder.'/';
 
 			$requestUri = substr($fullRequest, strlen($baseUrl));
+
+			$this->_host = $host;
 
 			return $requestUri;
 		}
@@ -219,10 +227,22 @@ namespace Sys\Config
 
 		/**
 		 * Returns the original unaltered URI
+		 *
+		 * @return <string>
 		 */
 		public function getOriginalRequestUri()
 		{
 			return $this->_originalRequestUri;
+		}
+
+		/**
+		 * Returns the current host
+		 *
+		 * @return <string>
+		 */
+		public function getHost()
+		{
+			return $this->_host;
 		}
 	}
 }

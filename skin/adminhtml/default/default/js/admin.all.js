@@ -34,6 +34,17 @@ function initAdminMenu()
 }
 
 /**
+ * Grid selection, deselection
+ */
+function gridToggleSelectedVisible(checkboxName, selected)
+{
+	$("input[name=" + checkboxName + "]").each(function()
+	{
+		this.checked = selected;
+	});
+}
+
+/**
  * Called when someone clicks on a statusbar item that has a popup
  */
 function statusBarPopup(targetUrl, target)

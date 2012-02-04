@@ -12,15 +12,17 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form
 		{
 			$this->_id = 'edit_blog_post';
 			
-			$this->addTab('tab2', 'blog/admin/form/tab/informations', array(
+			$this->addTab('informations', 'blog/admin/form/tab/informations', array(
 				'label' => $this->__('Informations'),
 				'title' => 'Another title'))
-			->addTab('tab1', 'admin/widget/form/tab', array(
+			->addTab('metadata', 'blog/admin/form/tab/metadata', array(
 				'label'   => $this->__('Advanced options'),
 				'title'   => $this->__('First title'),
 				//'content' => $this->getLayout()->createBlock('admin/widget/form/tab')->render()
 			));
 
+			// Populate the variable 'blog_post' with the currently loaded
+			// blog post
 			if (\Z::registry('blog_post'))
 			{
 				$this->setValues(\Z::registry('blog_post')->getData());

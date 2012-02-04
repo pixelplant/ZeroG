@@ -308,5 +308,19 @@ namespace Sys\Database
 		{
 			$this->rollback();
 		}
+
+		public function count($table)
+		{
+			$st = $this->_driver->prepare("SELECT COUNT(*) as total_items FROM `$table`");
+			$st->execute();
+			$count = $st->fetch(\PDO::FETCH_ASSOC);
+			return intval($count['total_items']);
+		}
+
+		public function error()
+		{
+			$errors = $this->_driver->errorInfo();
+			return 'PDO Error => Code:'.$this->_driver->errorCode().' message:'.$errors[2];
+		}
 	}
 }

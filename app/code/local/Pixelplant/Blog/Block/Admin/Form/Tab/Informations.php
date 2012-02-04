@@ -10,7 +10,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form\Tab
 	{
 		protected function _construct()
 		{
-			$fieldset = $this->_addFieldset('fieldset1', 'Test title');
+			$fieldset = $this->_addFieldset('fieldset1', $this->__('Post data'));
 
 			$fieldset->addElement('title', array(
 				'type'  => 'text',
@@ -18,11 +18,13 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form\Tab
 				'index'  => 'title'
 			))
 			->addElement('post_content', array(
-				'type'  => 'textarea',
+				'type'  => 'editor',
 				'label' => $this->__('Post content'),
 				'index'  => 'post_content',
-				'after_element_html' => 'Content of your post'
-			))
+			));
+
+			$fieldset = $this->_addFieldset('fieldset2', $this->__('Activation settings'));
+			$fieldset
 			->addElement('comments', array(
 				'type'   => 'select',
 				'label'  => $this->__('Enable comments'),
@@ -37,7 +39,23 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form\Tab
 						'label'     => $this->__('Enabled'),
 						),
 					),
-				'after_element_html' => '<span class="hint">Disabling will close the post to new comments</span>',
+				'after_element_html' => $this->__('Disabling will close the post to new comments'),
+				))
+			->addElement('published', array(
+				'type'   => 'select',
+				'label'  => $this->__('Post state'),
+				'index'  => 'published',
+				'values' => array(
+					array(
+						'value'     => 1,
+						'label'     => $this->__('Published'),
+						),
+					array(
+						'value'     => 0,
+						'label'     => $this->__('Not published'),
+						),
+					),
+				'after_element_html' => $this->__('Only published posts appear in the frontend'),
 				));
 		}
 	}

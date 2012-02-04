@@ -1,15 +1,9 @@
-<div class="inner">
-	<span id="ajax_worker" style="display: none"><img src="<?php echo $this->getSkinUrl('images/ajax-loader.gif'); ?>" alt=""/></span>
-	<div id="header_nav" data-role="header" data-position="inline">
-		<a href="index.html"><img alt="<?php echo $this->__('User thumbnail'); ?>" height="30" src="<?php echo $this->getMediaUrl('avatar/avatar1.gif'); ?>" style=" height:30px; width:30px;" width="30" /></a>
-		<h1>radu.mogos@abcnet.ch</h1>
-		<a href="/settings" data-icon="delete" data-theme="b">Logout</a>
-		<div data-role="navbar" data-iconpos="top">
-			<ul>
-				<li><a href="" data-icon="grid">Mainmenu</a></li>
-				<li><a href="" data-icon="gear">Settings</a></li>
-			</ul>
-		</div>
+	<a href="index.html"><img alt="<?php echo $this->__('User thumbnail'); ?>" height="30" src="<?php echo $this->getMediaUrl('avatar/avatar1.gif'); ?>" style=" height:30px; width:30px;" width="30" /></a>
+	<h1>radu.mogos@abcnet.ch</h1>
+	<a href="/settings" data-icon="delete" data-theme="b">Logout</a>
+	<div data-role="navbar" data-iconpos="top">
+		<ul>
+			<li><a href="#mainmenu" data-transition="pop" data-icon="grid">Mainmenu</a></li>
+			<li><a href="" data-icon="gear">Settings</a></li>
+		</ul>
 	</div>
-	<?php echo $this->getChildHtml('mainmenu');?>
-</div>

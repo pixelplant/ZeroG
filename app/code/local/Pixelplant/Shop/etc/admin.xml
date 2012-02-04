@@ -50,16 +50,20 @@
 					<action>shop/terms</action>
 				</terms>
 				<taxes>
+					<helper>shop</helper>
 					<sort_order>100</sort_order>
 					<title>Taxes</title>
 					<children>
 						<tax_rules>
-							<title>Tax Rules</title>
+							<helper>shop</helper>
+							<title>Tax rules</title>
 						</tax_rules>
 						<tax_client>
+							<helper>shop</helper>
 							<title>Client taxes</title>
 						</tax_client>
 						<tax_products>
+							<helper>shop</helper>
 							<title>Products taxes</title>
 						</tax_products>
 					</children>
@@ -124,9 +128,11 @@
 							<sort_order>30</sort_order>
 							<children>
 								<earn_rates>
+									<helper>shop</helper>
 									<title>Earn rates</title>
 								</earn_rates>
 								<spend_rates>
+									<helper>shop</helper>
 									<title>Spend rates</title>
 								</spend_rates>
 							</children>

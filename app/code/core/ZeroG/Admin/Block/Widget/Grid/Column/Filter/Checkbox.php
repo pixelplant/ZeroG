@@ -15,15 +15,15 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 		{
 			return array(
 				array(
-					'value' => '',
+					'value' => null,
 					'label' => $this->__('Any')
 				),
 				array(
-					'value' => 1,
+					'value' => '1',
 					'label' => $this->__('Yes')
 				),
 				array(
-					'value' => 0,
+					'value' => '0',
 					'label' => $this->__('No')
 				)
 			);

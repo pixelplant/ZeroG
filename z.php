@@ -378,7 +378,8 @@ namespace
 		{
 			if (substr($name, 0, 4) == "Sys\\")
 				return self::getSingleton($name);
-			return self::getSingleton(self::$_config->getHelperClass($name));
+			return self::getSingleton(self::$_config->getHelperClass($name),
+					self::$_config->getHelper($name)->getModule());
 		}
 		
 		/**
@@ -464,25 +465,13 @@ namespace
 		}
 
 		/**
-		 * Returns a reference to the current locale class (short version)
-		 *
-		 * @see getLocale()
-		 *
-		 * @return <\Sys\L10n\Locale> Reference to Locale class
-		 */
-		public static function L()
-		{
-			return self::$_locale;
-		}
-
-		/**
 		 * Return a translated label, based on the current locale
 		 *
 		 * @param <string> $label The label to translate, in english
 		 * @param <string> $module The module the label belongs to
 		 * @return <string> The translated label
 		 */
-		public static function __($label, $module = 'global')
+		public static function __($label, $module)
 		{
 			return self::$_locale->__($label, $module);
 		}

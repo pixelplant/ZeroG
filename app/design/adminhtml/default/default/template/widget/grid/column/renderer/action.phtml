@@ -1,5 +1,5 @@
 <?php if ($this->getActions()): ?>
 	<?php foreach ($this->getActions() as $_action): ?>
-	<a href="<?php echo $_action['url']; ?>"><?php echo $_action['caption']; ?></a>
+	<a href="<?php echo $_action['url'].$_action['field'].'/'.$this->getItem()->getData($_action['value']); ?>"><?php echo $_action['caption']; ?></a>
 	<?php endforeach; ?>
 <?php endif; ?>

@@ -39,7 +39,7 @@ namespace App\Code\Core\ZeroG\Install\Model
 		 */
 		public function getInstaller()
 		{
-			$class = \Z::getConfig()->getModelClass('core/installer');
+			$class = \Z::getConfig()->getModelClass('install/engine');
 			return new $class;
 		}
 

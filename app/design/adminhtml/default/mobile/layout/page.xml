@@ -13,8 +13,7 @@
 		<block type="page/html" name="root" template="page/1column.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/jquery.mobile-1.0.min.css</stylesheet></action>
-				<action method="addCss"><stylesheet>css/local.css</stylesheet></action>
-				<action method="addCss"><stylesheet>css/zerog-theme.min.css</stylesheet></action>
+				<!--<action method="addCss"><stylesheet>css/zerog-theme.min.css</stylesheet></action>-->
 				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
 				<action method="addJs"><script>js/jquery-1.7.1.min.js</script></action>
 				<action method="addJs"><script>js/jquery.mobile-1.0.min.js</script></action>
@@ -24,9 +23,8 @@
 			</block>
 			<block type="page/html/notices" name="notices" template="page/html/notices.phtml" />
 			<block type="core/text" name="after_body_start" />
-			<block type="core/base" name="header" template="page/html/header.phtml">
-				<block type="admin/page/menu" name="mainmenu" template="page/menu.phtml" />
-			</block>
+			<block type="core/base" name="header" template="page/html/header.phtml" />
+			<block type="admin/page/menu" name="mainmenu" template="page/menu.phtml" />
 			<block type="page/html/breadcrumbs" template="page/html/breadcrumbs.phtml" name="breadcrumbs"/>
 			<block type="core/text" name="messages" />
 			<block type="core/text" name="right" />

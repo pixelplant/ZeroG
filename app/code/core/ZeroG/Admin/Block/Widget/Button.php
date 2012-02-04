@@ -12,7 +12,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 	{
 		public function getContent()
 		{
-			$html = '<button id="'.$this->getId().'" class="'.$this->getClass().'">'.$this->getLabel().'</button>';
+			$html = '<button type="'.$this->getType().'" id="'.$this->getId().'" onclick="'.$this->getOnclick().'" class="'.$this->getClass().'">'.$this->getLabel().'</button>';
 			return $html;
 		}
 	}

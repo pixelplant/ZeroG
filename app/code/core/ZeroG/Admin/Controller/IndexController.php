@@ -7,7 +7,7 @@ namespace App\Code\Core\ZeroG\Admin\Controller
 	 *
 	 * @author radu.mogos
 	 */
-	class IndexController extends \App\Code\Core\ZeroG\Core\Controller\Front
+	class IndexController extends \App\Code\Core\ZeroG\Core\Controller\Admin
 	{
 		public function indexAction()
 		{

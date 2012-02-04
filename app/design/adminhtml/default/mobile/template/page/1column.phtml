@@ -4,24 +4,28 @@
 		<?php echo $this->getChildHtml('head'); ?>
 	</head>
 	<body>
-		<?php echo $this->getChildHtml('after_body_start'); ?>
-		<div id="container" class="container">
-			<?php echo $this->getChildHtml('notices'); ?>
-			<div id="header" class="header">
-				<?php echo $this->getChildHtml('header'); ?>
-			</div>
-			<div id="content_wrapper" class="full_window">
-				<div id="content">
+		<div data-role="page">
+			<?php echo $this->getChildHtml('after_body_start'); ?>
+			<div id="container" class="container">
+				<?php echo $this->getChildHtml('notices'); ?>
+				<div id="header" data-role="header">
+					<?php echo $this->getChildHtml('header'); ?>
+				</div>
+				<div id="content" data-role="content">
 					<?php echo $this->getChildHtml('breadcrumbs'); ?>
 					<?php echo $this->getChildHtml('content'); ?>
 				</div>
-			</div>
-			<div id="footer">
-				<?php echo $this->getChildHtml('footer'); ?>
+				<div id="footer" data-role="footer">
+					<?php echo $this->getChildHtml('footer'); ?>
+				</div>
 			</div>
 		</div>
 
-		<div id="messages" class="messages">
+		<div data-role="page" id="mainmenu">
+			<?php echo $this->getChildHtml('mainmenu');?>
+		</div>
+
+		<div id="messages" data-role="page">
 			<?php echo $this->getChildHtml('messages'); ?>
 		</div>
 	</body>

@@ -26,23 +26,26 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 				}
 				return $options;
 			}
-			return $noOptions;
+			return array();
 		}
 
-		protected function _buildOption($value, $label)
+		protected function _buildOption($option, $value)
 		{
-			$html = '<option value="'.$value.'">'.$label.'</option>';
+			$optionValue = (string)$option['value'];
+			$selected = ($optionValue === $value) ? ' selected="selected"' : '';
+			$html = '<option value="'.$option['value'].'" '.$selected.'>'.$option['label'].'</option>';
 			return $html;
 		}
 
 		public function getContent()
 		{
 			$options = $this->_getOptions();
+			$selectedValue = $this->getValue();
 
-			$html = '<select name="'.$this->getFieldName().'" id="'.$this->getHtmlId().'">';
+			$html = '<select class="select" name="'.$this->getFieldName().'" id="'.$this->getHtmlId().'">';
 			foreach ($options as $option)
 			{
-				$html .= $this->_buildOption($option['value'], $option['label']);
+				$html .= $this->_buildOption($option, $selectedValue);
 			}
 			$html .= '</select>';
 			return $html;

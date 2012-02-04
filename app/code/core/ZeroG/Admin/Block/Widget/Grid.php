@@ -62,6 +62,12 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		 */
 		protected $_headerContainer;
 
+		/**
+		 * Field name used for mass exports, etc..., usually this is linked to the id
+		 * @var <string>
+		 */
+		protected $_massactionField = null;
+
 		protected function _construct()
 		{
 			parent::_construct();
@@ -116,6 +122,106 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		public function getColumnCount()
 		{
 			return count($this->_columns);
+		}
+
+		/**
+		 * Get the massaction field name
+		 *
+		 * @return <string>
+		 */
+		public function getMassactionField()
+		{
+			return $this->_massactionField;
+		}
+
+		/**
+		 * Set the massaction field name
+		 * 
+		 * @param <string> $field
+		 * @return Grid
+		 */
+		public function setMassactionField($field)
+		{
+			$this->_massactionField = $field;
+			return $this;
+		}
+
+		/**
+		 * Get the massaction block name
+		 *
+		 * @return <string>
+		 */
+		public function getMassactionBlockName()
+		{
+			return 'admin/widget/grid/massaction';
+		}
+
+		/**
+		 * Get the massaction block instance
+		 *
+		 * @return <Grid\Massaction>
+		 */
+		public function getMassactionBlock()
+		{
+			return $this->getChild('massaction');
+		}
+
+		/**
+		 * Create the massaction block
+		 *
+		 * @return Grid
+		 */
+		public function _prepareMassactionBlock()
+		{
+			$this->setChild('massaction', 
+					$this->getLayout()->createBlock($this->getMassactionBlockName()));
+			$this->_prepareMassaction();
+			if($this->getMassactionBlock()->isAvailable())
+			{
+				$this->_prepareMassactionColumn();
+			}
+			return $this;
+		}
+
+		protected function _prepareMassactionColumn()
+		{
+			$columnId = 'massaction';
+			$massactionColumn = $this->getLayout()->createBlock('admin/widget/grid/column')
+				->setData(array(
+					'index'     => $this->getMassactionField(),
+					'type'      => 'massaction',
+					'name'      => $this->getMassactionBlock()->getFormFieldName(),
+					'align'     => 'center',
+					'width'     => '50px',
+					'header'    => '',
+					'is_system' => true
+					));
+
+			if ($this->getNoFilterMassactionColumn())
+			{
+				$massactionColumn->setData('filter', false);
+			}
+
+			$massactionColumn->setSelected($this->getMassactionBlock()->getSelected())
+				->setGrid($this)
+				->setId($columnId);
+
+			$oldColumns = $this->_columns;
+			$this->_columns = array();
+			$this->_columns[$columnId] = $massactionColumn;
+			$this->_columns = array_merge($this->_columns, $oldColumns);
+			return $this;
+		}
+
+		/**
+		 * Normally you would overwrite this method in your grid, to add
+		 * additional items in the massaction dropdown list
+		 * 
+		 * @return Grid
+		 */
+		protected function _prepareMassaction()
+		{
+			return $this;
 		}
 
 		/**
@@ -277,6 +383,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected function _prepareGrid()
 		{
 			$this->_prepareColumns();
+			$this->_prepareMassactionBlock();
 			$this->_prepareCollection();
 			return $this;
 		}

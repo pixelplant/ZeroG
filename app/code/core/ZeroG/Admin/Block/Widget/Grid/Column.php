@@ -58,14 +58,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 		 */
 		public function getContent($item)
 		{
-			if ($this->getIndex())
-			{
-				return $item->getData($this->getIndex());
-			}
-			else
-			{
-				return $this->getRenderer()->getContent($item);
-			}
+			return $this->getRenderer()->getContent($item);
 		}
 
 		public function getHeaderProperty()
@@ -137,6 +130,9 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 				case 'site' :
 					$filterClass = 'admin/widget/grid/column/filter/site';
 					break;
+				case 'massaction' :
+					$filterClass = 'admin/widget/grid/column/filter/massaction';
+					break;
 				default:
 					$filterClass = 'admin/widget/grid/column/filter/base';
 					break;
@@ -169,15 +165,19 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 				case 'action' :
 					$renderer = 'admin/widget/grid/column/renderer/action';
 					break;
+				case 'checkbox' :
+					$renderer = 'admin/widget/grid/column/renderer/checkbox';
+					break;
+				case 'massaction' :
+					$renderer = 'admin/widget/grid/column/renderer/massaction';
+					break;
+				case 'select' :
+					$renderer = 'admin/widget/grid/column/renderer/select';
+					break;
 				default:
 					$renderer = 'admin/widget/grid/column/renderer/base';
 			}
 			return $renderer;
-		}
-
-		protected function _getDefaultRenderer()
-		{
-			return 'admin/widget/grid/column/renderer/base';
 		}
 	}
 }

@@ -17,5 +17,11 @@ $installer->newTable($installer->getResourceTable('blog/site'))
 			),'Website view where the post is visible')
 		->setComment('Posts - website view reference table');
 
+$installer->updateTable($installer->getResourceTable('blog/post'))
+		->addColumn('published', $installer::TYPE_INTEGER, 1, array(
+			'nullable' => FALSE,
+			'default'  => 1
+		),'Is the post published or not?');
+
 // run the installer code
 $installer->run();

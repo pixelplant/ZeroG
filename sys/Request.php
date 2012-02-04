@@ -58,5 +58,15 @@ namespace Sys
 		{
 			return $this->_router;
 		}
+
+		/**
+		 * Returns the current host
+		 *
+		 * @return <string>
+		 */
+		public function getHost()
+		{
+			return $this->getRouter()->getHost();
+		}
 	}
 }

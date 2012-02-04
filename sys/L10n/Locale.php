@@ -200,6 +200,7 @@ namespace Sys\L10n
 		 *
 		 * @param <string> $label the label to translate
 		 * @param <string> $module the module that holds the translation (csv file). If not specified, defaults to the global.csv file
+		 * @param <mixed> $arguments the list of arguments passed to sprintf
 		 * @return <string> the translated label
 		 */
 		public function __($label, $module = 'ZeroG_Core', $arguments = array())
@@ -208,12 +209,12 @@ namespace Sys\L10n
 			{
 				$label = $this->_translations[$module][$label];
 			}
-			if (sizeof($arguments) > 1)
+			if (sizeof($arguments) > 0)
 			{
 				// the first argument is the label, which is always set
 				// so we need to remove it from the argument list
-				unset($arguments[0]);
-				return sprintf($label, $arguments);
+				//unset($arguments[0]);
+				return vsprintf($label, $arguments);
 			}
 			return $label;
 		}

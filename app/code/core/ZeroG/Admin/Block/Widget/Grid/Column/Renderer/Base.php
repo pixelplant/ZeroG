@@ -17,10 +17,10 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		 */
 		protected $_column;
 
-		protected function _construct()
+		/*protected function _construct()
 		{
 			$this->setTemplate('widget/grid/column/renderer/base.phtml');
-		}
+		}*/
 
 		/**
 		 * Set the parent column this renderer belongs to
@@ -55,11 +55,15 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 			{
 				$sortClass = 'column-no-sorting';
 				$dir = strtolower($this->getColumn()->getSortDirection());
+				$defaultSort = 'asc';
 				if ($dir)
 				{
+					if ($dir == 'asc')
+						$defaultSort = 'desc';
 					$sortClass = 'column-sort-'.$dir;
 				}
-				return '<a href="#" class="'.$sortClass.'" id="'.$this->getColumn()->getId().'">'
+				$sortUrl = $this->getUrl('*/*/*').'_dir/'.$defaultSort.'/_sort/'.$this->getColumn()->getIndex();
+				return '<a href="'.$sortUrl.'" class="'.$sortClass.'" id="'.$this->getColumn()->getId().'">'
 						.$this->getColumn()->getData('header').'</a>';
 			}
 			else
@@ -93,7 +97,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Renderer
 		public function getContent($item)
 		{
 			$this->setItem($item);
-			return $this->render();
+			return $item->getData($this->getColumn()->getIndex());
 		}
 	}
 }

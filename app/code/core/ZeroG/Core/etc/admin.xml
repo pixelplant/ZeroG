@@ -9,7 +9,7 @@
 <config>
 	<menu>
 		<dashboard>
-			<helper>admin</helper>
+			<helper>core</helper>
 			<title>Dashboard</title>
 			<action>page/view/index</action>
 			<sort_order>10</sort_order>
@@ -39,20 +39,22 @@
 						<t2>
 							<title>This should be a longer text</title>
 						</t2>
-						<t3>
+						<email_templates>
+							<helper>admin</helper>
 							<title>Email templates</title>
-						</t3>
+							<action>admin/system_emails</action>
+						</email_templates>
 					</children>
 				</tools>
 				<cache>
 					<helper>admin</helper>
-					<title>Cache Management</title>
+					<title>Cache management</title>
 					<action>admin/cache</action>
 					<sort_order>90</sort_order>
 				</cache>
 				<sites>
 					<helper>admin</helper>
-					<title>Manage Sites</title>
+					<title>Manage sites</title>
 					<action>admin/system/sites</action>
 					<sort_order>100</sort_order>
 				</sites>

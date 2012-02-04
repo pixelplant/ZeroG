@@ -8,7 +8,7 @@
 
 namespace App\Code\Core\ZeroG\Core\Model\Session
 {	
-	class Admin extends \Sys\Session
+	class Admin extends \App\Code\Core\ZeroG\Core\Model\Session
 	{
 		
 		protected function _construct()

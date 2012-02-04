@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+	Document   : config.xml
+	Created on : 29 ianuarie 2011, 17:36
+	Author     : radu.mogos
+	Description:
+		Config file for the Pixelplant_Ckeditor extension
+-->
+
+<config>
+
+	<modules>
+		<Pixelplant_Ckeditor>
+			<version>0.1.0</version>
+		</Pixelplant_Ckeditor>
+	</modules>
+
+	<admin>
+		<!--<routers>
+			<ckeditor>
+				<use>ckeditor_admin</use>
+				<args>
+					<module>Pixelplant_Ckeditor</module>
+				</args>
+			</ckeditor>
+		</routers>-->
+
+		<layout>
+			<updates>
+				<ckeditor>
+					<file>ckeditor.xml</file>
+				</ckeditor>
+			</updates>
+		</layout>
+
+	</admin>
+
+</config>

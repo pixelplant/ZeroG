@@ -60,6 +60,11 @@
                 </setup>
             </core_setup>
         </resources>
+		<helpers>
+			<core>
+				<module>ZeroG_Core</module>
+			</core>
+		</helpers>
 	</global>
 
 	<frontend>
@@ -73,4 +78,16 @@
         	</modules>
         </translate>
 	</frontend>
+
+	<admin>
+        <translate>
+        	<modules>
+        		<ZeroG_Core>
+        			<files>
+        				<default>ZeroG_Core.csv</default>
+        			</files>
+        		</ZeroG_Core>
+        	</modules>
+        </translate>
+	</admin>
 </config>

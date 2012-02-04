@@ -6,16 +6,18 @@ namespace App\Code\Core\ZeroG\Core\Helper
 	{
 		protected $_module;
 
-		public function __($text)
+		public function __construct($module)
 		{
-			return $this->getModule()->__($text);
+			$this->_module = $module;
+		}
+
+		public function __($text, $arguments = array())
+		{
+			return \Z::getLocale()->__($text, $this->getModule()->getName(), $arguments);
 		}
 
 		public function getModule()
 		{
-			if (!$this->_module)
-			{
-			}
 			return $this->_module;
 		}
 	}

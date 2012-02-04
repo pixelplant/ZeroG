@@ -35,15 +35,31 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				//'width'    => '70%'
 				));
 
-			/*$this->addColumn('published', array(
-				'header'   => $this->__('Published'),
-				'index'    => 'published',
-				'type'     => 'checkbox',
+			$this->addColumn('comments', array(
+				'header'   => $this->__('Comments state'),
+				'index'    => 'comments',
+				'type'     => 'select',
 				'sortable' => true,
+				'options'  => array(
+					1 => $this->__('Enabled'),
+					0 => $this->__('Disabled'),
+					),
 				'width'    => '10%'
 				));
 
-			$this->addColumn('site', array(
+			$this->addColumn('published', array(
+				'header'   => $this->__('Post state'),
+				'index'    => 'published',
+				'type'     => 'select',
+				'sortable' => true,
+				'options'  => array(
+					1 => $this->__('Published'),
+					0 => $this->__('Not published'),
+					),
+				'width'    => '10%'
+				));
+
+			/*$this->addColumn('site', array(
 				'header'   => $this->__('Site view'),
 				'index'    => 'site',
 				'type'     => 'site',
@@ -54,6 +70,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'header'   => $this->__('Created at'),
 				'index'    => 'created_time',
 				'type'     => 'date',
+				'sortable' => true,
 				'width'    => '160px'
 				));
 
@@ -73,13 +90,29 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'actions'  => array(
 					array(
 						'caption' => $this->__('Edit'),
-						'url'     => $this->getUrl('*/*/edit'),
-						'field'   => 'id'
+						'url'     => $this->getUrl('*/admin_edit/post'),
+						'field'   => 'id',
+						'value'   => 'post_id'
 					)),
 				'width'    => '60px'
 				));
 
 			parent::_prepareColumns();
+			return $this;
+		}
+
+		protected function _prepareMassaction()
+		{
+			$this->setMassactionField('post_ids');
+			$this->getMassactionBlock()
+					->addItem('publish_selected', array(
+							'label' => $this->__('Publish'),
+							'url'   => $this->getUrl('*/*/publish')
+						))
+					->addItem('unpublish_selected', array(
+							'label' => $this->__('Unpublish'),
+							'url'   => $this->getUrl('*/*/unpublish')
+						));
 			return $this;
 		}
 

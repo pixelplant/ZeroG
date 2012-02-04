@@ -15,6 +15,12 @@
 			</admin>
 		</blocks>
 
+		<helpers>
+			<admin>
+				<module>ZeroG_Admin</module>
+			</admin>
+		</helpers>
+
 	</global>
 
 	<frontend>
@@ -50,6 +56,23 @@
         		</ZeroG_Admin>
         	</modules>
         </translate>
+
+		<layout>
+			<updates>
+				<admin>
+					<file>admin.xml</file>
+				</admin>
+			</updates>
+		</layout>
+
+		<routers>
+			<admin>
+				<use>admin</use>
+				<args>
+					<module>ZeroG_Admin</module>
+				</args>
+			</admin>
+		</routers>
 	</admin>
 
 </config>

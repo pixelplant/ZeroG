@@ -68,7 +68,14 @@ namespace App\Code\Core\ZeroG\Admin\Block\Page
 				$menuItem['sort_order']   = (isset($childData['sort_order'])) ? (int)$childData['sort_order'] : $defaultOrder;
 				$menuItem['url']          = (isset($childData['action'])) ? $this->getUrl($childData['action']) : '#';
 				//$menuItem['label']      = $this->helper($menu['helper'])->__($menu['title']);
-				$menuItem['label']        = $childData['title'];
+				if (isset($childData['helper']))
+				{
+					$menuItem['label']        = $this->helper($childData['helper'])->__($childData['title']);
+				}
+				else
+				{
+					$menuItem['label']        = $this->__($childData['title']);
+				}
 				if (isset($childData['children']))
 				{
 					//$this->_xmlOrig = $this->_xmlOrig.$childName.'/';

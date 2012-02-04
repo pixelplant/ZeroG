@@ -10,7 +10,7 @@
 
 <layout version="1.0">
 	<default>
-		<block type="page/html" name="root" template="page/2columns.phtml">
+		<block type="page/html" name="root" template="page/1column.phtml">
 			<block type="page/html/head" name="head" template="page/html/head.phtml">
 				<action method="addCss"><stylesheet>css/admin.all.css</stylesheet></action>
 				<action method="addCss"><stylesheet>css/flick/jquery-ui-1.8.17.custom.css</stylesheet></action>

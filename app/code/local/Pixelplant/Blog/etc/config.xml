@@ -55,7 +55,7 @@
 
 		<helpers>
 			<blog>
-				<class>Pixelplant\Blog\Helper</class>
+				<module>Pixelplant_Blog</module>
 			</blog>
 		</helpers>
 

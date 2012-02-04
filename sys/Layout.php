@@ -320,7 +320,7 @@ namespace Sys
 			// remove it from the parent's list
 			if (isset($this->_blocks[$name]))
 			{
-				$this->getBlock($this->_blocks[$name]->getParent())->unsetChild($name);
+				$this->_blocks[$name]->getParent()->unsetChild($name);
 				unset($this->_blocks[$name]);
 			}
 		}

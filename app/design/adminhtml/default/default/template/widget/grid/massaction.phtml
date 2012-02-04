@@ -1,0 +1,54 @@
+<div id="<?php echo $this->getHtmlId() ?>">
+<table cellspacing="0" cellpadding="0" class="widget_grid_massaction">
+<tr>
+    <td><?php if ($this->getUseSelectAll()):?>
+        <a href="#" onclick="return <?php echo $this->getJsObjectName() ?>.selectAll()"><?php echo $this->__('Select All') ?></a>
+        <span class="separator">|</span>
+        <a href="#" onclick="return <?php echo $this->getJsObjectName() ?>.unselectAll()"><?php echo $this->__('Unselect All') ?></a>
+        <span class="separator">|</span>
+        <?php endif; ?>
+        <a href="#" onclick="return gridToggleSelectedVisible('<?php echo $this->getParent()->getMassactionField(); ?>', true)"><?php echo $this->__('Select visible') ?></a>
+        <span class="separator">|</span>
+        <a href="#" onclick="return gridToggleSelectedVisible('<?php echo $this->getParent()->getMassactionField(); ?>', false)"><?php echo $this->__('Unselect visible') ?></a>
+        <span class="separator">|</span>
+        <strong id="<?php echo $this->getHtmlId() ?>-count">0</strong> <?php echo $this->__('items selected') ?>
+    </td>
+    <td>
+        <div class="right">
+            <div class="entry-edit">
+                <form action="" id="<?php echo $this->getHtmlId() ?>-form" method="post">
+                    <?php echo $this->getBlockHtml('formkey')?>
+                    <fieldset>
+                        <span class="field-row">
+                            <label><?php echo $this->__('Actions') ?></label>
+                            <select id="<?php echo $this->getHtmlId() ?>-select" class="required-entry select absolute-advice local-validation">
+                                <option value=""></option>
+                                <?php foreach($this->getItems() as $_item): ?>
+                                    <option value="<?php echo $_item->getId() ?>"<?php echo ($_item->getSelected() ? ' selected="selected"' : '')?>><?php echo $_item->getLabel() ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </span>
+                        <span class="outer-span" id="<?php echo $this->getHtmlId() ?>-form-hiddens"></span>
+                        <span class="outer-span" id="<?php echo $this->getHtmlId() ?>-form-additional"></span>
+                        <span class="field-row">
+                            <?php echo $this->getButtonHtml($this->__('Submit'), "alert('test');"); ?>
+                        </span>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="no-display">
+            <?php foreach($this->getItems() as $_item): ?>
+                <div id="<?php echo $this->getHtmlId() ?>-item-<?php echo $_item->getId() ?>-block">
+                    <?php echo $_item->getAdditionalActionBlockHtml() ?>
+                </div>
+            <?php endforeach; ?>
+            </div>
+        </div>
+    </td>
+</tr>
+</table>
+	<script type="text/javascript">
+		var <?php echo $this->getHtmlId(); ?>_count = 0;
+	</script>
+</div>

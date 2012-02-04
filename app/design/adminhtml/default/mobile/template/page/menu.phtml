@@ -1,5 +1,8 @@
+<div data-role="header">
+	<h1><?php echo $this->__('Mainmenu'); ?></h1>
+</div>
+<div data-role="content">
 <?php $_menuItems = $this->getMenuItems(); ?>
-<div id="navigation" class="navigation">
 	<ul class="top-level" data-role="listview">
 		<?php foreach ($_menuItems as $_menuItem): ?>
 		<?php if (!isset($_menuItem['children'])): ?>

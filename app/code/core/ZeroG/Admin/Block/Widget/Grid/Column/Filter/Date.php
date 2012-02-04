@@ -30,13 +30,13 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid\Column\Filter
 			return '
 				<div class="grid-input-medium">
 					<div class="range-line">
-						<label for="'.$startId.'">'.$this->__('From').'</label>
+						<label for="'.$startId.'">'.$this->helper('admin')->__('From').'</label>
 						<input class="input-text" type="text" name="'.$this->getFieldName().'[from]" id="'.$startId.'" value="'.$this->getEscapedValue('from').'" />
 					</div>
 				</div>
 				<div class="grid-input-medium">
 					<div class="range-line">
-						<label for="'.$endId.'">'.$this->__('To').'</label>
+						<label for="'.$endId.'">'.$this->helper('admin')->__('To').'</label>
 						<input class="input-text" type="text" name="'.$this->getFieldName().'[to]" id="'.$endId.'" value="'.$this->getEscapedValue('to').'" />
 					</div>
 				</div>

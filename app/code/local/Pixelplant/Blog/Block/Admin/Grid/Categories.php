@@ -47,13 +47,15 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'actions'  => array(
 					array(
 						'caption' => $this->__('Edit'),
-						'url'     => $this->getUrl('*/*/edit'),
-						'field'   => 'id'
+						'url'     => $this->getUrl('*/admin_edit/category'),
+						'field'   => 'id',
+						'value'   => 'cat_id'
 					),
 					array(
 						'caption' => $this->__('Delete'),
-						'url'     => $this->getUrl('*/*/delete'),
-						'field'   => 'id'
+						'url'     => $this->getUrl('*/admin_edit/delete'),
+						'field'   => 'id',
+						'value'   => 'cat_id'
 					)),
 				'width'    => '60px'
 				));

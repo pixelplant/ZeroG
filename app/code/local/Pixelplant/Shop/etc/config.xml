@@ -30,6 +30,12 @@
 			</shop>
 		</models>
 
+		<helpers>
+			<shop>
+				<module>Pixelplant_Shop</module>
+			</shop>
+		</helpers>
+
 	</global>
 
 	<frontend>
@@ -73,6 +79,16 @@
 				</args>
 			</shop>
 		</routers>
+
+        <translate>
+        	<modules>
+        		<Pixelplant_Shop>
+        			<files>
+        				<default>Pixelplant_Shop.csv</default>
+        			</files>
+        		</Pixelplant_Shop>
+        	</modules>
+        </translate>
 
 		<layout>
 			<updates>

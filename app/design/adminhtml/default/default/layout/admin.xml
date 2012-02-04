@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : admin.xml
+    Created on : 13 ianuarie 2012 13:00
+    Author     : radu.mogos
+    Description:
+        XMLlayout for the admin section
+-->
+
+<layout version="1.0">
+
+	<admin>
+		<reference name="head">
+			<action method="setTitle"><title>Edit emails</title></action>
+		</reference>
+	</admin>
+
+	<admin_system_emails>
+		<reference name="content">
+			<block type="admin/system/emails/grid" name="widget.grid" />
+		</reference>
+	</admin_system_emails>
+
+	<admin_system_emails_edit>
+		<reference name="content">
+			<block type="admin/system/emails/form/edit" name="widget.grid" />
+		</reference>
+	</admin_system_emails_edit>
+
+</layout>

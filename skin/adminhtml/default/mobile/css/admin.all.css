@@ -6,11 +6,65 @@
         Purpose of the stylesheet follows.
 */
 
+.widget_grid {
+    font-size: 1em;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1.2em;
+    border-collapse:collapse;
+    text-align:left;
+	width: 100%;
+}
+
+.widget_grid thead th,
+.widget_grid tfoot td,
+.widget_grid tr th,
+.widget_grid tr td {
+    padding: 10px;
+    color:#fff;
+    font-size: 1em;
+    background-color:#222;
+    font-weight:normal;
+    border:1px solid #666;
+	vertical-align: top;
+}
+
+.widget_grid tbody td {
+    padding: 10px;
+    background-color:#f0f0f0;
+    text-transform:none;
+    color:#333;
+	vertical-align: top;
+}
+
+.widget_grid tr.tr_odd td {
+	background-color: white;
+}
+
+.widget_grid p,
+.widget_grid h1,
+.widget_grid h2,
+.widget_grid h3 {
+	margin: 0 0 3px 0;
+}
+
+.grid-input-small {
+	width: 100%;
+}
+
+.grid-input-medium {
+	width: 100%;
+}
+
 .text-align-left {
 	text-align: left;
 }
 
 .text-align-right {
 	text-align: right;
+}
+
+.text-align-center {
+	text-align: center;
 }
 

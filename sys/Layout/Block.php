@@ -18,9 +18,9 @@ namespace Sys\Layout
 		protected $_children = array();
 
 		/**
-		 * The parent name this block belongs to
+		 * The parent this block belongs to
 		 *
-		 * @var <string>
+		 * @var <\Sys\Layout\Block>
 		 */
 		protected $_parent;
 
@@ -97,7 +97,7 @@ namespace Sys\Layout
 		{
 			$this->_layout = $layout;
 			$this->_children = array();
-			$this->_parent = '';
+			$this->_parent = null;
 			$this->_name = $name;
 			$this->_templateResource = NULL;
 			$this->_code = NULL;
@@ -133,8 +133,19 @@ namespace Sys\Layout
 		 */
 		public function addChild(\Sys\Layout\Block $value)
 		{
-			$value->setParent($this->getName());
+			$value->setParent($this);
 			$this->_children[$value->getName()] = $value;
+		}
+
+		/**
+		 * Set a block to be it's child
+		 * @param <string> $name Child name
+		 * @param \Sys\Layout\Block $value Child block
+		 */
+		public function setChild($name, \Sys\Layout\Block $value)
+		{
+			$value->setParent($this);
+			$this->_children[$name] = $value;
 		}
 
 		// processing
@@ -359,8 +370,8 @@ namespace Sys\Layout
 		}
 
 		/**
-		 * Set the parent block name
-		 * @param <string> $value
+		 * Set the parent block
+		 * @param <\Sys\Layout\Block> $value
 		 */
 		public function setParent($value)
 		{

@@ -200,9 +200,16 @@ namespace Sys
 									$module,
 									$this->getModule($module)->getCodePoolPath($class)
 								);
-						$this->_helpers[$key] = $this->getModule($module)->getClassName('Helper');
 					}
 				}
+			// Set helpers
+			if (isset($configData['config']['global']['helpers']))
+			{
+				foreach ($configData['config']['global']['helpers'] as $key => $helper)
+				{
+					$this->_helpers[$key] = new \Sys\Config\Module\Helper($this->getModule($helper['module']));
+				}
+			}
 			// Set models data
 			if (isset($configData['config']['global']['models']))
 				foreach ($configData['config']['global']['models'] as $key => $model)
@@ -425,10 +432,32 @@ namespace Sys
 			if ($class == '')
 				$class = '\Data';
 			if (!isset($this->_helpers[$index]))
-				throw new \Sys\Exception('The helper type => %s is not a registered helper'. $index);
-			return $this->_helpers[$index].$class;
+				throw new \Sys\Exception('The helper type => %s is not a registered helper', $index);
+			return $this->_helpers[$index]->getClass().$class;
+
 		}
 
+		/**
+		 * Returns the helper settings by name
+		 *
+		 * @param <string> $name
+		 * @return <\Sys\Config\Module\Helper>
+		 */
+		public function getHelper($name)
+		{
+			if (isset($this->_helpers[$name]))
+			{
+				return $this->_helpers[$name];
+			}
+			return null;
+		}
+
+		/**
+		 * Get the defined event observer
+		 *
+		 * @param <string> $eventName
+		 * @return <type>
+		 */
 		public function getEventObserver($eventName)
 		{
 			if (isset($this->_events[$eventName]))

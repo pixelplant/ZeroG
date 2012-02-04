@@ -30,6 +30,12 @@
 			</debug>
 		</models>
 
+		<helpers>
+			<debug>
+				<module>Pixelplant_Debug</module>
+			</debug>
+		</helpers>
+
 		<events>
 			<model_load_before>
 				<debug_model_observer>

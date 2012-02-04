@@ -1,7 +1,7 @@
 <div class="form widget" id="widget_<?php echo $this->getHtmlId(); ?>">
 	<div class="widget-header">
 		<div class="widget_header_buttons">
-			<button id="b1" class="ui-icon-circle-plus">Adaugă postare nouă</button>
+			<?php echo $this->getButtonsHtml(); ?>
 		</div>
 		<h1><?php echo $this->getHeaderText(); ?></h1>
 	</div>

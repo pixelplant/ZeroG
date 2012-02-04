@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : page.xml
+    Created on : 06 decembrie 2011, 19:00
+    Author     : radu.mogos
+    Description:
+        The base xml layout specifying the structure of the page
+-->
+
+<layout version="1.0">
+	<default>
+		<reference name="head">
+			<action method="addJs"><script>js/ckeditor/ckeditor.js</script></action>
+			<action method="addJs"><script>js/ckeditor/adapters/jquery.js</script></action>
+			<action method="addJs"><script>js/ckeditor/initeditor.js</script></action>
+		</reference>
+	</default>
+
+</layout>

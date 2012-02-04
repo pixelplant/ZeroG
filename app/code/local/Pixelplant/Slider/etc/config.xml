@@ -39,7 +39,7 @@
 
 		<helpers>
 			<slider>
-				<class>Pixelplant\Slider\Helper</class>
+				<module>Pixelplant_Slider</module>
 			</slider>
 		</helpers>
 	</global>

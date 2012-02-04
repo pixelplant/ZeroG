@@ -19,6 +19,8 @@ namespace Sys\Model
 
 		protected $_className;
 
+		protected $_totalRecords;
+
 		public function __construct()
 		{
 			$this->_construct();
@@ -80,7 +82,12 @@ namespace Sys\Model
 		 */
 		public function getSize()
 		{
-			return $this->count();
+			$this->load();
+			if (is_null($this->_totalRecords))
+			{
+				$this->_totalRecords = count($this->getItems());
+			}
+			return $this->_totalRecords;
 		}
 
 		/**

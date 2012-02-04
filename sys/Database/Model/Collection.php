@@ -133,21 +133,37 @@ namespace Sys\Database\Model
 			return $this->getSelect()->getPage();
 		}
 
+		/**
+		 * Limit page size
+		 * @return <int>
+		 */
 		public function getPageSize()
 		{
 			return $this->getSelect()->getSize();
 		}
 
+		/**
+		 * Get collection size
+		 */
+		public function getSize()
+		{
+			if (is_null($this->_totalRecords))
+			{
+				$this->_totalRecords = $this->_pdo->count($this->_getResource()->getTable());
+			}
+			return $this->_totalRecords;
+		}
+
 		public function getLastPageNumber()
 		{
-			$collectionSize = (int) $this->getSize();
+			$collectionSize = $this->getSize();
 			if ($collectionSize == 0)
 			{
 				return 1;
 			}
 			else if ($this->getPageSize())
 			{
-				return ceil($collectionSize / $this->getPageSize());
+				return ceil($this->getSize() / $this->getPageSize());
 			}
 			return 1;
 		}
@@ -165,7 +181,6 @@ namespace Sys\Database\Model
 			$this->_isCollectionLoaded = true;
 			//parent::load();
 			//$data = $this->_getReadAdapter()->query('SELECT * FROM '.$this->_getResource()->getTable().' WHERE 1');
-			//echo $this->getSelect();
 			$sth = $this->_getReadAdapter()->prepare($this->getSelect());
 			$sth->execute($this->getSelect()->getValues());
 			while ($row = $sth->fetch(\PDO::FETCH_ASSOC))

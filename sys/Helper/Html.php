@@ -35,6 +35,27 @@ namespace Sys\Helper
 		public function url($path)
 		{
 			$path = htmlspecialchars($path);
+			if (strpos($path, '*') !== FALSE)
+			{
+				$replace = explode('/', $path);
+				$path = '';
+				$index = 0;
+				foreach ($replace as $item)
+				{
+					if ($item == '*')
+					{
+						if ($index == 0)
+							$item = \Z::getRequest()->getParam('router');
+						else if ($index == 1)
+							$item = \Z::getRequest()->getParam('controller');
+						else if ($index == 2)
+							$item = \Z::getRequest()->getParam('action');
+					}
+					$path .= $item.'/';
+					$index++;
+				}
+			}
+
 			// We generate the url, based on wether we want url rewrites or not
 			if (\Z::getConfig('config/global/default/url/rewrite') == 1)
 			{
