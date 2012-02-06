@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<modules>
+		<Thedev_Newsletter>
+			<version>0.1.0</version>
+		</Thedev_Newsletter>
+	</modules>
+
+	<global>
+        <resources>
+            <newsletter_setup>
+                <setup>
+                    <module>Thedev_Newsletter</module>
+                </setup>
+            </newsletter_setup>
+        </resources>
+
+		<models>
+			<newsletter>
+				<class>Thedev\Newsletter\Model</class>
+				<resourceModel>newsletter_resource</resourceModel>
+			</newsletter>
+			<newsletter_resource>
+				<class>Thedev\Newsletter\Model\Resource</class>
+				<entities>
+					<item>
+						<table>newsletter_item</table>
+					</item>
+				</entities>
+			</newsletter_resource>
+		</models>
+	</global>
+</config>

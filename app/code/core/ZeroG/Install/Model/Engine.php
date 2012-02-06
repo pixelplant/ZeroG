@@ -278,7 +278,7 @@ namespace App\Code\Core\ZeroG\Install\Model
 						case self::OP_INSERT:
 							$columnsQuery = $this->_columnsQuery($data);
 							$insertsQuery = $this->_insertsQuery($data);
-							$query .= sprintf('DROP TABLE `%s`;', $table);
+							$query .= sprintf('DROP TABLE IF EXISTS `%s`;', $table);
 							$query .= sprintf('CREATE TABLE `%s` (%s) ENGINE=InnoDB DEFAULT CHARSET = utf8 COMMENT=\'%s\'; %s ',
 									$table,
 									implode(", ", $columnsQuery),
@@ -309,7 +309,10 @@ namespace App\Code\Core\ZeroG\Install\Model
 			{
 				echo $query;
 				if ($this->_pdo->query($query) === FALSE)
-					throw new \Sys\Exception('The installer query is invalid on this table: %s', $this->_table);
+				{
+					echo $this->_pdo->error();
+					throw new \Sys\Exception('The installer query is invalid on this table: %s', $this->_currentTable);
+				}
 				$this->endSetup();
 			}
 			else
