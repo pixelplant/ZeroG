@@ -140,10 +140,9 @@ namespace Sys
 
 		public function loadDatabaseData()
 		{
-			$dbConfig = \Z::getModel('core/config/data')->getCollection();
-					/*->addFieldToFilter('website_id', 0)
-					->addFieldToFilter('config_id', array('like' => '13'))
-					->addFieldToFilter('config_id', array('gt' => '2', 'lt' => '10'));*/
+			$dbConfig = \Z::getModel('core/config/data')->getCollection()
+					->addFieldToFilter('scope', 'website')
+					->addFieldToFilter('scope_id', \Z::getWebsiteView()->getWebsite()->getId());
 			$this->_flatData = array_replace_recursive($this->_flatData, $dbConfig->toFlatArray());
 			//var_dump($this->_flatData);die();
 		}

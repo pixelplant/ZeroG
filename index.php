@@ -22,8 +22,23 @@ namespace
 
 	try
 	{
-		// initialize and run the framework
-		\Z::run();
+		// possible types: website, website_view
+		// $code is the website or website_view code
+		$code = isset($_SERVER['ZEROG_RUN_CODE']) ? $_SERVER['ZEROG_RUN_CODE'] : '';
+		$type = isset($_SERVER['ZEROG_RUN_TYPE']) ? $_SERVER['ZEROG_RUN_TYPE'] : 'website_view';
+
+		\Z::run($code, $type);
+
+		/*$mail = new \Sys\Mail();
+		$mail->setFrom('me@me.com', 'Gringo Deluxe');
+		$mail->addRecipient('test@test.com', 'Blabla');
+		$mail->addRecipient('test2@test.com', 'Blabla2');
+		$mail->addCcRecipient('hey@test.com', 'New man on the block');
+		$mail->addRecipient('hey@test.com', 'Vasile Șeicaru');
+		$mail->setTextBody('Acesta este doar text, nu-i asa?');
+		$mail->setHtmlBody('<p>Un paragraf</p><p>Multe mașinuțe se plimbă peste tot... <b>paragraf</b></p>');
+		$mail->setSubject('bunăseara țărăniștilor');
+		var_dump($mail);*/
 
 		// test start - remove these lines
 		/*$res = new Sys\Model\Resource("profiles/user");

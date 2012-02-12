@@ -137,3 +137,7 @@
 
 	### Custom 404 error page
 	#ErrorDocument 404 /404.html
+
+	### Set ZEROG code and type of website to execute
+	#SetEnv ZEROG_RUN_CODE "test"
+	#SetEnv ZEROG_RUN_TYPE "website_view"

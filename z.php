@@ -90,11 +90,19 @@ namespace
 		private static $_action = '';
 
 		/**
+		 * Current website view
+		 * @var <Core\Model\Website\View>
+		 */
+		private static $_website_view = null;
+
+		/**
 		 * Start up ZeroG, load the Localization class, store the REQUEST
 		 * parameters and configure URL rewrites
-		 * @return <void>
+		 *
+		 * @param <string> $code Website or Website_View code
+		 * @param <string> $type Possible values: Website or Website_View
 		 */
-		final public static function run()
+		final public static function run($code = '', $type = '')
 		{
 			if (self::$_instance !== NULL)
 				return;
@@ -107,6 +115,9 @@ namespace
 
 			// load config data + execute router
 			self::$_config = self::getSingleton('Sys\\Config');
+			// set current website
+			self::initializeWebsite($code, $type);
+			// load config data for current website/group or view
 			self::$_config->loadDatabaseData();
 
 			// call the framework start event
@@ -184,6 +195,62 @@ namespace
 			// and this is all there is to it. our app should be running now...
 		}
 
+		/**
+		 * Load website data based on code and type
+		 *
+		 * @param <string> $code Website or Website_View code
+		 * @param <string> $type String for 'website' or 'website_view'
+		 */
+		public static function initializeWebsite($code, $type)
+		{
+			if ($type == 'website_view' && $code != '')
+			{
+				$website_view  = \Z::getModel('core/website/view')->loadByCode($code);
+				self::$_website_view = $website_view;
+				//$website_group = $website_view->getWebsiteGroup();
+				//$website       = $website_view->getWebsite();
+			}
+			else if ($type == 'website_view')
+			{
+				if ($code != '')
+				{
+					$website   = \Z::getModel('core/website')->loadByCode($code);
+				}
+				else
+				{
+					$website   = \Z::getModel('core/website')->loadDefault();
+				}
+				$website_group = \Z::getModel('core/website/group')->load($website->getDefaultWebsiteGroupId());
+				$website_view  = \Z::getModel('core/website/view')->load($website_group->getDefaultWebsiteViewId());
+				$website_view->setWebsite($website)->setWebsiteGroup($website_group);
+				self::$_website_view = $website_view;
+			}
+			else
+			{
+				throw new \Sys\Exception("Please specify a valid website code and type to display!");
+			}
+			if ($website_view->getIsActive() == 0)
+			{
+				throw new \Sys\Exception("The currently selected website_view is not active");
+			}
+		}
+
+		/**
+		 * Get current loaded website view
+		 *
+		 * @return <Core\Model\Website\View>
+		 */
+		public static function getWebsiteView()
+		{
+			return self::$_website_view;
+		}
+
+		/**
+		 * Dispatch observer callbacks defined in xml files
+		 *
+		 * @param <string> $eventName
+		 * @param <mixed> $eventParams
+		 */
 		public static function dispatchEvent($eventName, $eventParams = null)
 		{
 			// There can be more than 1 observer for an event

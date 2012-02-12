@@ -142,7 +142,7 @@ namespace App\Code\Core\ZeroG\Install\Model
 			if (($type == self::TYPE_INTEGER || $type == self::TYPE_SMALLINT) && $length <= 1)
 				$type = self::TYPE_TINYINT;
 			if ($type == self::TYPE_ENUM)
-				$type = self::TYPE_ENUM.'('.implode(',', $additionalData['values']).')';
+				$type = self::TYPE_ENUM."('".implode("','", $additionalData['values'])."')";
 			$column->setType($type)
 					->setLength($length)
 					->setComment($comment)
@@ -249,7 +249,7 @@ namespace App\Code\Core\ZeroG\Install\Model
 						}
 					}
 					$insertsQuery[] = sprintf('INSERT INTO `%s` (%s) VALUES (%s); ',
-						$table,
+						$this->_currentTable,
 						implode(",", array_keys($row)),
 						implode(",", array_values($row)));
 				}
@@ -273,6 +273,7 @@ namespace App\Code\Core\ZeroG\Install\Model
 					$tableComment = isset($data['comment'])
 						? htmlspecialchars($data['comment'])
 						: '';
+					$this->_currentTable = $table;
 					switch ($operation)
 					{
 						case self::OP_INSERT:

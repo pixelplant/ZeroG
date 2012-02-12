@@ -29,6 +29,18 @@ namespace App\Code\Core\ZeroG\Core\Model
 			$this->_init('core/website', 'website_id');
 		}
 
+		public function loadDefault()
+		{
+			$this->_getResource()->loadByField($this, 'is_default', 1);
+			return $this;
+		}
+
+		public function loadByCode($code)
+		{
+			$this->_getResource()->loadByField($this, 'code', $code);
+			return $this;
+		}
+
 		public function setWebsiteGroups($website_groups)
 		{
 			$this->_website_groups = $groups;
@@ -46,7 +58,11 @@ namespace App\Code\Core\ZeroG\Core\Model
 
 		public function getDefaultWebsiteGroup()
 		{
-			return $this->_default_website_group_id;
+			if ($this->_default_website_group == null)
+			{
+				$this->_default_website_group = \Z::getModel('core/website/group')->load($this->getParam('default_website_group_id'));
+			}
+			return $this->_default_website_group;
 		}
 	}
 }

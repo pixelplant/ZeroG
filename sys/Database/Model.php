@@ -117,10 +117,17 @@ namespace Sys\Database
 			return $this->loadByField($this->getIdField(), $id);
 		}
 
+		/**
+		 * Loads a record by a specified field in the table
+		 *
+		 * @param <string> $field
+		 * @param <mixed> $value
+		 * @return Model
+		 */
 		public function loadByField($field, $value)
 		{
 			$this->_beforeLoad();
-			$this->_getResource()->loadByField($field, $this, $value);
+			$this->_getResource()->loadByField($this, $field, $value);
 			$this->_afterLoad();
 			return $this;
 		}

@@ -189,8 +189,6 @@ namespace Sys\Database
 					throw new \Sys\Exception('Table field is not defined');
 				$table = $this->getTableName($table);
 				$statement = $this->_driver->prepare("SELECT * FROM `$table` WHERE $field = ?");
-				//$statement->bindValue(1, $table, \PDO::PARAM_STR);
-				//$statement->bindValue(1, $field, \PDO::PARAM_STR);
 				$statement->bindValue(1, $value, \PDO::PARAM_STR);
 				$statement->execute();
 				$row = $statement->fetch(\PDO::FETCH_ASSOC);

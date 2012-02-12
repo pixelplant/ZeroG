@@ -13,7 +13,7 @@ $installer = $this->getInstaller();
 // stores a list of all the installed extensions(resources) and their version
 // THE CREATION OF THIS TABLE WAS MOVED TO App\Code\Core\ZeroG\Install\Model\Setup
 /*
-$installer->newTable($installer->getResourceTable('core/extension'))
+	$installer->newTable($installer->getResourceTable('core/extension'))
 		->addColumn('code', $installer::TYPE_TEXT, 50, array(
 			'nullable' => FALSE,
 			'default' => '',
@@ -29,7 +29,7 @@ $installer->newTable($installer->getResourceTable('core/extension'))
 $installer->newTable($installer->getResourceTable('core/cache_option'))
 		->addColumn('code', $installer::TYPE_TEXT, 50, array(
 			'nullable' => FALSE,
-			'primary' => TRUE,
+			'primary'  => TRUE,
 			),'')
 		->addColumn('value', $installer::TYPE_SMALLINT, 3, array())
 		->setComment('List of objects for which caching is enabled');
@@ -38,15 +38,20 @@ $installer->newTable($installer->getResourceTable('core/cache_option'))
 $installer->newTable($installer->getResourceTable('core/config_data'))
 		->addColumn('config_id', $installer::TYPE_INTEGER, null, array(
 			'unsigned' => TRUE,
-			'primary' => TRUE,
+			'primary'  => TRUE,
 			'nullable' => FALSE,
 			'identity' => TRUE,
 			),'Configuration string id')
 		->addColumn('path', $installer::TYPE_TEXT, 255, array(
 			'nullable' => FALSE,
-			'default' => ''
+			'default'  => ''
 			), 'Configuration path, separated by slashes')
-		->addColumn('website_id', $installer::TYPE_INTEGER, null, array(
+		->addColumn('scope', $installer::TYPE_ENUM, null, array(
+			'nullable' => FALSE,
+			'values'   => array('default', 'website', 'website_view'),
+			'default'  => 'default'
+			))
+		->addColumn('scope_id', $installer::TYPE_INTEGER, null, array(
 			'nullable' => FALSE,
 			'default' => 0,
 		),'')
@@ -76,13 +81,19 @@ $installer->newTable($installer->getResourceTable('core/website'))
 			'nullable' => FALSE,
 			'default' => 0,
 		),'')
+		->addColumn('default_website_group_id', $installer::TYPE_INTEGER, null, array(
+			'nullable' => FALSE,
+			'unsigned' => TRUE,
+			'default'  => 0
+			))
 		// INSERT SOME DEFAULT DATA TOO, CREATING THE ADMIN WEBSITE
 		// AND THE MAIN FRONTEND WEBSITE
 		->insertData(
 			array('website_id' => 0,
 				'code' => 'admin',
 				'name' => 'Admin',
-				'is_default' => 0))
+				'is_default' => 0,
+				'default_website_group_id' => 0))
 		->insertData(
 			array('website_id' => 1,
 				'code' => 'base',
@@ -112,8 +123,13 @@ $installer->newTable($installer->getResourceTable('core/website_group'))
 		->insertData(
 			array('group_id' => 0,
 				'website_id' => 0,
-				'name' => 'Default',
-				'default_website_view_id' => 0));
+				'name' => 'Admin Default',
+				'default_website_view_id' => 0))
+		->insertData(
+			array('group_id' => 1,
+				'website_id' => 1,
+				'name' => 'Frontend Default',
+				'default_website_view_id' => 1));
 
 // core_website_view - Each view belongs to a website_group. You usually use views
 // to define languages for your website
@@ -147,6 +163,13 @@ $installer->newTable($installer->getResourceTable('core/website_view'))
 				'website_group_id' => 0,
 				'website_id' => 0,
 				'name' => 'Admin',
+				'is_active' => 1))
+		->insertData(
+			array('website_view_id' => 1,
+				'code' => 'base',
+				'website_group_id' => 1,
+				'website_id' => 1,
+				'name' => 'Frontend Base View',
 				'is_active' => 1));
 
 // core_email_template - holds a list of all email templates you could use in your app

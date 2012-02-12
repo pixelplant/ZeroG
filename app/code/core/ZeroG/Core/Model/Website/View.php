@@ -54,9 +54,16 @@ namespace App\Code\Core\ZeroG\Core\Model\Website
 			return $this->_session;
 		}
 
+		public function loadByCode($code)
+		{
+			$this->_getResource()->loadByField($this, 'code', $code);
+			return $this;
+		}
+
 		public function setWebsite(\App\Code\Core\ZeroG\Core\Model\Website $website)
 		{
 			$this->_website = $website;
+			return $this;
 		}
 
 		public function getWebsite()
@@ -77,6 +84,7 @@ namespace App\Code\Core\ZeroG\Core\Model\Website
 		public function setWebsiteGroup(\App\Code\Core\ZeroG\Core\Model\Website\Group $group)
 		{
 			$this->_website_group = $group;
+			return $this;
 		}
 		
 		public function getWebsiteGroup()

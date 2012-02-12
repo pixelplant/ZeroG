@@ -89,11 +89,13 @@ namespace Sys\Database
 		public function load(\Sys\Model $model, $value)
 		{
 			$field = $this->getIdField();
-			return $this->loadByField($field, $model, $value);
+			return $this->loadByField($model, $field, $value);
 		}
 
-		public function loadByField($fieldName, \Sys\Model $model, $value)
+		public function loadByField(\Sys\Model $model, $fieldName, $value)
 		{
+			$this->_beforeLoad($model);
+
 			$field = $fieldName;
 			if ($this->_getReadAdapter() && !is_null($value))
 			{
@@ -104,6 +106,7 @@ namespace Sys\Database
 					$model->setIsNew(FALSE);
 				}
 			}
+
 			$this->_afterLoad($model);
 
 			return $this;
