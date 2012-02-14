@@ -25,7 +25,7 @@ namespace
 		// possible types: website, website_view
 		// $code is the website or website_view code
 		$code = isset($_SERVER['ZEROG_RUN_CODE']) ? $_SERVER['ZEROG_RUN_CODE'] : '';
-		$type = isset($_SERVER['ZEROG_RUN_TYPE']) ? $_SERVER['ZEROG_RUN_TYPE'] : 'website_view';
+		$type = isset($_SERVER['ZEROG_RUN_TYPE']) ? $_SERVER['ZEROG_RUN_TYPE'] : 'website';
 
 		\Z::run($code, $type);
 

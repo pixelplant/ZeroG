@@ -210,7 +210,7 @@ namespace
 				//$website_group = $website_view->getWebsiteGroup();
 				//$website       = $website_view->getWebsite();
 			}
-			else if ($type == 'website_view')
+			else if ($type == 'website')
 			{
 				if ($code != '')
 				{
@@ -502,8 +502,9 @@ namespace
 			$resourceIdentifier = 'resource_'.$name;
 			if (!array_key_exists($resourceIdentifier, self::$_singletons))
 			{
-				$class = self::$_config->getResourceClass($name);
-				self::$_singletons[$resourceIdentifier] = new $class;
+				//$class = self::$_config->getResourceClass($name);
+				//self::$_singletons[$resourceIdentifier] = new $class;
+				self::$_singletons[$resourceIdentifier] = self::$_config->getResource($name);
 			}
 			return self::$_singletons[$resourceIdentifier];
 		}

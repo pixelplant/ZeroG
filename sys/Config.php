@@ -140,11 +140,25 @@ namespace Sys
 
 		public function loadDatabaseData()
 		{
-			$dbConfig = \Z::getModel('core/config/data')->getCollection()
+			// first load the website scope config data
+			$defaultConfig = \Z::getModel('core/config/data')->getCollection()
+					->addFieldToFilter('scope', 'default')
+					->addFieldToFilter('scope_id', '0');
+
+			// first load the website scope config data
+			$websiteConfig = \Z::getModel('core/config/data')->getCollection()
 					->addFieldToFilter('scope', 'website')
 					->addFieldToFilter('scope_id', \Z::getWebsiteView()->getWebsite()->getId());
-			$this->_flatData = array_replace_recursive($this->_flatData, $dbConfig->toFlatArray());
-			//var_dump($this->_flatData);die();
+
+			// then replace it with the website_view scope, if any data is defined
+			$websiteViewConfig = \Z::getModel('core/config/data')->getCollection()
+					->addFieldToFilter('scope', 'website_view')
+					->addFieldToFilter('scope_id', \Z::getWebsiteView()->getId());
+
+			$this->_flatData = array_replace($this->_flatData,
+					$defaultConfig->toFlatArray(),
+					$websiteConfig->toFlatArray(),
+					$websiteViewConfig->toFlatArray());
 		}
 
 		/**
@@ -388,9 +402,15 @@ namespace Sys
 			$data = $this->_classAddition($name);
 			$index = $data['index'];
 			$subclass = $data['class'];
-			if (!isset($this->_models[$index]['class']))
-				throw new \Sys\Exception('The model name => %s is not a registered model', $index);
+			if (!isset($this->_models[$index]))
+				throw new \Sys\Exception('The model identifier => %s is not registered', $index);
 			return $this->_models[$index]['class'].$subclass;
+		}
+
+		public function getResource($name)
+		{
+			return \Z::getModel($this->getResourceClass($name));
+			//return  $this->getModelClass($name);
 		}
 
 		public function getResourceClass($name)
@@ -398,7 +418,7 @@ namespace Sys
 			$parts  = explode('/', $name);
 			$model  = $this->_models[$parts[0]]['resourceModel'];
 			$name   = $model.'/'.substr($name, strpos($name, $parts[1]));
-			return  $this->getModelClass($name);
+			return $name;
 		}
 
 		/**

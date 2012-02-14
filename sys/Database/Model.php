@@ -60,7 +60,8 @@ namespace Sys\Database
 			if (empty($this->_resourceCollectionName))
 				throw new \Sys\Exception('The collection resource name was not set for this class => %s',
 					$this->getClassName());
-			return \Z::getResource($this->_resourceCollectionName);
+			//return \Z::getResource($this->_resourceCollectionName);
+			return \Z::getConfig()->getResource($this->_resourceCollectionName);
 		}
 
 		/**

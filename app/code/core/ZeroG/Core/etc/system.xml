@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : system.xml
+    Created on : 13 februarie 2012, 13:31
+    Author     : radu.mogos
+    Description:
+        Backend config data for the core extension
+-->
+
+<config>
+	<tabs>
+		<general>
+			<helper>core</helper>
+			<label>General</label>
+			<sort_order>100</sort_order>
+		</general>
+		<advanced>
+			<helper>core</helper>
+			<label>Advanced</label>
+			<sort_order>999999</sort_order>
+        </advanced>
+	</tabs>
+	<sections>
+		<advanced>
+			<label>Advanced</label>
+			<helper>core</helper>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_website_view>1</show_in_website_view>
+			<groups>
+				<label>Test</label>
+				<helper>core</helper>
+				<show_in_default>1</show_in_default>
+				<show_in_website>1</show_in_website>
+				<show_in_website_view>1</show_in_website_view>
+				<fields>
+					<default>
+						<helper>core</helper>
+						<label>Disable extensions</label>
+						<sort_order>10</sort_order>
+						<frontend_type>text</frontend_type>
+						<frontend_model>admin/system/config/disable_sites</frontend_model>
+						<show_in_default>1</show_in_default>
+						<show_in_website>1</show_in_website>
+						<show_in_website_view>1</show_in_website_view>
+					</default>
+				</fields>
+			</groups>
+		</advanced>
+	</sections>
+</config>

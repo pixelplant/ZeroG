@@ -20,7 +20,7 @@ namespace App\Code\Core\ZeroG\Core\Model\Resource\Config\Data
 			$flatArray = array();
 			foreach ($this->getItems() as $item)
 			{
-				$flatArray['config/global/default/'.$item->getPath()] = $item->getValue();
+				$flatArray['config/global/'.$item->getPath()] = $item->getValue();
 			}
 			return $flatArray;
 		}

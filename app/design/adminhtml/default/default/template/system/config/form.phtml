@@ -1,0 +1,13 @@
+<div class="content-header">
+	<table cellspacing="0">
+		<tr>
+			<td>
+				<h3><?php echo \Z::helper('admin')->__($this->getTitle()) ?></h3>
+			</td>
+			<td class="form-buttons"></td>
+		</tr>
+	</table>
+</div>
+<form action="<?php echo $this->getSaveUrl() ?>" method="post" id="config_edit_form" enctype="multipart/form-data">
+	<?php echo $this->getChildHtml('form') ?>
+</form>

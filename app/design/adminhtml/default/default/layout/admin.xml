@@ -16,6 +16,12 @@
 		</reference>
 	</admin>
 
+	<admin_system_config_edit>
+		<reference name="content">
+			<block type="admin/system/config/edit" template="adminhtml/system/config/form.phtml" />
+		</reference>
+	</admin_system_config_edit>
+
 	<admin_system_emails>
 		<reference name="content">
 			<block type="admin/system/emails/grid" name="widget.grid" />

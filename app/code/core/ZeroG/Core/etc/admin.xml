@@ -61,7 +61,7 @@
 				<config>
 					<helper>admin</helper>
 					<title>Configuration</title>
-					<action>admin/system/config</action>
+					<action>admin/system_config</action>
 					<sort_order>110</sort_order>
 				</config>
 			</children>

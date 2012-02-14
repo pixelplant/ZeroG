@@ -83,6 +83,9 @@ namespace Sys
 					$this->_data[$field] = $arguments[0];
 					return $this;
 					break;
+				case 'has':
+					return isset($this->_data[$field]);
+					break;
 			}
 		}
 
