@@ -1,13 +1,13 @@
-<div class="content-header">
-	<table cellspacing="0">
-		<tr>
-			<td>
-				<h3><?php echo \Z::helper('admin')->__($this->getTitle()) ?></h3>
-			</td>
-			<td class="form-buttons"></td>
-		</tr>
-	</table>
+<?php $groups = $this->getGroups(); ?>
+<div id="system_config_accordion">
+	<?php foreach ($groups as $group): ?>
+	<h3><a href="#section1"><?php echo $group->getLabel(); ?></a></h3>
+	<div><?php echo $group->render(); ?></div>
+	<?php endforeach; ?>
 </div>
 <form action="<?php echo $this->getSaveUrl() ?>" method="post" id="config_edit_form" enctype="multipart/form-data">
 	<?php echo $this->getChildHtml('form') ?>
 </form>
+<script type="text/javascript">
+	$('#system_config_accordion').accordion({ autoHeight: false, navigation: true });
+</script>

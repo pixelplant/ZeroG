@@ -27,6 +27,7 @@
 			</block>
 			<block type="page/html/breadcrumbs" template="page/html/breadcrumbs.phtml" name="breadcrumbs"/>
 			<block type="core/text" name="messages" />
+			<block type="core/text" name="left" />
 			<block type="core/text" name="right" />
 			<block type="core/text" name="content" />
 			<block type="page/html/footer" name="footer" template="page/html/footer.phtml"/>

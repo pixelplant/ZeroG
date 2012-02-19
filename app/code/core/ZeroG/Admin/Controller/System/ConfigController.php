@@ -12,6 +12,8 @@ namespace App\Code\Core\ZeroG\Admin\Controller\System
 
 		public function editAction()
 		{
+			$this->loadLayout();
+			$this->renderLayout();
 		}
 	}
 }

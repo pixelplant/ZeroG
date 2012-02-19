@@ -408,9 +408,9 @@ namespace Sys\Layout
 		 * @param <string> $path
 		 * @return <string>
 		 */
-		public function getUrl($path)
+		public function getUrl($path, $parameters = null)
 		{
-			return $this->helper('Sys\Helper\Html')->url($path);
+			return $this->helper('Sys\Helper\Html')->url($path, $parameters);
 		}
 
 		/**

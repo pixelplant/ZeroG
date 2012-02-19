@@ -138,6 +138,10 @@ namespace Sys
 			$this->_setReferences();
 		}
 
+		/**
+		 * Load config data from the database, based on current scope, overwriting
+		 * from default scope, to website and website_view level
+		 */
 		public function loadDatabaseData()
 		{
 			// first load the website scope config data

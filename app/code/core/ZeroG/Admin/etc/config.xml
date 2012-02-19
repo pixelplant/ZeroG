@@ -15,6 +15,12 @@
 			</admin>
 		</blocks>
 
+		<models>
+			<admin>
+				<class>ZeroG\Admin\Model</class>
+			</admin>
+		</models>
+
 		<helpers>
 			<admin>
 				<module>ZeroG_Admin</module>

@@ -10,7 +10,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form\Tab
 	{
 		protected function _construct()
 		{
-			$fieldset = $this->_addFieldset('fieldset1', $this->__('Post data'));
+			$fieldset = $this->_addFieldset('post_data', $this->__('Post data'));
 
 			$fieldset->addElement('title', array(
 				'type'  => 'text',
@@ -23,7 +23,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Form\Tab
 				'index'  => 'post_content',
 			));
 
-			$fieldset = $this->_addFieldset('fieldset2', $this->__('Activation settings'));
+			$fieldset = $this->_addFieldset('activation_settings', $this->__('Activation settings'));
 			$fieldset
 			->addElement('comments', array(
 				'type'   => 'select',

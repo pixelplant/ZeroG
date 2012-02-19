@@ -33,6 +33,16 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Form\Fieldset
 			return $this->_fieldset;
 		}
 
+		public function getType()
+		{
+			// if type is set in 'frontend_type' then use this first
+			if ($this->hasFrontendType())
+			{
+				return $this->getFrontendType();
+			}
+			return $this->getData('type');
+		}
+
 		public function getHeader()
 		{
 			return $this->getLabel();
@@ -48,6 +58,15 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Form\Fieldset
 		public function getHtmlId()
 		{
 			return 'form_element_'.$this->_id;
+		}
+
+		public function getValues()
+		{
+			if ($this->hasSourceModel())
+			{
+				return \Z::getModel($this->getSourceModel())->toOptionArray();
+			}
+			return $this->getData('values');
 		}
 
 		public function getElementHtml()

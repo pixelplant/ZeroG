@@ -16,11 +16,23 @@
 		</reference>
 	</admin>
 
-	<admin_system_config_edit>
+	<admin_system_config>
+		<reference name="root">
+			<action method="setTemplate"><template>page/2columns-left.phtml</template></action>
+		</reference>
+		<reference name="left">
+			<block type="admin/system/config/tabs" template="system/config/tabs.phtml" />
+		</reference>
+		<reference name="content">
+			<block type="admin/system/config/tabs" template="system/config/form.phtml" />
+		</reference>
+	</admin_system_config>
+
+	<!--<admin_system_config_edit>
 		<reference name="content">
 			<block type="admin/system/config/edit" template="adminhtml/system/config/form.phtml" />
 		</reference>
-	</admin_system_config_edit>
+	</admin_system_config_edit>-->
 
 	<admin_system_emails>
 		<reference name="content">

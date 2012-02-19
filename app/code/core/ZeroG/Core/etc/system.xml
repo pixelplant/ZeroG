@@ -22,30 +22,78 @@
         </advanced>
 	</tabs>
 	<sections>
+		<web>
+			<label>Web</label>
+			<helper>core</helper>
+			<tab>general</tab>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_website_view>1</show_in_website_view>
+		</web>
+		<design>
+			<label>Design</label>
+			<helper>core</helper>
+			<tab>general</tab>
+			<show_in_default>1</show_in_default>
+			<show_in_website>1</show_in_website>
+			<show_in_website_view>1</show_in_website_view>
+		</design>
 		<advanced>
 			<label>Advanced</label>
 			<helper>core</helper>
+			<tab>advanced</tab>
 			<show_in_default>1</show_in_default>
 			<show_in_website>1</show_in_website>
 			<show_in_website_view>1</show_in_website_view>
 			<groups>
-				<label>Test</label>
-				<helper>core</helper>
-				<show_in_default>1</show_in_default>
-				<show_in_website>1</show_in_website>
-				<show_in_website_view>1</show_in_website_view>
-				<fields>
-					<default>
-						<helper>core</helper>
-						<label>Disable extensions</label>
-						<sort_order>10</sort_order>
-						<frontend_type>text</frontend_type>
-						<frontend_model>admin/system/config/disable_sites</frontend_model>
-						<show_in_default>1</show_in_default>
-						<show_in_website>1</show_in_website>
-						<show_in_website_view>1</show_in_website_view>
-					</default>
-				</fields>
+				<site_management>
+					<label>Test</label>
+					<helper>core</helper>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_website_view>1</show_in_website_view>
+					<fields>
+						<default>
+							<helper>core</helper>
+							<label>Disable extensions</label>
+							<sort_order>10</sort_order>
+							<frontend_type>text</frontend_type>
+							<frontend_model>admin/system/config/disable_sites</frontend_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_website_view>1</show_in_website_view>
+						</default>
+					</fields>
+				</site_management>
+				<design>
+					<label>Test</label>
+					<helper>core</helper>
+					<show_in_default>1</show_in_default>
+					<show_in_website>1</show_in_website>
+					<show_in_website_view>1</show_in_website_view>
+					<fields>
+						<default>
+							<helper>core</helper>
+							<label>Disable extensions</label>
+							<sort_order>10</sort_order>
+							<frontend_type>select</frontend_type>
+							<source_model>admin/system_config_source_yesno</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>1</show_in_website>
+							<show_in_website_view>1</show_in_website_view>
+						</default>
+						<country>
+							<helper>core</helper>
+							<label>Country</label>
+							<sort_order>10</sort_order>
+							<frontend_type>select</frontend_type>
+							<source_model>admin/system_config_source_country</source_model>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_website_view>1</show_in_website_view>
+						</country>
+					</fields>
+				</design>
 			</groups>
 		</advanced>
 	</sections>

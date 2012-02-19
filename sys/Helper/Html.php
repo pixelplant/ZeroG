@@ -30,9 +30,10 @@ namespace Sys\Helper
 		/**
 		 * Return only the link's url
 		 * @param <string> $path
+		 * @param <array> additional parameters
 		 * @return <string>
 		 */
-		public function url($path)
+		public function url($path, $parameters = null)
 		{
 			$path = htmlspecialchars($path);
 			if (strpos($path, '*') !== FALSE)
@@ -51,8 +52,18 @@ namespace Sys\Helper
 						else if ($index == 2)
 							$item = \Z::getRequest()->getParam('action');
 					}
-					$path .= $item.'/';
-					$index++;
+					if ($item != '')
+					{
+						$path .= $item.'/';
+						$index++;
+					}
+				}
+			}
+			if (is_array($parameters))
+			{
+				foreach ($parameters as $key => $value)
+				{
+					$path .= $key.'/'.$value.'/';
 				}
 			}
 

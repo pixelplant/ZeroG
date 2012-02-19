@@ -4,7 +4,9 @@
 	<?php break;
     case 'select': ?>
 		<td class="label"><?php if ($this->getLabel()): ?><label for="<?php echo $this->getHtmlId() ?>"><?php echo $this->getLabel() ?>:</label><?php endif; ?></td>
-		<td><?php echo $this->getElementHtml();?><?php echo $this->getAfterElementHtml(); ?>
+		<td>
+		<?php echo $this->getElementHtml(); ?>
+		<?php echo $this->getAfterElementHtml(); ?>
 		</td>
 	<?php break;
     case 'text':

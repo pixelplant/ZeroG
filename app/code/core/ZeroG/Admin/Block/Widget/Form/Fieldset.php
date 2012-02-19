@@ -56,6 +56,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Form
 		{
 			$this->addChild($this->getLayout()->createBlock('admin/widget/form/fieldset/element')
 					->setId($name)
+					->setFieldset($this)
 					->setData($data));
 			/*$this->_elements[$name] = $this->getLayout()->createBlock('admin/widget/form/fieldset/element')
 					->setData($data);*/
@@ -79,7 +80,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Form
 
 		public function getElements()
 		{
-			return $this->_elements;
+			return $this->_children;
 		}
 
 		public function getHtmlId()

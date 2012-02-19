@@ -1,0 +1,17 @@
+<div class="vertical-tabs" id="system-config-tabs">
+	<ul>
+	<?php foreach ($this->getTabs() as $_tab): ?>
+		<li>
+			<?php echo $_tab->getLabel(); ?>
+			<?php $_sections = $_tab->getSections($_tab->getName()); ?>
+			<?php if ($_sections): ?>
+			<ul>
+			<?php foreach ($_sections as $_section): ?>
+				<li><a class="<?php echo ($_section->getIsCurrent()) ? 'active' : 'inactive' ; ?>" href="<?php echo $_section->getUrl(); ?>"><?php echo $_section->getLabel(); ?></a></li>
+			<?php endforeach; ?>
+			</ul>
+			<?php endif; ?>
+		</li>
+	<?php endforeach; ?>
+	</ul>
+</div>

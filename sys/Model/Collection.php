@@ -136,6 +136,17 @@ namespace Sys\Model
 			return new $this->_itemObjectClass();
 		}
 
+		/**
+		 * Add item to collection
+		 * 
+		 * @param <\Sys\Model> $value
+		 */
+		public function addItem(\Sys\Model $value)
+		{
+			$this->_items[] = $value;
+			return $this;
+		}
+
 		public function getClassName()
 		{
 			return $this->_className;
