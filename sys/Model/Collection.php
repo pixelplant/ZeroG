@@ -19,7 +19,9 @@ namespace Sys\Model
 
 		protected $_className;
 
-		protected $_totalRecords;
+		protected $_totalRecords = null;
+		
+		protected $_totalCount = null;
 
 		public function __construct()
 		{

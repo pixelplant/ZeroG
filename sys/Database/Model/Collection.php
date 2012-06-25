@@ -145,25 +145,39 @@ namespace Sys\Database\Model
 		/**
 		 * Get collection size
 		 */
-		public function getSize()
+		/*public function getSize()
 		{
+			$this->load();
 			if (is_null($this->_totalRecords))
 			{
 				$this->_totalRecords = $this->_pdo->count($this->_getResource()->getTable());
 			}
 			return $this->_totalRecords;
+		}*/
+		
+		public function getCount()
+		{
+			if (is_null($this->_totalCount))
+			{
+				$sth = $this->_getReadAdapter()->prepare($this->getSelect()->getCount());
+				$sth->execute($this->getSelect()->getValues());
+				$row = $sth->fetch(\PDO::FETCH_ASSOC);
+				//var_dump($row);
+				$this->_totalCount = (int)$row['total'];
+			}
+			return $this->_totalCount;
 		}
 
 		public function getLastPageNumber()
 		{
-			$collectionSize = $this->getSize();
+			$collectionSize = $this->getCount();
 			if ($collectionSize == 0)
 			{
 				return 1;
 			}
 			else if ($this->getPageSize())
 			{
-				return ceil($this->getSize() / $this->getPageSize());
+				return ceil($this->getCount() / $this->getPageSize());
 			}
 			return 1;
 		}
@@ -177,6 +191,7 @@ namespace Sys\Database\Model
 		{
 			if ($this->isLoaded())
 				return;
+			//$this->_totalRecords = 0;
 			$this->_beforeLoad();
 			$this->_isCollectionLoaded = true;
 			//parent::load();

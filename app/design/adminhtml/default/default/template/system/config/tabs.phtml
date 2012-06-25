@@ -1,8 +1,9 @@
 <div class="vertical-tabs" id="system-config-tabs">
+	<h1><?php echo $this->getTitle(); ?></h1>
 	<ul>
 	<?php foreach ($this->getTabs() as $_tab): ?>
 		<li>
-			<?php echo $_tab->getLabel(); ?>
+			<strong><?php echo $_tab->getLabel(); ?></strong>
 			<?php $_sections = $_tab->getSections($_tab->getName()); ?>
 			<?php if ($_sections): ?>
 			<ul>

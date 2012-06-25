@@ -102,7 +102,7 @@ namespace App\Code\Core\ZeroG\Core\Model\Website
 
 		public function isAdmin()
 		{
-			return ($this->getId() == \App\Code\Core\ZeroG\Core\Model\App::ADMIN_STORE_ID);
+			return ($this->getId() == \App\Code\Core\ZeroG\Core\Model\App::ADMIN_SITE_ID);
 		}
 	}
 }

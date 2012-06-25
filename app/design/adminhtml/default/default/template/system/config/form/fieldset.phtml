@@ -1,0 +1,13 @@
+<?php $_elements = $this->getChildren(); ?>
+
+<?php if ($_elements): ?>
+		<table class="form-fieldset-table">
+			<tbody>
+			<?php foreach ($_elements as $_element): ?>
+				<tr class="form-field">
+					<?php echo $_element->getContent(); ?>
+				</tr>
+			<?php endforeach; ?>
+			</tbody>
+		</table>
+<?php endif; ?>

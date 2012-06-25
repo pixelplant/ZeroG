@@ -35,6 +35,12 @@
 		</reference>
 	</blog_admin_admin_edit_post>
 
+	<blog_admin_admin_edit_category>
+		<reference name="content">
+			<block type="blog/admin/form/category" name="form.category" />
+		</reference>
+	</blog_admin_admin_edit_category>
+
 	<blog_admin_admin_list_categories>
 		<reference name="content">
 			<block type="blog/admin/grid/categories" name="widget.grid" />

@@ -10,7 +10,8 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 	{
 		protected function _prepareColumns()
 		{
-			$this->setActionUrl('blog_admin/admin_list/categories_grid');
+			$this->setActionUrl('blog_admin/admin_list/categories');
+			$this->setAjaxActionUrl('blog_admin/admin_list/categories_grid');
 
 			$this->getHeader()
 				->addButton('new', array(

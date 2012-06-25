@@ -55,7 +55,7 @@
 				<!--<cache_limiter>nocache</cache_limiter>-->
 			</session>
 			<!-- default website locale -->
-			<locale>ro_RO</locale>
+			<locale>fr_FR</locale>
 			<!-- default module loaded when people go to the index page -->
 			<router>page</router>
 			<!-- default controller called for the above module -->

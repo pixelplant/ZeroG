@@ -21,6 +21,11 @@
 			<action method="setTemplate"><template>page/2columns-left.phtml</template></action>
 		</reference>
 		<reference name="left">
+			<block type="admin/system/config/element/site">
+				<action method="setTitle"><title>Choose website</title></action>
+				<action method="setHtmlId"><id>system_site_selector</id></action>
+				<action method="setFieldName"><name>system_site_selector</name></action>
+			</block>
 			<block type="admin/system/config/tabs" template="system/config/tabs.phtml" />
 		</reference>
 		<reference name="content">

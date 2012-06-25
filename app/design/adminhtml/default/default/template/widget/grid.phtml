@@ -6,22 +6,25 @@
 		<h1><?php echo $this->getHeader()->getTitle(); ?></h1>
 	</div>
 	<form method="post" action="<?php echo $this->getActionUrl();?>" id="<?php echo $this->getHtmlId(); ?>">
+		<input type="hidden" name="<?php echo $this->_varNameSort; ?>" value="<?php echo $this->getParam($this->_varNameSort, $this->_defaultSort);?>" />
+		<input type="hidden" name="<?php echo $this->_varNameDir; ?>" value="<?php echo $this->getParam($this->_varNameDir, $this->_defaultDir);?>" />
 	<table class="widget_grid_pager">
 		<tr>
 			<td>
 				<?php echo $this->helper('admin')->__('Page') ?>
 				<?php $_curPage  = $this->getCollection()->getCurPage(); ?>
 				<?php $_lastPage = $this->getCollection()->getLastPageNumber(); ?>
+				<?php if ($_curPage > $_lastPage) { $_curPage = 1;} ?>
 				<?php if($_curPage>1): ?>
-					<a href="#" title="<?php echo $this->helper('admin')->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to previous page') ?>" class="arrow"/></a>
+					<a id="prev_<?php echo $this->getHtmlId(); ?>" href="<?php echo $this->getEncodedUrl(array($this->_varNamePage => $_curPage - 1)); ?>" title="<?php echo $this->helper('admin')->__('Previous page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to previous page') ?>" class="arrow"/></a>
 				<?php else: ?>
 					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_prev_dis.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to previous page') ?>" class="arrow"/>
 				<?php endif; ?>
 
-				<input type="text" name="<?php echo $this->_varNamePage; ?>" size="3" value="<?php echo $_curPage ?>" class="input-text page" onkeypress=""/>
+				<input id="page_<?php echo $this->getHtmlId(); ?>" type="text" name="<?php echo $this->_varNamePage; ?>" size="3" value="<?php echo $_curPage ?>" class="input-text page"/>
 
 				<?php if($_curPage < $_lastPage): ?>
-					<a href="#" title="<?php echo $this->helper('admin')->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
+					<a id="next_<?php echo $this->getHtmlId(); ?>" href="<?php echo $this->getEncodedUrl(array($this->_varNamePage => $_curPage + 1)); ?>" title="<?php echo $this->helper('admin')->__('Next page') ?>" onclick=""><img src="<?php echo $this->getSkinUrl('images/icons/arrow_next.png') ?>" alt="Go to Next page" class="arrow"/></a>
 				<?php else: ?>
 					<img src="<?php echo $this->getSkinUrl('images/icons/arrow_next_dis.png') ?>" alt="<?php echo $this->helper('admin')->__('Go to next page') ?>" class="arrow"/>
 				<?php endif; ?>
@@ -31,7 +34,7 @@
 					<span class="separator">|</span>
 					<?php echo $this->helper('admin')->__('View') ?>
 					<select name="<?php echo $this->_varNameLimit; ?>" onchange="">
-						<option value="10"<?php if($this->getCollection()->getPageSize()==10): ?> selected="selected"<?php endif; ?>>10</option>
+						<option value="1"<?php if($this->getCollection()->getPageSize()==1): ?> selected="selected"<?php endif; ?>>1</option>
 						<option value="20"<?php if($this->getCollection()->getPageSize()==20): ?> selected="selected"<?php endif; ?>>20</option>
 						<option value="30"<?php if($this->getCollection()->getPageSize()==30): ?> selected="selected"<?php endif; ?>>30</option>
 						<option value="40"<?php if($this->getCollection()->getPageSize()==40): ?> selected="selected"<?php endif; ?>>40</option>
@@ -39,7 +42,7 @@
 					</select>
 					<?php echo $this->helper('admin')->__('per page') ?> <span class="separator">|</span>
 
-				<?php echo $this->helper('admin')->__('Total %d records found', $this->getCollection()->getSize()) ?>
+				<?php echo $this->helper('admin')->__('Total %d records found', $this->getCollection()->getCount()) ?>
 			</td>
 			<td class="export a-right">
 				<img src="<?php echo $this->getSkinUrl('images/icons/export.png') ?>" alt="" class="v-middle"/>&nbsp; <?php echo $this->helper('admin')->__('Export to:') ?>
@@ -83,7 +86,13 @@
 				<?php endforeach; ?>
 			</tr>
 			<?php endforeach; ?>
-			<?php endif; ?>
+			<?php else: ?>
+			<tr>
+				<td class="grid-no-records" colspan="99">
+					<p><?php echo $this->helper('admin')->__('There are no records matching your criteria.'); ?></p>
+				</td>
+			</tr>
+			<?php endif;?>
 		</tbody>
 	</table>
 	</form>
@@ -94,11 +103,23 @@
 		var options = {
 			target: '#widget_<?php echo $this->getHtmlId(); ?>',
 			beforeSubmit: showAjaxRequest,
+			// if javascript is disabled the non ajax url is called by default
+			url: '<?php echo $this->getAjaxActionUrl(); ?>',
 			success: hideAjaxRequest
 			};
 		$(this).ajaxSubmit(options);
 		//!!! Important !!!
 		// always return false to prevent standard browser submit and page navigation
+		return false;
+	});
+	$('#next_<?php echo $this->getHtmlId(); ?>').bind('click', function() {
+		$('#page_<?php echo $this->getHtmlId(); ?>').val(parseInt($('#page_<?php echo $this->getHtmlId(); ?>').val()) + 1);
+		$('#<?php echo $this->getHtmlId(); ?>').submit();
+		return false;
+	});
+	$('#prev_<?php echo $this->getHtmlId(); ?>').bind('click', function() {
+		$('#page_<?php echo $this->getHtmlId(); ?>').val(parseInt($('#page_<?php echo $this->getHtmlId(); ?>').val()) - 1);
+		$('#<?php echo $this->getHtmlId(); ?>').submit();
 		return false;
 	});
 	</script>

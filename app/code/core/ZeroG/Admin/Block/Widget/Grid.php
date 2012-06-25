@@ -30,15 +30,21 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 		protected $_actionUrl = null;
 
 		/**
+		 * Url called when JavaScript is enabled and you have an AJAX method listener
+		 */
+		protected $_ajaxActionUrl = null;
+
+		/**
 		 * Paging variables
 		 *
 		 * @var <string>
 		 */
-		protected $_varNameLimit    = '_limit';
-		protected $_varNamePage     = '_page';
-		protected $_varNameSort     = '_sort';
-		protected $_varNameDir      = '_dir';
-		protected $_varNameFilter   = '_filter';
+		protected $_varNameLimit     = '_limit';
+		protected $_varNamePage      = '_page';
+		protected $_varNameSort      = '_sort';
+		protected $_varNameDir       = '_dir';
+		protected $_varNameFilter    = '_filter';
+		protected $_varNameUrlEncode = '_eurl';
 
 		protected $_defaultSort     = false;
 		protected $_defaultDir      = 'desc';
@@ -76,6 +82,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 					->createBlock('admin/widget/grid/container')
 					->setGrid($this);
 			$this->setTemplate('widget/grid.phtml');
+			$this->_decodeUrl();
 			//$column->setData($columnData);
 		}
 
@@ -85,6 +92,9 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			return $this;
 		}
 
+		/**
+		 * Return the grid's form action url
+		 */
 		public function getActionUrl()
 		{
 			if (is_null($this->_actionUrl))
@@ -92,6 +102,39 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 				$this->setActionUrl();
 			}
 			return $this->_actionUrl;
+		}
+
+		public function setAjaxActionUrl($path = null)
+		{
+			$this->_ajaxActionUrl = $this->getUrl($path);
+			return $this;
+		}
+
+		/**
+		 * Return the grid's form AJAX action url
+		 */
+		public function getAjaxActionUrl()
+		{
+			return $this->_ajaxActionUrl;
+		}
+
+		protected function _decodeUrl()
+		{
+			if ($this->getParam($this->_varNameUrlEncode, null) !== null)
+			{
+				\Z::getRequest()->setParams(unserialize(urldecode($this->getParam($this->_varNameUrlEncode))));
+			}
+		}
+
+		public function getEncodedUrl($params = array())
+		{
+			$urlParams[$this->_varNamePage]   = $this->getParam($this->_varNamePage, $this->_defaultPage);
+			$urlParams[$this->_varNameLimit]  = $this->getParam($this->_varNameLimit, $this->_defaultLimit);
+			$urlParams[$this->_varNameSort]   = $this->getParam($this->_varNameSort, $this->_defaultSort);
+			$urlParams[$this->_varNameDir]    = $this->getParam($this->_varNameDir, $this->_defaultDir);
+			$urlParams[$this->_varNameFilter] = $this->getParam($this->_varNameFilter, null);
+			$urlParams = array_merge($urlParams, $params);
+			return $this->getUrl('*/*/*', array($this->_varNameUrlEncode => urlencode(serialize($urlParams))));
 		}
 
 		/**

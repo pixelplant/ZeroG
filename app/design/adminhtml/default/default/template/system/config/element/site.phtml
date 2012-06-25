@@ -1,0 +1,37 @@
+<?php
+
+$viewCollection    = $this->getWebsiteViewCollection();
+$groupCollection   = $this->getWebsiteGroupCollection();
+$websiteCollection = $this->getWebsiteCollection();
+
+?>
+<?php if ($this->hasTitle()): ?>
+<h1><?php echo $this->getTitle(); ?></h1>
+<?php endif; ?>
+<select name="<?php echo $this->getFieldName(); ?>" id="<?php echo $this->getHtmlId(); ?>" onchange="location.href=this.options[this.selectedIndex].getAttribute('url')">
+	<option value="default"><?php echo $this->__('Default'); ?></option>
+<?php foreach ($websiteCollection as $website): ?>
+	<?php $websiteShow = false; ?>
+	<?php foreach ($groupCollection as $group): ?>
+		<?php if ($group->getWebsiteId() != $website->getId()) { continue;} ?>
+		<?php $groupShow = false; ?>
+		<?php foreach ($viewCollection as $view): ?>
+			<?php if ($view->getWebsiteGroupId() != $group->getId() || $view->isAdmin()) { continue; } ?>
+			<?php if (!$websiteShow): ?>
+				<?php $websiteShow = true; ?>
+				<option value="<?php echo $website->getCode(); ?>" url="<?php echo $this->getEditUrl(array('website' => $website->getCode())); ?>">&nbsp;&nbsp;<?php echo $website->getName(); ?></option>
+			<?php endif; ?>
+			<?php if (!$groupShow): ?>
+				<?php $groupShow = true; ?>
+				<optgroup label="&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $group->getName(); ?>">
+			<?php endif; ?>
+			<?php $value = $this->getValue(); ?>
+			<option value="<?php echo $view->getId(); ?>" <?php echo ($value == $view->getId() ? ' selected="selected"' : ''); ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $view->getName(); ?></option>
+		<?php endforeach; ?>
+		<?php if ($groupShow): ?>
+			</optgroup>
+		<?php endif; ?>
+	<?php endforeach; ?>
+<?php endforeach; ?>
+</select>
+

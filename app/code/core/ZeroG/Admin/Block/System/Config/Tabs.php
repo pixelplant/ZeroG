@@ -4,14 +4,41 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 {
 	class Tabs extends \App\Code\Core\ZeroG\Admin\Block\Template
 	{
+		/**
+		 * List of config sections defined in system.xml
+		 * 
+		 * @var array
+		 */
 		protected $_sections = array();
 
+		/**
+		 * List of groups defined in system.xml
+		 * 
+		 * @var array
+		 */
 		protected $_groups = array();
+		
+		/**
+		 * A list of fields to load and show in the seciton page
+		 * 
+		 * @var array 
+		 */
+		protected $_fieldsToLoad = array();
+		
+		protected function _construct()
+		{
+			$this->setTitle($this->__('Configuration'));
+		}
 
+		/**
+		 * Returns a list of currently defined tabs
+		 * 
+		 * @return \Sys\Model\Collection
+		 */
 		public function getTabs()
 		{
 			$this->loadSections();
-			$_currentTab = $this->getRequest()->getParam('section');
+
 			$tabs = new \Sys\Model\Collection();
 			// read the config/tabs node from system.xml files or other xml files
 			$xmlTabs = \Z::getConfig()->getNode('tabs');
@@ -23,36 +50,48 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 				//$tab->setData('url', $this->getUrl('*/*/edit/', array('section' => $_name)));
 				$tab->setData('sections', $this->getSections($_name));
 				$tab->setData('name', $_name);
-				if ($_currentTab == $_name)
-				{
-					$tab->setData('is_current', true);
-				}
-				else
-				{
-					$tab->setData('is_current', false);
-				}
 				$tabs->addItem($tab);
 			}
 			return $tabs;
 		}
 
+		/**
+		 * Load all sections defined in system.xml
+		 * @return App\Code\Core\ZeroG\Admin\Block\System\Config\Tabs
+		 */
 		public function loadSections()
 		{
 			if ($this->_sections == null)
 			{
 				$sections = \Z::getConfig()->getNode('sections');
+				$_currentSection = $this->getRequest()->getParam('section');
 				foreach ($sections as $_name => $_section)
 				{
 					$section = new \Sys\Model();
 					$section->setData('label', $this->helper($_section['helper'])->__($_section['label']));
 					$section->setData('url', $this->getUrl('*/*/edit/', array('section' => $_name)));
 					$section->setData('name', $_name);
+					if ($_currentSection == $_name)
+					{
+						$section->setData('is_current', true);
+					}
+					else
+					{
+						$section->setData('is_current', false);
+					}
 					$this->_sections[$_section['tab']][] = $section;
 				}
 			}
+			return $this;
 		}
 
-		public function loadGroups($sectionIdentifier)
+		/**
+		 * Load all groups defined in a section
+		 * 
+		 * @param string $sectionIdentifier
+		 * @return boolean|\App\Code\Core\ZeroG\Admin\Block\System\Config\Tabs 
+		 */
+		protected function _loadGroups($sectionIdentifier)
 		{
 			if ($this->_groups == null)
 			{
@@ -66,6 +105,10 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 				{
 					$this->_groups[$sectionIdentifier][$_groupName] = $this->getLayout()
 							->createBlock('admin/widget/form/fieldset')
+							->setTemplate('system/config/form/fieldset.phtml')
+							->setName($_groupName)
+							->setSectionName($sectionIdentifier)
+							->setTabName($groupsXml[$sectionIdentifier]['tab'])
 							->setData('label', $this->helper($_group['helper'])->__($_group['label']));
 					$this->setGroupFields($this->_groups[$sectionIdentifier][$_groupName], $_group['fields']);
 					//$group = new \Sys\Model();
@@ -73,9 +116,12 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 					//$group->setData('fields', $this->getFields($_group['fields']));
 					//$this->_groups[$sectionIdentifier][$_groupName] = $group;
 				}
+				$this->_loadFieldsFromDatabase($sectionIdentifier);
 			}
+			return $this;
 		}
 
+		/*
 		public function getFields($xmlFields)
 		{
 			$fields = array();
@@ -87,34 +133,59 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 				$fields[] = $field;
 			}
 			return $fields;
-		}
+		}*/
 
 		public function setGroupFields($group, $xmlFields)
 		{
 			foreach ($xmlFields as $_name => $_fieldData)
 			{
 				$visible = false;
-				if ($_fieldData['show_in_default'] == '1')
+				if (isset($_fieldData['show_in_default']) && $_fieldData['show_in_default'] == '1')
 				{
 					$visible = true;
 				}
-				if ($_fieldData['show_in_website'] == '1' && ($this->getRequest()->getParam('scope') == 'website'))
+				if (isset($_fieldData['show_in_website']) && $_fieldData['show_in_website'] == '1' && ($this->getRequest()->getParam('scope') == 'website'))
 				{
 					$visible = true;
 				}
-				if ($_fieldData['show_in_website_view'] == '1' && ($this->getRequest()->getParam('scope') == 'website_view'))
+				if (isset($_fieldData['show_in_website_view']) && $_fieldData['show_in_website_view'] == '1' && ($this->getRequest()->getParam('scope') == 'website_view'))
 				{
 					$visible = true;
 				}
 				if ($visible)
 				{
 					$_fieldData['label'] = $this->helper($_fieldData['helper'])->__($_fieldData['label']);
-					$field = $group->addElement($_name, $_fieldData);
+					$_fieldData['index'] = $group->getTabName().'['.$group->getSectionName().']['.$group->getName().']['.$_name.']';
+					$this->_fieldsToLoad[] = $group->getTabName().'\\'.$group->getSectionName().'\\'.$group->getName().'\\'.$_name;
+					$field = $group->addElement($_fieldData['index'], $_fieldData);
 				}
 			}
 			return $group;
 		}
-
+		
+		protected function _loadFieldsFromDatabase($sectionIdentifier)
+		{
+			$collection = \Z::getModel('core/config_data')->getCollection()
+					->addFieldToFilter('path', array('in' => $this->_fieldsToLoad));
+			$data = array();
+			foreach ($collection as $item)
+			{
+				$path = implode("][", explode("\\", $item->getPath())).']';
+				$path = preg_replace('/\]\[/', '[', $path, 1);
+				$data[$path] = $item->getValue();
+			}
+			foreach ($this->_groups[$sectionIdentifier] as $group)
+			{
+				$group->setElementsValues($data);
+			}
+		}
+			
+		/**
+		 * Get sections by name
+		 * 
+		 * @param string $tabIdentifier
+		 * @return boolean|\Sys\Model 
+		 */
 		public function getSections($tabIdentifier)
 		{
 			if (isset($this->_sections[$tabIdentifier]))
@@ -124,13 +195,19 @@ namespace App\Code\Core\ZeroG\Admin\Block\System\Config
 			return false;
 		}
 
+		/**
+		 * Get all groups defined for a section
+		 * 
+		 * @param string $sectionIdentifier
+		 * @return array
+		 */
 		public function getGroups($sectionIdentifier = null)
 		{
 			if ($sectionIdentifier == null)
 			{
 				$sectionIdentifier = \Z::getRequest()->getParam('section');
 			}
-			$this->loadGroups($sectionIdentifier);
+			$this->_loadGroups($sectionIdentifier);
 			if (isset($this->_groups[$sectionIdentifier]))
 			{
 				return $this->_groups[$sectionIdentifier];

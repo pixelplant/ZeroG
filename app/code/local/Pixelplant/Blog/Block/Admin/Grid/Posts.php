@@ -6,7 +6,8 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 	{
 		protected function _prepareColumns()
 		{
-			$this->setActionUrl('blog_admin/admin_list/posts_grid');
+			$this->setActionUrl('blog_admin/admin_list/posts');
+			$this->setAjaxActionUrl('blog_admin/admin_list/posts_grid');
 
 			$this->getHeader()
 				->addButton('new', array(

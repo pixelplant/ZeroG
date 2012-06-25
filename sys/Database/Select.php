@@ -150,6 +150,12 @@ namespace Sys\Database
 		{
 			return $this->_values;
 		}
+		
+		public function getCount()
+		{
+			return $this->_getSelectString('COUNT(*) as total', null);
+			//return $this;
+		}
 
 		public function getWhere()
 		{
@@ -263,7 +269,12 @@ namespace Sys\Database
 
 		public function __toString()
 		{
-			$select = 'SELECT '.$this->_selectFields.' FROM '.$this->_table;
+			return $this->_getSelectString($this->_selectFields, $this->getSize());
+		}
+		
+		protected function _getSelectString($selectWhat, $pageSize)
+		{
+			$select = 'SELECT '.$selectWhat.' FROM '.$this->_table;
 			// Set the WHERE conditions
 			if ($this->getWhere() != '')
 				$select .= ' WHERE '.$this->getWhere();
@@ -273,7 +284,7 @@ namespace Sys\Database
 				$select .= ' ORDER BY '.\Z::getHelper('core')->array_implode(' ', ',', $this->_order);
 			}
 			// Then set the LIMIT
-			if ($this->getSize() !== null)
+			if ($pageSize !== null)
 			{
 				//($this->getPage() === null) ? $this->setPage(0) : $this->setPage((int)$this->_page) ;
 				$select .= ' LIMIT '.$this->_getSqlPage().', '.$this->getSize();

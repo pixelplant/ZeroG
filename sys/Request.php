@@ -50,6 +50,15 @@ namespace Sys
 		}
 
 		/**
+		 * Manipulate the parameters manually, if required
+		 * @param <array> $params
+		 */
+		public function setParams($params)
+		{
+			$this->_params = array_merge($this->_params, $params);
+		}
+
+		/**
 		 * Get router instance
 		 *
 		 * @return <\Sys\Config\Router>

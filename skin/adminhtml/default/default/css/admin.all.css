@@ -137,7 +137,7 @@ ol li { padding-left: .5em; list-style: decimal;}
 	padding:0;
 	display:block;
 	padding-right:25px;
-	width:150px;
+	width:200px;
 }
 
 #header_nav {
@@ -845,4 +845,34 @@ input.input-text,
 
 .right {
 	float: right;
+}
+
+.vertical-tabs {
+	margin: 0 10px 0 0;
+}
+
+.vertical-tabs strong {
+	font-weight: bold;
+}
+
+.vertical-tabs ul {
+	padding: 5px;
+}
+
+.vertical-tabs li > ul > li a {
+	background-color: #cdcdcd;
+	color: #111111;
+	margin-top: 1px;
+	padding: 5px;
+	display: block;
+}
+
+.vertical-tabs li > ul > li a:hover {
+	background-color: brown;
+	color: white;
+}
+
+.vertical-tabs a.active {
+	background-color: #333333;
+	color: white;
 }

@@ -16,5 +16,16 @@ namespace App\Code\Local\Pixelplant\Blog\Controller\Admin
 			$this->loadLayout();
 			$this->renderLayout();
 		}
+
+		public function categoryAction()
+		{
+			$id = $this->getRequest()->getParam('id', 0);
+			$model = \Z::getModel('blog/category')->load($id);
+
+			\Z::register('blog_category', $model);
+
+			$this->loadLayout();
+			$this->renderLayout();
+		}
 	}
 }
