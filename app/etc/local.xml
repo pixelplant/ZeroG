@@ -55,7 +55,10 @@
 				<!--<cache_limiter>nocache</cache_limiter>-->
 			</session>
 			<!-- default website locale -->
-			<locale>fr_FR</locale>
+			<general>
+				<locale>fr_FR</locale>
+				<timezone>Europe/Paris</timezone>
+			</general>
 			<!-- default module loaded when people go to the index page -->
 			<router>page</router>
 			<!-- default controller called for the above module -->

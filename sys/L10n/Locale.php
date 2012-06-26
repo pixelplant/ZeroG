@@ -11,6 +11,12 @@ namespace Sys\L10n
 		 */
 		protected $_locale = '';
 
+		/**
+		 * Timezone currently used to show dates
+		 * @var <string> See PHP timezones for possible values
+		 */
+		protected $_timezone = '';
+
 		protected $_translations = array();
 
 		protected $_currencies = array();
@@ -23,28 +29,43 @@ namespace Sys\L10n
 
 		protected $_shortMonths =  array();
 
+		/**
+		 * A DateTime object
+		 * @var <DateTime>
+		 */
+		protected $_datetime = null;
+
+		/**
+		 * SimpleXml Config object
+		 * @var <SimpleXml>
+		 */
+		protected $_config = null;
+
 		//abstract public function setLocale();
 
-		public function __construct($locale)
+		public function __construct($locale, $timezone)
 		{
 			$this->_locale = $locale;
+			$this->_timezone = $timezone;
+			$this->_datetime = new \DateTime("now", new \DateTimeZone($timezone));
 			$this->setLocale();
 			$this->cacheTranslations();
 		}
 
 		public function setLocale()
 		{
-			$xml = new \SimpleXMLElement('sys/Locale/'.$this->_locale.'.xml', NULL, TRUE);
+			$this->_config = new \SimpleXMLElement('sys/Locale/'.$this->_locale.'.xml', NULL, TRUE);
 
 			// make sure the xml locale and the app locale settings are the same
-			if ($xml->locale->zone != $this->_locale)
+			if ($this->_config->identity->language["type"].'_'.$this->_config->identity->territory["type"] != $this->_locale)
 				throw new \Sys\Exception("Current xml locale file does not match the application's locale settings...");
 
 			// set datetime zome
-			date_default_timezone_set($xml->locale->date_default_timezone_set);
+			//date_default_timezone_set($this->_timezone);
+			//echo $this->_datetime->format('d/m/Y H:i:s');
 
 			// set currencies...
-			$decimals = $xml->numbers->decimals;
+			/*$decimals = $xml->numbers->decimals;
 			foreach ($xml->currencies->currency as $currency)
 			{
 				$this->_currencies[(string)$currency->name] = new \Sys\L10n\Currency(
@@ -77,7 +98,7 @@ namespace Sys\L10n
 			}
 
 			// delete $xml var
-			unset($xml);
+			unset($xml);*/
 		}
 
 		/**
@@ -99,6 +120,18 @@ namespace Sys\L10n
 			return $this->_currencies;
 		}
 
+		public function formatDate($type = "full", $timestamp = null)
+		{
+			$pattern = $this->_config->dates->calendars->calendar["gregorian"]->dateFormats->dateFormatLength[$type]->dateFormat->pattern;
+			if ($pattern)
+			{
+				$this->_datetime->setTimestamp($timestamp);
+				return $this->_datetime->format($format);
+			}
+			else
+				throw new \Sys\Exception("The date format type that you specified is not defined in the XML locale");
+		}
+
 		/**
 		 * Gets a date specified in $timestamp, or the current date
 		 * and formats it using php's date format specifiers but using the localized
@@ -108,7 +141,7 @@ namespace Sys\L10n
 		 * @param <int> $timestamp integer timestamp
 		 * @return <string> returns the formated localized date
 		 */
-		public function getDate($format = 'j.F.Y', $timestamp = NULL)
+		public function getDate($format = 'j.F.Y', $timestamp = null)
 		{
 			if ($timestamp === NULL)
 				$timestamp = time();

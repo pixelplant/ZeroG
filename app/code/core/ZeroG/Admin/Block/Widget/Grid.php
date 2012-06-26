@@ -86,6 +86,14 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget
 			//$column->setData($columnData);
 		}
 
+		public function setSaveParametersInSession($state = false)
+		{
+			if ($state === true)
+			{
+				//save grid filters/data in the session
+			}
+		}
+
 		public function setActionUrl($path = null)
 		{
 			$this->_actionUrl = $this->getUrl($path);

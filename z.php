@@ -132,7 +132,10 @@ namespace
 				throw new \Sys\Exception('No map matched the current route');
 
 			// load locale settings and labels
-			self::$_locale = self::getSingleton('Sys\\L10n\\Locale', self::getRequest()->getParam('locale', self::getConfig('config/global/default/locale')));
+			self::$_locale = new Sys\L10n\Locale(
+					self::getRequest()->getParam('locale', self::getConfig('config/global/default/general/locale')),
+					self::getConfig('config/global/default/general/timezone')
+				);
 
 			// run the application
 			self::bootstrap();

@@ -101,7 +101,8 @@
 	$('#<?php echo $this->getHtmlId(); ?>').submit(function()
 	{
 		var options = {
-			target: '#widget_<?php echo $this->getHtmlId(); ?>',
+			//target: '#widget_<?php echo $this->getHtmlId(); ?>',
+			target: '#content',
 			beforeSubmit: showAjaxRequest,
 			// if javascript is disabled the non ajax url is called by default
 			url: '<?php echo $this->getAjaxActionUrl(); ?>',

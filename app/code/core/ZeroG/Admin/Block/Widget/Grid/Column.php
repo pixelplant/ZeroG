@@ -174,6 +174,8 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 				case 'select' :
 					$renderer = 'admin/widget/grid/column/renderer/select';
 					break;
+				case 'date'   :
+					$renderer = 'admin/widget/grid/column/renderer/date';
 				default:
 					$renderer = 'admin/widget/grid/column/renderer/base';
 			}
