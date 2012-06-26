@@ -17,6 +17,12 @@ namespace Sys\L10n
 		 */
 		protected $_timezone = '';
 
+		/**
+		 * Cached copy of the calendar
+		 * @var <SimpleXml>
+		 */
+		protected $_calendar = null;
+
 		protected $_translations = array();
 
 		protected $_currencies = array();
@@ -59,6 +65,8 @@ namespace Sys\L10n
 			// make sure the xml locale and the app locale settings are the same
 			if ($this->_config->identity->language["type"].'_'.$this->_config->identity->territory["type"] != $this->_locale)
 				throw new \Sys\Exception("Current xml locale file does not match the application's locale settings...");
+
+			$this->_calendar = $this->_config->xpath('//calendars[calendar[@type="gregorian"]]');
 
 			// set datetime zome
 			//date_default_timezone_set($this->_timezone);
@@ -120,12 +128,13 @@ namespace Sys\L10n
 			return $this->_currencies;
 		}
 
-		public function formatDate($type = "full", $timestamp = null)
+		public function formatDate($type, $timestamp = null)
 		{
-			$pattern = $this->_config->dates->calendars->calendar["gregorian"]->dateFormats->dateFormatLength[$type]->dateFormat->pattern;
+			$pattern = $this->_calendar[0]->xpath('//dateFormatLength[@type="'.$type.'"]');
 			if ($pattern)
 			{
-				$this->_datetime->setTimestamp($timestamp);
+				$format = (string)$pattern[0]->dateFormat->pattern;
+				$this->_datetime->setTimestamp(strtotime($timestamp));
 				return $this->_datetime->format($format);
 			}
 			else

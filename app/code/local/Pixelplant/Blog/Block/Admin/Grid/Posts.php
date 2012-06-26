@@ -80,6 +80,7 @@ namespace App\Code\Local\Pixelplant\Blog\Block\Admin\Grid
 				'header'   => $this->__('Last modified'),
 				'index'    => 'updated_time',
 				'type'     => 'date',
+				'format'   => 'full',
 				'width'    => '160px'
 				));
 

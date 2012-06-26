@@ -176,6 +176,7 @@ namespace App\Code\Core\ZeroG\Admin\Block\Widget\Grid
 					break;
 				case 'date'   :
 					$renderer = 'admin/widget/grid/column/renderer/date';
+					break;
 				default:
 					$renderer = 'admin/widget/grid/column/renderer/base';
 			}

@@ -403,6 +403,11 @@ namespace Sys\Layout
 			return \Z::getLocale()->__($label, $this->_moduleName, $arguments);
 		}
 
+		public function formatdate($type, $timestamp)
+		{
+			return \Z::getLocale()->formatDate($type, $timestamp);
+		}
+
 		/**
 		 * Returns an absolute url containing the module+controller+action to be called
 		 * @param <string> $path
